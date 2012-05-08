@@ -7,7 +7,7 @@ body.ontouchmove = function (e) {
 }
 
 var pages = document.querySelectorAll('.page'),
-		startY, endY, deg, current = 0;
+		startY, endY, deg, time, current = 0;
 
 body.addEventListener('touchstart', flipStart, false);
 body.addEventListener('touchmove', flipMove, false);
@@ -20,6 +20,7 @@ function flipStart(e) {
 	startY = e.targetTouches[0].pageY;
 	dist = 0;
 	deg = 0;
+	time = new Date().getTime();
 }
 
 function flipMove(e) {
@@ -62,14 +63,15 @@ function flipMove(e) {
 
 function flipEnd(e) {
 
+	var ms = new Date().getTime()-time;
+
 	if ( deg >= 90 && dist < 0 ) { // Flip Back Up
 
-		pages[(current-1)].style.webkitTransition = "all ease-out .4s";
+		pages[(current-1)].style.webkitTransition = "all ease-out .6s";
 		pages[(current-1)].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
 
-
 	}
-	if ( deg >= 90 && dist > 0 ) { // Flip Up
+	if ( ( deg >= 90 || ms < 300 ) && dist > 0) { // Flip Up
 
 		pages[current].style.webkitTransition = "all ease-out .4s";
 		pages[current].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
@@ -79,13 +81,13 @@ function flipEnd(e) {
 	}
 	if ( deg < 90 && dist > 0 ) { // Flip Back Down
 
-		pages[current].style.webkitTransition = "all ease-out .4s";
+		pages[current].style.webkitTransition = "all ease-out .6s";
 		pages[current].style.webkitTransform = "rotateX("+0+"deg)";
 
 		pages[current].style.zIndex = pages.length-current;
 
 	}
-	if ( deg < 90 && dist < 0 ) { // Flip Down
+	if ( ( deg < 90 || ms < 300 ) && dist < 0 ) { // Flip Down
 
 		pages[(current-1)].style.webkitTransition = "all ease-out .4s";
 		pages[(current-1)].style.webkitTransform = "rotateX("+0+"deg)";
@@ -98,6 +100,8 @@ function flipEnd(e) {
 		current--;
 
 	}
+
+	time = 0;
 
 }
 
