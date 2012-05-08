@@ -1,0 +1,43 @@
+/*
+ * 3D Page Flip Effect
+ * (C) by Maximilian Hoffmann & Stefan Schwartze
+ */
+
+* {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;	
+}
+
+.container {
+	position: relative;
+	margin: 0;
+	-webkit-perspective: 1800px;
+  -webkit-backface-visibility: hidden;
+}
+
+.page {
+	position: absolute;
+	top: 230px;
+	width: 100%;
+	height: 50%;
+  -webkit-transform-style: preserve-3d;
+  -webkit-transform-origin: center top;
+  -webkit-backface-visibility: hidden;
+  background: white;
+}
+
+.page > div {
+	display: block;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+  -webkit-backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
+  overflow: hidden;
+  background: white;
+  padding: 10px;
+}
+
+.page .back {
+	-webkit-transform: rotateX(-180deg);
+}
