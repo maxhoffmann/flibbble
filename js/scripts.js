@@ -28,7 +28,7 @@ function flipMove(e) {
 	e.preventDefault();
 	dist = startY-e.targetTouches[0].pageY;
 
-	if ( dist > 0 ) { // Flip Up
+	if ( dist > 0 ) { // flip up
 	
 		if ( current < pages.length-1 ) {
 
@@ -39,9 +39,17 @@ function flipMove(e) {
 			
 			pages[current].style.zIndex = +pages[current-1].style.zIndex+1;
 
+			// reset transformations of previous page
+			if ( current === 1 ) {
+				pages[0].style.webkitTransition = "";
+				pages[0].style.webkitTransform = "";
+			} else {
+				pages[(current-1)].style.webkitTransform = "rotateX(180deg) translateZ(0)";
+			}
+
 		}
 
-		if ( current === pages.length-1 ) { // Transform last
+		if ( current === pages.length-1 ) { // transform last
 
 			deg = Math.min( dist*0.48, 60 );
 
@@ -52,7 +60,7 @@ function flipMove(e) {
 
 	}
 
-	if ( dist < 0 ) { // Flip Down
+	if ( dist < 0 ) { // flip Down
 
 		if ( current != 1 ) {
 
@@ -78,6 +86,9 @@ function flipMove(e) {
 
 		}
 
+		// reset transformations for flip down
+		pages[current].style.webkitTransform = "rotateX(0deg)";
+
 	}
 
 
@@ -87,27 +98,35 @@ function flipEnd(e) {
 
 	var ms = new Date().getTime()-time;
 
-	if ( deg < 0 && dist < 0 && current === 1 ) { // Flip First Back Up
+	if ( deg < 0 && dist < 0 && current === 1 ) { // flip first back up
 
 			pages[(current-1)].style.webkitTransition = "all ease-out .6s";
 			pages[(current-1)].style.webkitTransform = "rotateX("+0+"deg) translateZ(0)";
 
 	}
-	if ( deg >= 90 && dist < 0 && current != 1 ) { // Flip Back Up
+	if ( deg >= 90 && dist < 0 && current != 1 ) { // flip back up
 
 			pages[(current-1)].style.webkitTransition = "all ease-out .6s";
 			pages[(current-1)].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
 
+			// update z-Index of next page
+			if ( current < pages.length-1 ) {
+				pages[current].style.zIndex = +pages[(current+1)].style.zIndex+1;
+			}
+
 	}
-	if ( ( deg >= 90 || ms < 300 ) && dist > 0 && current < pages.length-1 ) { // Flip Up
+	if ( ( deg >= 90 || ms < 300 ) && dist > 0 && current < pages.length-1 ) { // flip up
 
 		pages[current].style.webkitTransition = "all ease-out .4s";
 		pages[current].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
-		
+
+		// update z-Index of this page
+		pages[current].style.zIndex = +pages[(current-1)].style.zIndex+1;
+
 		current++;
 
 	}
-	if ( deg < 90 && dist > 0 && current != pages.length ) { // Flip Back Down
+	if ( deg < 90 && dist > 0 && current != pages.length ) { // flip back down
 
 		pages[current].style.webkitTransition = "all ease-out .6s";
 		pages[current].style.webkitTransform = "rotateX("+0+"deg)";
@@ -115,7 +134,7 @@ function flipEnd(e) {
 		pages[current].style.zIndex = pages.length-current;
 
 	}
-	if ( ( deg < 90 || ms < 300 ) && dist < 0 && current != 1 ) { // Flip Down
+	if ( ( deg < 90 || ms < 300 ) && dist < 0 && current != 1 ) { // flip down
 
 		pages[(current-1)].style.webkitTransition = "all ease-out .4s";
 		pages[(current-1)].style.webkitTransform = "rotateX("+0+"deg)";
