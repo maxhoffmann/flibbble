@@ -21,6 +21,10 @@
   -webkit-transform-origin: center top;
   -webkit-backface-visibility: hidden;
 }
+.page.first {
+  top: 0;
+  -webkit-transform-origin: center bottom;
+}
 .page .front,
 .page .back {
   display: block;
@@ -49,4 +53,7 @@ body {
 .shot img {
   margin-top: -5px;
   width: 100%;
+}
+.text {
+  background: white;
 }

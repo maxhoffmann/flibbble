@@ -14,7 +14,6 @@
 	-webkit-perspective: 1200px;
   -webkit-backface-visibility: hidden;
 }
-
 .page {
 	position: absolute;
 	top: 50%;
@@ -24,7 +23,13 @@
   -webkit-transform-origin: center top;
   -webkit-backface-visibility: hidden;
 }
-
+.page.first {
+	top: 0;
+  -webkit-transform-origin: center bottom;
+}
+.page.last {
+	
+}
 .page .front,
 .page .back {
 	display: block;
@@ -36,7 +41,6 @@
   overflow: hidden;
   background: white;
 }
-
 .page .back {
 	-webkit-transform: rotateX(-180deg);
 }
