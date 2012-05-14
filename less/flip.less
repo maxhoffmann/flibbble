@@ -7,12 +7,16 @@
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;	
 }
-
-.container {
-	position: relative;
+body {
 	margin: 0;
+	padding: 0;
+  -webkit-backface-visibility: hidden;
+}
+.flip {
+	position: relative;
 	-webkit-perspective: 1200px;
   -webkit-backface-visibility: hidden;
+  overflow: hidden;
 }
 .page {
 	position: absolute;

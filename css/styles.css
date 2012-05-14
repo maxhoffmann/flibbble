@@ -6,11 +6,16 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
-.container {
-  position: relative;
+body {
   margin: 0;
+  padding: 0;
+  -webkit-backface-visibility: hidden;
+}
+.flip {
+  position: relative;
   -webkit-perspective: 1200px;
   -webkit-backface-visibility: hidden;
+  overflow: hidden;
 }
 .page {
   position: absolute;
@@ -44,11 +49,13 @@
  * (C) 2012 by Maximilian Hoffmann & Stefan Schwartze
  */
 body {
-  width: 320px;
-  height: 460px;
   background: black;
   -webkit-user-select: none;
   font: 14px/1.5em "Helvetica Neue", Helvetica, sans-serif;
+}
+.flip {
+  width: 320px;
+  height: 460px;
 }
 .shot img {
   margin-top: -5px;

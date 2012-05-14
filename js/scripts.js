@@ -1,5 +1,6 @@
 
-var body = document.body;
+var body = document.body,
+		flip = document.getElementsByClassName('flip')[0];
 
 
 body.ontouchmove = function (e) {
@@ -9,14 +10,13 @@ body.ontouchmove = function (e) {
 var pages = document.querySelectorAll('.page'),
 		startY, endY, deg, time, current = 1;
 
-body.addEventListener('touchstart', flipStart, false);
-body.addEventListener('touchmove', flipMove, false);
-body.addEventListener('touchend', flipEnd, false);
+flip.addEventListener('touchstart', flipStart, false);
+flip.addEventListener('touchmove', flipMove, false);
+flip.addEventListener('touchend', flipEnd, false);
 
 setIndex();
 
 function flipStart(e) {
-
 	startY = e.targetTouches[0].pageY;
 	dist = 0;
 	deg = 0;
