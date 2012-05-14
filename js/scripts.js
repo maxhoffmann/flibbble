@@ -75,7 +75,9 @@ function flipMove(e) {
 				pages[(current-1)].style.zIndex = +pages[(current-2)].style.zIndex+1;			
 			}
 
-			pages[current].style.zIndex = +pages[(current+1)].style.zIndex+1;
+			if ( current !==  pages.length-1 ) {
+				pages[current].style.zIndex = +pages[(current+1)].style.zIndex+1;
+			}
 
 		}
 
