@@ -15,7 +15,7 @@ flip.addEventListener('touchstart', flipStart, false);
 flip.addEventListener('touchmove', flipMove, false);
 flip.addEventListener('touchend', flipEnd, false);
 
-JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'27', page:'1'}, function(data) { renderShots(data); } );
+JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'30', page:'1'}, function(data) { renderShots(data); } );
 
 /* Render */
 
@@ -144,7 +144,7 @@ function flipMove(e) {
 	
 		if ( current < pages.length-1 ) {
 
-			deg = Math.min( distY*0.48, 180 );
+			deg = Math.min( Math.max( (distY-10)*0.48, 0 ), 180 );
 
 			pages[current].style.webkitTransition = "";	
 			pages[current].style.webkitTransform = "rotateX(" + deg + "deg)";
@@ -163,7 +163,7 @@ function flipMove(e) {
 
 		if ( current === pages.length-1 ) { // transform last
 
-			deg = Math.min(-Math.log(distY+18)*25+75,0);
+			deg = Math.min(-Math.log(distY)*25+75,0);
 
 			pages[current].style.webkitTransition = "";	
 			pages[current].style.webkitTransform = "rotateX(" + -deg + "deg)";	
@@ -176,7 +176,7 @@ function flipMove(e) {
 
 		if ( current !== 1 ) {
 
-			deg = Math.max( (360 + distY) * 0.48, 0 );
+			deg = Math.max( Math.min( (390 + distY) * 0.48, 180), 0 );
 
 			pages[(current-1)].style.webkitTransition = "";
 			pages[(current-1)].style.webkitTransform = "rotateX(" + deg +"deg)";
@@ -195,7 +195,7 @@ function flipMove(e) {
 
 		if ( current === 1 ) { // transform first
 
-			deg = Math.min(-Math.log(-distY+18)*25+75,0);
+			deg = Math.min(-Math.log(-distY)*25+75,0);
 
 				pages[0].style.webkitTransition = "";
 				pages[0].style.webkitTransform = "rotateX("+deg+"deg)";
