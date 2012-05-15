@@ -39,7 +39,7 @@ body {
   -webkit-backface-visibility: hidden;
   -webkit-transform-style: preserve-3d;
   overflow: hidden;
-  background: white;
+  background: #333;
 }
 .page .back {
   -webkit-transform: rotatex(-180deg);
@@ -63,4 +63,11 @@ body {
 }
 .text {
   background: white;
+}
+.page.last .front.text {
+  padding-top: 80px;
+  color: white;
+  background: black;
+  font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
+  text-align: center;
 }
