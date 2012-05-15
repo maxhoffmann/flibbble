@@ -15,7 +15,7 @@ flip.addEventListener('touchstart', flipStart, false);
 flip.addEventListener('touchmove', flipMove, false);
 flip.addEventListener('touchend', flipEnd, false);
 
-JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'30', page:'1'}, function(data) { renderShots(data); } );
+JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'27', page:'1'}, function(data) { renderShots(data); } );
 
 /* Render */
 
@@ -25,7 +25,7 @@ function renderShots(data) {
 	flip       = document.getElementsByClassName('flip')[0],
 	container  = document.createDocumentFragment(),
 	i          = 0,
-	z					 = length/2+1;
+	z					 = Math.round(length/2+1);
 
 	for ( ; i < length; i++ ) {
 
@@ -35,13 +35,14 @@ function renderShots(data) {
 		if ( i === length-1 ) {
 
 			if ( length%2 === 0) {
-				container.appendChild( renderLastPage( data.shots[length-1].image_url, data.shots[length-1].title, z ) );
+				container.appendChild( renderLastPage( data.shots[length-1].image_url, data.shots[length-1].title ) );
 			} else {
 				container.appendChild( renderLastPage( ) );
 			}			
+
 		}
 		if ( i !== 0 && i !== length-1 ) {
-			container.appendChild( renderPage( data.shots[i].image_url, data.shots[i].title,data.shots[i+1].image_url, data.shots[i+1].title, z ) );
+			container.appendChild( renderPage( data.shots[i].image_url, data.shots[i].title, data.shots[i+1].image_url, data.shots[i+1].title, z ) );
 			if ( i !== length-2 ) {
 				i++;
 			}
