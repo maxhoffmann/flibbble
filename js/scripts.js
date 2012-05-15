@@ -1,24 +1,24 @@
 
 var body = document.body,
-		flip = document.getElementsByClassName('flip')[0];
-
+		flip = document.getElementsByClassName('flip')[0],
+		pages = document.querySelectorAll('.page'),
+		startY, startX, distY, distX, deg, time, current = 1;
 
 body.ontouchmove = function (e) {
 	e.preventDefault();
 }
 
-var pages = document.querySelectorAll('.page'),
-		startY, endY, deg, time, current = 1;
+setIndex();
 
 flip.addEventListener('touchstart', flipStart, false);
 flip.addEventListener('touchmove', flipMove, false);
 flip.addEventListener('touchend', flipEnd, false);
 
-setIndex();
-
 function flipStart(e) {
 	startY = e.targetTouches[0].pageY;
-	dist = 0;
+	startX = e.targetTouches[0].pageX;
+	distY = 0;
+	distX = 0;
 	deg = 0;
 	time = new Date().getTime();
 }
@@ -26,13 +26,14 @@ function flipStart(e) {
 function flipMove(e) {
 
 	e.preventDefault();
-	dist = startY-e.targetTouches[0].pageY;
+	distY = startY-e.targetTouches[0].pageY;
+	distX = startX-e.targetTouches[0].pageX;
 
-	if ( dist > 0 ) { // flip up
+	if ( distY > 0 ) { // flip up
 	
 		if ( current < pages.length-1 ) {
 
-			deg = Math.min( dist*0.48, 180 );
+			deg = Math.min( distY*0.48, 180 );
 
 			pages[current].style.webkitTransition = "";	
 			pages[current].style.webkitTransform = "rotateX(" + deg + "deg)";
@@ -54,17 +55,18 @@ function flipMove(e) {
 			deg = Math.min(-Math.log(distY+18)*25+75,0);
 
 			pages[current].style.webkitTransition = "";	
-			pages[current].style.webkitTransform = "rotateX(" + deg + "deg)";			
+			pages[current].style.webkitTransform = "rotateX(" + -deg + "deg)";	
+			console.log(deg);		
 
 		}
 
 	}
 
-	if ( dist < 0 ) { // flip Down
+	if ( distY < 0 ) { // flip Down
 
-		if ( current != 1 ) {
+		if ( current !== 1 ) {
 
-			deg = Math.max( (360 + dist) * 0.48, 0 );
+			deg = Math.max( (360 + distY) * 0.48, 0 );
 
 			pages[(current-1)].style.webkitTransition = "";
 			pages[(current-1)].style.webkitTransform = "rotateX(" + deg +"deg)";
@@ -95,20 +97,19 @@ function flipMove(e) {
 
 	}
 
-
 }
 
 function flipEnd(e) {
 
 	var ms = new Date().getTime()-time;
 
-	if ( deg < 0 && dist < 0 && current === 1 ) { // flip first back up
+	if ( deg < 0 && distY < 0 && current === 1 ) { // flip first back up
 
 			pages[(current-1)].style.webkitTransition = "all ease-out .6s";
 			pages[(current-1)].style.webkitTransform = "rotateX("+0+"deg) translateZ(0)";
 
 	}
-	if ( deg >= 90 && dist < 0 && current != 1 ) { // flip back up
+	if ( deg >= 90 && distY < 0 && current !== 1 ) { // flip back up
 
 			pages[(current-1)].style.webkitTransition = "all ease-out .6s";
 			pages[(current-1)].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
@@ -119,7 +120,7 @@ function flipEnd(e) {
 			}
 
 	}
-	if ( ( deg >= 90 || ms < 300 ) && dist > 0 && current < pages.length-1 ) { // flip up
+	if ( ( deg >= 90 || ms < 300 ) && distY > 0 && current < pages.length-1 ) { // flip up
 
 		pages[current].style.webkitTransition = "all ease-out .4s";
 		pages[current].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
@@ -130,7 +131,7 @@ function flipEnd(e) {
 		current++;
 
 	}
-	if ( deg < 90 && dist > 0 && current != pages.length ) { // flip back down
+	if ( deg < 90 && distY > 0 && current !== pages.length ) { // flip back down
 
 		pages[current].style.webkitTransition = "all ease-out .6s";
 		pages[current].style.webkitTransform = "rotateX("+0+"deg)";
@@ -138,7 +139,7 @@ function flipEnd(e) {
 		pages[current].style.zIndex = pages.length-current;
 
 	}
-	if ( ( deg < 90 || ms < 300 ) && dist < 0 && current != 1 ) { // flip down
+	if ( ( deg < 90 || ms < 300 ) && distY < 0 && current !== 1 ) { // flip down
 
 		pages[(current-1)].style.webkitTransition = "all ease-out .4s";
 		pages[(current-1)].style.webkitTransform = "rotateX("+0+"deg)";
@@ -148,6 +149,18 @@ function flipEnd(e) {
 
 	}
 
+	// Slide aside
+	if ( distX < -100 ) {
+		flip.style.webkitTransition = "-webkit-transform ease-out .2s";
+		flip.style.webkitTransform = "translateX("+280+"px)";
+	}
+
+	if ( distX > 20 ) {
+		flip.style.webkitTransition = "-webkit-transform ease-out .2s";
+		flip.style.webkitTransform = "translateX("+0+"px)";
+	}
+
+	console.log( distX+"x "+distY+"y" );
 	time = 0;
 
 }
