@@ -15,7 +15,7 @@ flip.addEventListener('touchstart', flipStart, false);
 flip.addEventListener('touchmove', flipMove, false);
 flip.addEventListener('touchend', flipEnd, false);
 
-JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'20', page:'1'}, function(data) { renderShots(data); } );
+JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'30', page:'1'}, function(data) { renderShots(data); } );
 
 /* Render */
 
@@ -59,6 +59,7 @@ function renderShots(data) {
 		shot              = document.createElement('img');
 		page.className    = "page first";
 		page.style.zIndex = z;
+		front.innerHTML		= "Loading";
 		front.className   = "front shot";
 		shot.src          = url;
 		shot.alt          = title;
@@ -79,7 +80,9 @@ function renderShots(data) {
 		page.className    = "page";
 		page.style.zIndex = z;
 		front.className   = "front shot";
-		back.className    = "back shot";		
+		front.innerHTML		= "Loading";
+		back.className    = "back shot";
+		back.innerHTML		= "Loading";		
 		shot1.src         = url1;
 		shot1.alt         = title1;
 		shot2.src         = url2;
@@ -103,6 +106,7 @@ function renderShots(data) {
 		if ( url && title ) {
 			var shot        = document.createElement('img');
 			front.className = "front shot";
+			front.innerHTML	= "Loading";
 			shot.src        = url;
 			shot.alt        = title;
 

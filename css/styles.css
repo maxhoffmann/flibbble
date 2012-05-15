@@ -32,17 +32,30 @@ body {
 }
 .page .front,
 .page .back {
-  display: block;
   position: absolute;
+  top: 0;
   width: 100%;
   height: 100%;
-  -webkit-backface-visibility: hidden;
+  padding-top: 80px;
+  color: white;
+  background: #222;
+  font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
+  text-align: center;
   -webkit-transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
   overflow: hidden;
-  background: #333;
+}
+.page.last .front {
+  background: black;
 }
 .page .back {
   -webkit-transform: rotatex(-180deg);
+}
+.shot img {
+  position: absolute;
+  top: -5px;
+  left: 0;
+  width: 100%;
 }
 /* 
  * Styles für flibbble
@@ -56,18 +69,4 @@ body {
 .flip {
   width: 320px;
   height: 460px;
-}
-.shot img {
-  margin-top: -5px;
-  width: 100%;
-}
-.text {
-  background: white;
-}
-.page.last .front.text {
-  padding-top: 80px;
-  color: white;
-  background: black;
-  font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
-  text-align: center;
 }
