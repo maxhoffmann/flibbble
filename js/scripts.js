@@ -5,8 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 var body = document.body,
 		flip = document.getElementsByClassName('flip')[0],
-		pages = document.querySelectorAll('.page'),
-		startY, startX, distY, distX, deg, time, current = 1;
+		pages, startY, startX, distY, distX, deg, time, current = 1;
 
 body.ontouchmove = function (e) {
 	e.preventDefault();
@@ -23,64 +22,69 @@ JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'20', page:'1'}, f
 function renderShots(data) {
 	
 	var length = data.shots.length,
-	container  = document.getElementsByClassName('flip')[0],
-	i          = 0;
-
-	console.log(length);
+	flip       = document.getElementsByClassName('flip')[0],
+	container  = document.createDocumentFragment(),
+	i          = 0,
+	z					 = length/2+1;
 
 	for ( ; i < length; i++ ) {
 
 		if ( i === 0 ) {
-			container.appendChild(renderFirstPage(data.shots[0].image_url, data.shots[0].title));			
+			container.appendChild( renderFirstPage( data.shots[0].image_url, data.shots[0].title, z ) );			
 		}
 		if ( i === length-1 ) {
 
 			if ( length%2 === 0) {
-				container.appendChild(renderLastPage(data.shots[length-1].image_url, data.shots[length-1].title));
+				container.appendChild( renderLastPage( data.shots[length-1].image_url, data.shots[length-1].title, z ) );
 			} else {
-				container.appendChild(renderLastPage());
+				container.appendChild( renderLastPage( ) );
 			}			
 		}
 		if ( i !== 0 && i !== length-1 ) {
-			container.appendChild(renderPage(data.shots[i].image_url, data.shots[i].title,data.shots[i+1].image_url, data.shots[i+1].title));
+			container.appendChild( renderPage( data.shots[i].image_url, data.shots[i].title,data.shots[i+1].image_url, data.shots[i+1].title, z ) );
 			if ( i !== length-2 ) {
 				i++;
 			}
 		}
+		z--;
 	}
 
-	pages = document.querySelectorAll('.page');
-	setIndex();
+	flip.appendChild(container);
+	pages = document.getElementsByClassName('page');
 
-	function renderFirstPage(url, title) {
+	function renderFirstPage( url, title, z ) {
 
-		var page        = document.createElement('div'),
-		front           = document.createElement('div'),
-		shot            = document.createElement('img');
-		page.className  = "page first";
-		front.className = "front shot";
-		shot.src        = url;
-		shot.alt        = title;
+		var page          = document.createElement('div'),
+		front             = document.createElement('div'),
+		shot              = document.createElement('img');
+		page.className    = "page first";
+		page.style.zIndex = z;
+		front.className   = "front shot";
+		shot.src          = url;
+		shot.alt          = title;
+
 		front.appendChild(shot);
 		page.appendChild(front);
 		return page;
 
 	}
 
-	function renderPage(url1, title1, url2, title2 ) {
+	function renderPage( url1, title1, url2, title2, z ) {
 
-		var page        = document.createElement('div'),
-		front           = document.createElement('div'),
-		back						= document.createElement('div'),
-		shot1           = document.createElement('img'),
-		shot2           = document.createElement('img');	
-		page.className  = "page";
-		front.className = "front shot";
-		back.className  = "back shot";		
-		shot1.src       = url1;
-		shot1.alt       = title1;
-		shot2.src       = url2;
-		shot2.alt       = title2;
+		var page          = document.createElement('div'),
+		front             = document.createElement('div'),
+		back              = document.createElement('div'),
+		shot1             = document.createElement('img'),
+		shot2             = document.createElement('img');	
+		page.className    = "page";
+		page.style.zIndex = z;
+		front.className   = "front shot";
+		back.className    = "back shot";		
+		shot1.src         = url1;
+		shot1.alt         = title1;
+		shot2.src         = url2;
+		shot2.alt         = title2;
+
 		front.appendChild(shot1);
 		back.appendChild(shot2);
 		page.appendChild(front);
@@ -89,17 +93,19 @@ function renderShots(data) {
 
 	}
 
-	function renderLastPage(url, title) {
+	function renderLastPage( url, title ) {
 		
-		var page        = document.createElement('div'),
-		front           = document.createElement('div');
-		page.className  = "page last";
+		var page          = document.createElement('div'),
+		front             = document.createElement('div');
+		page.className    = "page last";
+		page.style.zIndex = 1;
 
 		if ( url && title ) {
 			var shot        = document.createElement('img');
 			front.className = "front shot";
 			shot.src        = url;
 			shot.alt        = title;
+
 			front.appendChild(shot);
 		} else {
 			front.className = "front text";
