@@ -51,7 +51,7 @@ function flipMove(e) {
 
 		if ( current === pages.length-1 ) { // transform last
 
-			deg = Math.min( dist*0.48, 60 );
+			deg = Math.min(-Math.log(distY+18)*25+75,0);
 
 			pages[current].style.webkitTransition = "";	
 			pages[current].style.webkitTransform = "rotateX(" + deg + "deg)";			
@@ -81,9 +81,9 @@ function flipMove(e) {
 
 		}
 
-		if ( current === 1 ) {
+		if ( current === 1 ) { // transform first
 
-			deg = Math.max( dist*0.48 , -50 );
+			deg = Math.min(-Math.log(-distY+18)*25+75,0);
 
 				pages[0].style.webkitTransition = "";
 				pages[0].style.webkitTransform = "rotateX("+deg+"deg)";
