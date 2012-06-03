@@ -139,7 +139,7 @@ function updateZindex() {
 	}
 	if ( current > 1 ) {
 		pages[(current-2)].style.zIndex = 1;
-		pages[(current-2)].style.visibility = "";				
+		pages[(current-2)].style.visibility = "";
 	}
 	pages[(current-1)].style.zIndex = 2;
 	if ( pages.length-current > 1 ) {			
@@ -153,7 +153,7 @@ function updateZindex() {
 	}
 	if ( pages.length-current > 3 ) {
 		pages[(current+3)].style.visibility = "hidden";
-		pages[(current+3)].style.zIndex = "";			
+		pages[(current+3)].style.zIndex = "";
 	}
 
 }
@@ -254,7 +254,7 @@ function flipEnd(e) {
 		pages[(current-1)].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
 
 	}
-	if ( ( deg >= 90 || ms < 300 ) && distY > 0 && current < pages.length-1 ) { // flip up
+	if ( ( deg >= 90 || ms < 300 || ( ms > 300 && ms < 800 && distY > 100 && deg < 90 ) ) && distY > 0 && current < pages.length-1 ) { // flip up
 
 		pages[current].style.webkitTransition = "all ease-out .4s";
 		pages[current].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
@@ -270,7 +270,7 @@ function flipEnd(e) {
 		pages[current].style.webkitTransform = "rotateX("+0+"deg)";
 
 	}
-	if ( ( deg < 90 || ms < 300 ) && distY < 0 && current !== 1 ) { // flip down
+	if ( ( deg < 90 || ms < 300 || ( ms > 300 && ms < 800 && distY < -100 && deg > 90 ) ) && distY < 0 && current !== 1 ) { // flip down
 
 		pages[(current-1)].style.webkitTransition = "all ease-out .4s";
 		pages[(current-1)].style.webkitTransform = "rotateX("+0+"deg)";
