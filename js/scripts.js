@@ -1,7 +1,8 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-/* Initialization */
+// Initialization
+// -------------------------------------------------------------
 
 var body = document.body,
 		flip = document.getElementsByClassName('flip')[0],
@@ -15,9 +16,10 @@ flip.addEventListener('touchstart', flipStart, false);
 flip.addEventListener('touchmove', flipMove, false);
 flip.addEventListener('touchend', flipEnd, false);
 
-JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'50', page:'1'}, function(data) { renderShots(data); } );
+JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'20', page:'1'}, function(data) { renderShots(data); } );
 
-/* Render */
+// Rendering
+// -------------------------------------------------------------
 
 function renderShots(data) {
 	
@@ -158,7 +160,8 @@ function updateZindex() {
 
 }
 
-/* Swipe Functions */
+// Swipe Functions
+// -------------------------------------------------------------
 
 function flipStart(e) {
 	startY = e.targetTouches[0].pageY;
