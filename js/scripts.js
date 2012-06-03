@@ -15,7 +15,7 @@ flip.addEventListener('touchstart', flipStart, false);
 flip.addEventListener('touchmove', flipMove, false);
 flip.addEventListener('touchend', flipEnd, false);
 
-JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'30', page:'1'}, function(data) { renderShots(data); } );
+JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'50', page:'1'}, function(data) { renderShots(data); } );
 
 /* Render */
 
@@ -25,7 +25,7 @@ function renderShots(data) {
 	flip       = document.getElementsByClassName('flip')[0],
 	container  = document.createDocumentFragment(),
 	i          = 0,
-	z					 = Math.round(length/2+1);
+	z					 = 3;
 
 	for ( ; i < length; i++ ) {
 
@@ -35,9 +35,9 @@ function renderShots(data) {
 		if ( i === length-1 ) {
 
 			if ( length%2 === 0) {
-				container.appendChild( renderLastPage( data.shots[length-1].image_url, data.shots[length-1].title ) );
+				container.appendChild( renderLastPage( z, data.shots[length-1].image_url, data.shots[length-1].title ) );
 			} else {
-				container.appendChild( renderLastPage( ) );
+				container.appendChild( renderLastPage( z ) );
 			}			
 
 		}
@@ -79,7 +79,6 @@ function renderShots(data) {
 		shot1             = document.createElement('img'),
 		shot2             = document.createElement('img');	
 		page.className    = "page";
-		page.style.zIndex = z;
 		front.className   = "front shot";
 		front.innerHTML		= "Loading";
 		back.className    = "back shot";
@@ -89,6 +88,12 @@ function renderShots(data) {
 		shot2.src         = url2;
 		shot2.alt         = title2;
 
+		if ( z > 0 ) {
+			page.style.zIndex = z;
+		} else {
+			page.style.visibility = "hidden";
+		}
+
 		front.appendChild(shot1);
 		back.appendChild(shot2);
 		page.appendChild(front);
@@ -97,12 +102,15 @@ function renderShots(data) {
 
 	}
 
-	function renderLastPage( url, title ) {
+	function renderLastPage( z, url, title ) {
 		
 		var page          = document.createElement('div'),
 		front             = document.createElement('div');
 		page.className    = "page last";
-		page.style.zIndex = 1;
+
+		if ( z < 1 ) {
+			page.style.visibility = "hidden";
+		}
 
 		if ( url && title ) {
 			var shot        = document.createElement('img');
@@ -119,6 +127,33 @@ function renderShots(data) {
 		
 		page.appendChild(front);
 		return page;
+	}
+
+}
+
+function updateZindex() {
+
+	if ( current > 2 ) {
+		pages[(current-3)].style.visibility = "hidden";
+		pages[(current-3)].style.zIndex = "";
+	}
+	if ( current > 1 ) {
+		pages[(current-2)].style.zIndex = 1;
+		pages[(current-2)].style.visibility = "";				
+	}
+	pages[(current-1)].style.zIndex = 2;
+	if ( pages.length-current > 1 ) {			
+		pages[(current+1)].style.zIndex = 2;
+	}
+	if ( pages.length-current > 2 ) {
+		pages[(current+2)].style.zIndex = 1;
+		pages[(current+2)].style.visibility = "";
+		pages[(current+2)].style.webkitTransform = "";
+		pages[(current+2)].style.webkitTransition = "";
+	}
+	if ( pages.length-current > 3 ) {
+		pages[(current+3)].style.visibility = "hidden";
+		pages[(current+3)].style.zIndex = "";			
 	}
 
 }
@@ -144,12 +179,12 @@ function flipMove(e) {
 	
 		if ( current < pages.length-1 ) {
 
-			deg = Math.min( Math.max( (distY-10)*0.48, 0 ), 180 );
+			deg = Math.min( Math.max( (distY-20)*0.45, 0 ), 180 );
 
 			pages[current].style.webkitTransition = "";	
 			pages[current].style.webkitTransform = "rotateX(" + deg + "deg)";
 			
-			pages[current].style.zIndex = +pages[current-1].style.zIndex+1;
+			pages[current].style.zIndex = 3;
 
 			// reset transformations of previous page
 			if ( current === 1 ) {
@@ -158,6 +193,8 @@ function flipMove(e) {
 			} else {
 				pages[(current-1)].style.webkitTransform = "rotateX(180deg) translateZ(0)";
 			}
+
+			updateZindex();		
 
 		}
 
@@ -176,20 +213,12 @@ function flipMove(e) {
 
 		if ( current !== 1 ) {
 
-			deg = Math.max( Math.min( (390 + distY) * 0.48, 180), 0 );
+			deg = Math.max( Math.min( (410 + distY) * 0.45, 180), 0 );
 
 			pages[(current-1)].style.webkitTransition = "";
 			pages[(current-1)].style.webkitTransform = "rotateX(" + deg +"deg)";
 
-			if ( deg < 90 ) {
-				pages[(current-1)].style.zIndex = +pages[current].style.zIndex+1;
-			} else {
-				pages[(current-1)].style.zIndex = +pages[(current-2)].style.zIndex+1;			
-			}
-
-			if ( current !==  pages.length-1 ) {
-				pages[current].style.zIndex = +pages[(current+1)].style.zIndex+1;
-			}
+			pages[(current-1)].style.zIndex = 3;
 
 		}
 
@@ -224,21 +253,15 @@ function flipEnd(e) {
 		pages[(current-1)].style.webkitTransition = "all ease-out .6s";
 		pages[(current-1)].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
 
-		// update z-Index of next page
-		if ( current < pages.length-1 ) {
-			pages[current].style.zIndex = +pages[(current+1)].style.zIndex+1;
-		}
-
 	}
 	if ( ( deg >= 90 || ms < 300 ) && distY > 0 && current < pages.length-1 ) { // flip up
 
 		pages[current].style.webkitTransition = "all ease-out .4s";
 		pages[current].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
 
-		// update z-Index of this page
-		pages[current].style.zIndex = +pages[(current-1)].style.zIndex+1;
-
 		current++;
+
+		console.log(pages.length-current);
 
 	}
 	if ( deg < 90 && distY > 0 && current !== pages.length ) { // flip back down
@@ -246,16 +269,15 @@ function flipEnd(e) {
 		pages[current].style.webkitTransition = "all ease-out .6s";
 		pages[current].style.webkitTransform = "rotateX("+0+"deg)";
 
-		pages[current].style.zIndex = pages.length-current;
-
 	}
 	if ( ( deg < 90 || ms < 300 ) && distY < 0 && current !== 1 ) { // flip down
 
 		pages[(current-1)].style.webkitTransition = "all ease-out .4s";
 		pages[(current-1)].style.webkitTransform = "rotateX("+0+"deg)";
-		pages[(current-1)].style.zIndex = +pages[current].style.zIndex+1;
 
 		current--;
+
+		updateZindex();
 
 	}
 
@@ -273,14 +295,6 @@ function flipEnd(e) {
 	
 	time = 0;
 
-}
-
-function setIndex() {
-	var z = pages.length;
-	for (var i=0; i<pages.length; i++) {
-		pages[i].style.zIndex = z;
-		z--;
-	}
 }
 
 });
