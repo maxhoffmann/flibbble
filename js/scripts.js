@@ -4,7 +4,7 @@ var flibbble = (function () {
 	// -------------------------------------------------------------
 
 	var flipscreen = document.getElementById('flipper'),
-			pages, startY, startX, distY, distX, deg, time, current = 1,
+			pages,
 
 	init = function () {
 
@@ -12,11 +12,74 @@ var flibbble = (function () {
 			e.preventDefault();
 		};
 
+		navigate.enable();
 		flip.enable();
+		slide.enable();
 
 		JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'20', page:'1'}, function(data) { render(data); } );
 
 	},
+
+	// navigate
+	// -------------------------------------------------------------
+
+	navigate = (function () {
+
+		var user,
+
+		to = function (destination) {
+
+			if ( destination === "following" || destination === "likes" ) {
+
+				if ( ! user ) {
+
+					user = prompt("Dribbble username:");
+
+				}
+
+				if ( user ) {
+
+					JSONP.get( 'http://api.dribbble.com/players/'+user+'/shots/'+destination, {per_page:'20', page:'1'}, function(data) {
+							render(data);
+							slide.center();
+					});
+
+				}
+
+			} else {
+
+				JSONP.get( 'http://api.dribbble.com/shots/'+destination, {per_page:'20', page:'1'}, function(data) {
+					render(data);
+					slide.center();
+				});
+
+			}
+
+		},
+
+		enable = function () {
+
+			var popular = document.getElementById('popular'),
+			following   = document.getElementById('following'),
+			likes       = document.getElementById('likes'),
+			debuts      = document.getElementById('debuts'),
+			everyone    = document.getElementById('everyone');
+
+			popular.addEventListener('touchstart', function(e) { navigate.to('popular'); }, false);
+			following.addEventListener('touchstart', function(e) { navigate.to('following'); }, false);
+			likes.addEventListener('touchstart', function(e) { navigate.to('likes'); }, false);
+			debuts.addEventListener('touchstart', function(e) { navigate.to('debuts'); }, false);
+			everyone.addEventListener('touchstart', function(e) { navigate.to('everyone'); }, false);
+
+		};
+
+		return {
+			to: to,
+			enable: enable,
+			user: user
+		};
+
+	})(),
 
 	// rendering
 	// -------------------------------------------------------------
@@ -57,6 +120,8 @@ var flibbble = (function () {
 
 		insert = function () {
 			
+			flipscreen.innerHTML = "";
+			flip.reset();
 			flipscreen.appendChild(container);
 			pages = document.getElementsByClassName('page');
 
@@ -165,7 +230,9 @@ var flibbble = (function () {
 
 	flip = (function () {
 
-		var updateIndex = function () {
+		var startY, startX, distY, distX, deg, time, current = 1,
+
+		updateIndex = function () {
 
 			if ( current > 2 ) {
 				pages[(current-3)].style.visibility = "hidden";
@@ -203,8 +270,10 @@ var flibbble = (function () {
 			distY = startY-e.targetTouches[0].pageY;
 			distX = startX-e.targetTouches[0].pageX;
 
-			if ( distY > 0 ) { // flip up
+			if ( distY > 0 && Math.abs(distX) < Math.abs(distY) ) { // flip up
 			
+				slide.disable();
+
 				if ( current < pages.length-1 ) {
 
 					deg = Math.min( Math.max( (distY-20)*0.55, 0 ), 180 );
@@ -237,7 +306,9 @@ var flibbble = (function () {
 
 			}
 
-			if ( distY < 0 ) { // flip Down
+			if ( distY < 0 && Math.abs(distX) < Math.abs(distY) ) { // flip Down
+
+				slide.disable();
 
 				if ( current !== 1 ) {
 
@@ -282,7 +353,7 @@ var flibbble = (function () {
 				pages[(current-1)].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
 
 			}
-			if ( ( deg >= 90 || ms < 300 || ( ms > 300 && ms < 800 && distY > 100 && deg < 90 ) ) && distY > 0 && current < pages.length-1 ) { // flip up
+			if ( ( deg >= 90 || ms < 300 || ( ms > 300 && ms < 800 && distY > 100 && deg < 90 ) ) && distY > 0 && current < pages.length-1 && Math.abs(distX) < Math.abs(distY) ) { // flip up
 
 				pages[current].style.webkitTransition = "all ease-out .4s";
 				pages[current].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
@@ -296,7 +367,7 @@ var flibbble = (function () {
 				pages[current].style.webkitTransform = "rotateX("+0+"deg)";
 
 			}
-			if ( ( deg < 90 || ms < 300 || ( ms > 300 && ms < 800 && distY < -100 && deg > 90 ) ) && distY < 0 && current !== 1 ) { // flip down
+			if ( ( deg < 90 || ms < 300 || ( ms > 300 && ms < 800 && distY < -100 && deg > 90 ) ) && distY < 0 && current !== 1 && Math.abs(distX) < Math.abs(distY) ) { // flip down
 
 				pages[(current-1)].style.webkitTransition = "all ease-out .4s";
 				pages[(current-1)].style.webkitTransform = "rotateX("+0+"deg)";
@@ -306,8 +377,92 @@ var flibbble = (function () {
 				updateIndex();
 
 			}
-			
+
 			time = 0;
+
+			slide.enable();
+
+		},
+
+		enable = function () {
+		
+			flipscreen.addEventListener('touchstart', start, false);
+			flipscreen.addEventListener('touchmove', move, false);
+			flipscreen.addEventListener('touchend', end, false);
+
+		},
+
+		disable = function () {
+
+			flipscreen.removeEventListener('touchstart', start);
+			flipscreen.removeEventListener('touchmove', move);
+			flipscreen.removeEventListener('touchend', end);
+
+		},
+
+		reset = function () {
+			current = 1;
+		};
+
+		return {
+
+			enable: enable,
+			disable: disable,
+			reset: reset
+
+		};
+
+	})(),
+
+	// slide functions
+	// -------------------------------------------------------------
+
+	slide = (function () {
+
+		var startY, startX, distY, distX, position = "center",
+
+		start = function(e) {
+			startY = e.targetTouches[0].pageY;
+			startX = e.targetTouches[0].pageX;
+			distY = 0;
+			distX = 0;
+		},
+
+		move = function(e) {
+			e.preventDefault();
+			distY = startY-e.targetTouches[0].pageY;
+			distX = startX-e.targetTouches[0].pageX;
+		},
+
+		end = function(e) {
+
+			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX < -100 ) {
+
+				right();
+
+			}
+
+			if ( position === "right" && Math.abs(distX) > Math.abs(distY) && distX > 0 ) {
+
+				center();
+
+			}
+
+		},
+
+		right = function() {
+
+			flipscreen.style.webkitTransform = "translateX(240px) translateZ(0)";
+			flip.disable();
+			position = "right";
+
+		},
+
+		center = function() {
+
+			flipscreen.style.webkitTransform = "translateX(0px) translateZ(0)";
+			flip.enable();
+			position = "center";
 
 		},
 
@@ -328,10 +483,10 @@ var flibbble = (function () {
 		};
 
 		return {
-
 			enable: enable,
-			disable: disable
-
+			disable: disable,
+			right: right,
+			center: center
 		};
 
 	})(),
