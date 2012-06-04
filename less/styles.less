@@ -28,8 +28,8 @@ body {
 	-webkit-transform-origin: 0% 50%;
   -webkit-backface-visibility: hidden;
   -webkit-transition: -webkit-transform ease .3s;
-  background: #000;
-  box-shadow: -10px 0 10px #222;
+  background: hsl(200, 20%, 87%);
+  box-shadow: -4px 0 10px hsl(200, 10%, 65%);
   overflow: hidden;
   z-index: 3;
 }
@@ -44,6 +44,7 @@ body {
 .page.first {
 	top: 0;
   -webkit-transform-origin: center bottom;
+  box-shadow: 0 -5px 10px hsl(200, 20%, 75%);
 }
 .page .front,
 .page .back {
@@ -53,7 +54,9 @@ body {
 	height: 100%;
 	padding-top: 80px;
 	color: white;
-  background: #222;
+  background: hsl(200, 20%, 87%);
+	text-shadow: 0 1px 0 hsl(200, 20%, 75%),
+							 0 -1px 0 hsl(200, 20%, 100%);
 	font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
 	text-align: center;
   -webkit-transform-style: preserve-3d;
@@ -61,7 +64,8 @@ body {
   overflow: hidden;
 }
 .last .front {
-	background: black;
+  background: hsl(200, 20%, 87%);
+  box-shadow: 0 5px 10px hsl(200, 20%, 75%);
 }
 .page .back {
 	-webkit-transform: rotateX(-180deg);
@@ -72,10 +76,9 @@ body {
 	left: 0;
 	width: 100%;
 }
-
 #menu {
 	padding: 20px;
-	background: #333;
+	background: hsl(200, 20%, 87%);
 	z-index: 2;
 }
 #shot {
@@ -92,12 +95,15 @@ ul {
 	margin: 0;
 	padding: 0;	
 	font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
-	color: #fff;
+	color: hsl(200, 20%, 95%);
+	text-shadow: 0 1px 0 hsl(200, 20%, 75%),
+							 0 -1px 0 hsl(200, 20%, 100%);
 }
 #menu #logo {
 	height: 60px;
 	font-size: 32px;
-	color: #212121;
+	color: hsl(200, 20%, 80%);
 	text-align: center;
-	text-shadow: 0 1px 0 #4d4d4d, 0 -1px 0 #000;
+	text-shadow: 0 1px 0 hsl(200, 20%, 97%),
+							 0 -1px 0 hsl(200, 20%, 70%);
 }
