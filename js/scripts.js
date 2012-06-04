@@ -12,7 +12,7 @@ var flibbble = (function () {
 			e.preventDefault();
 		};
 
-		enableFlip();
+		flip.enable();
 
 		JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'20', page:'1'}, function(data) { render(data); } );
 
@@ -163,167 +163,178 @@ var flibbble = (function () {
 	// flip functions
 	// -------------------------------------------------------------
 
-	updateZindex = function () {
+	flip = (function () {
 
-		if ( current > 2 ) {
-			pages[(current-3)].style.visibility = "hidden";
-			pages[(current-3)].style.zIndex = "";
-		}
-		if ( current > 1 ) {
-			pages[(current-2)].style.zIndex = 1;
-			pages[(current-2)].style.visibility = "";
-		}
-		pages[(current-1)].style.zIndex = 2;
-		if ( pages.length-current > 1 ) {
-			pages[(current+1)].style.zIndex = 2;
-		}
-		if ( pages.length-current > 2 ) {
-			pages[(current+2)].style.cssText = "z-index: 1;";
-		}
-		if ( pages.length-current > 3 ) {
-			pages[(current+3)].style.cssText = "visibility: hidden;";
-		}
+		var updateIndex = function () {
 
-	},
+			if ( current > 2 ) {
+				pages[(current-3)].style.visibility = "hidden";
+				pages[(current-3)].style.zIndex = "";
+			}
+			if ( current > 1 ) {
+				pages[(current-2)].style.zIndex = 1;
+				pages[(current-2)].style.visibility = "";
+			}
+			pages[(current-1)].style.zIndex = 2;
+			if ( pages.length-current > 1 ) {
+				pages[(current+1)].style.zIndex = 2;
+			}
+			if ( pages.length-current > 2 ) {
+				pages[(current+2)].style.cssText = "z-index: 1;";
+			}
+			if ( pages.length-current > 3 ) {
+				pages[(current+3)].style.cssText = "visibility: hidden;";
+			}
 
-	flipStart = function(e) {
-		startY = e.targetTouches[0].pageY;
-		startX = e.targetTouches[0].pageX;
-		distY = 0;
-		distX = 0;
-		deg = 0;
-		time = new Date().getTime();
-	},
+		},
 
-	flipMove = function(e) {
+		start = function(e) {
+			startY = e.targetTouches[0].pageY;
+			startX = e.targetTouches[0].pageX;
+			distY = 0;
+			distX = 0;
+			deg = 0;
+			time = new Date().getTime();
+		},
 
-		e.preventDefault();
-		distY = startY-e.targetTouches[0].pageY;
-		distX = startX-e.targetTouches[0].pageX;
+		move = function(e) {
 
-		if ( distY > 0 ) { // flip up
-		
-			if ( current < pages.length-1 ) {
+			e.preventDefault();
+			distY = startY-e.targetTouches[0].pageY;
+			distX = startX-e.targetTouches[0].pageX;
 
-				deg = Math.min( Math.max( (distY-20)*0.55, 0 ), 180 );
+			if ( distY > 0 ) { // flip up
+			
+				if ( current < pages.length-1 ) {
 
-				pages[current].style.webkitTransition = "";
-				pages[current].style.webkitTransform = "rotateX(" + deg + "deg)";
-				
-				pages[current].style.zIndex = 3;
+					deg = Math.min( Math.max( (distY-20)*0.55, 0 ), 180 );
 
-				// reset transformations of previous page
-				if ( current === 1 ) {
-					pages[0].style.webkitTransition = "";
-					pages[0].style.webkitTransform = "";
-				} else {
-					pages[(current-1)].style.webkitTransform = "rotateX(180deg) translateZ(0)";
+					pages[current].style.webkitTransition = "";
+					pages[current].style.webkitTransform = "rotateX(" + deg + "deg)";
+					
+					pages[current].style.zIndex = 3;
+
+					// reset transformations of previous page
+					if ( current === 1 ) {
+						pages[0].style.webkitTransition = "";
+						pages[0].style.webkitTransform = "";
+					} else {
+						pages[(current-1)].style.webkitTransform = "rotateX(180deg) translateZ(0)";
+					}
+
+					updateIndex();
+
 				}
 
-				updateZindex();
+				if ( current === pages.length-1 ) { // transform last
+
+					deg = Math.min(-Math.log(distY)*25+75,0);
+
+					pages[current].style.webkitTransition = "";
+					pages[current].style.webkitTransform = "rotateX(" + -deg + "deg)";
+
+				}
 
 			}
 
-			if ( current === pages.length-1 ) { // transform last
+			if ( distY < 0 ) { // flip Down
 
-				deg = Math.min(-Math.log(distY)*25+75,0);
+				if ( current !== 1 ) {
 
-				pages[current].style.webkitTransition = "";
-				pages[current].style.webkitTransform = "rotateX(" + -deg + "deg)";
+					deg = Math.max( Math.min( (340 + distY) * 0.55, 180), 0 );
 
-			}
+					pages[(current-1)].style.webkitTransition = "";
+					pages[(current-1)].style.webkitTransform = "rotateX(" + deg +"deg)";
 
-		}
+					pages[(current-1)].style.zIndex = 3;
 
-		if ( distY < 0 ) { // flip Down
+				}
 
-			if ( current !== 1 ) {
+				if ( current === 1 ) { // transform first
 
-				deg = Math.max( Math.min( (340 + distY) * 0.55, 180), 0 );
+					deg = Math.min(-Math.log(-distY)*25+75,0);
 
-				pages[(current-1)].style.webkitTransition = "";
-				pages[(current-1)].style.webkitTransform = "rotateX(" + deg +"deg)";
+						pages[0].style.webkitTransition = "";
+						pages[0].style.webkitTransform = "rotateX("+deg+"deg)";
 
-				pages[(current-1)].style.zIndex = 3;
+				}
 
-			}
-
-			if ( current === 1 ) { // transform first
-
-				deg = Math.min(-Math.log(-distY)*25+75,0);
-
-					pages[0].style.webkitTransition = "";
-					pages[0].style.webkitTransform = "rotateX("+deg+"deg)";
+				// reset transformations for flip down
+				pages[current].style.webkitTransform = "rotateX(0deg)";
 
 			}
 
-			// reset transformations for flip down
-			pages[current].style.webkitTransform = "rotateX(0deg)";
+		},
 
-		}
+		end = function(e) {
 
-	},
+			var ms = new Date().getTime()-time;
 
-	flipEnd = function(e) {
+			if ( deg < 0 && distY < 0 && current === 1 ) { // flip first back up
 
-		var ms = new Date().getTime()-time;
+				pages[(current-1)].style.webkitTransition = "all ease-out .6s";
+				pages[(current-1)].style.webkitTransform = "rotateX("+0+"deg) translateZ(0)";
 
-		if ( deg < 0 && distY < 0 && current === 1 ) { // flip first back up
+			}
+			if ( deg >= 90 && distY < 0 && current !== 1 ) { // flip back up
 
-			pages[(current-1)].style.webkitTransition = "all ease-out .6s";
-			pages[(current-1)].style.webkitTransform = "rotateX("+0+"deg) translateZ(0)";
+				pages[(current-1)].style.webkitTransition = "all ease-out .6s";
+				pages[(current-1)].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
 
-		}
-		if ( deg >= 90 && distY < 0 && current !== 1 ) { // flip back up
+			}
+			if ( ( deg >= 90 || ms < 300 || ( ms > 300 && ms < 800 && distY > 100 && deg < 90 ) ) && distY > 0 && current < pages.length-1 ) { // flip up
 
-			pages[(current-1)].style.webkitTransition = "all ease-out .6s";
-			pages[(current-1)].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
+				pages[current].style.webkitTransition = "all ease-out .4s";
+				pages[current].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
 
-		}
-		if ( ( deg >= 90 || ms < 300 || ( ms > 300 && ms < 800 && distY > 100 && deg < 90 ) ) && distY > 0 && current < pages.length-1 ) { // flip up
+				current++;
 
-			pages[current].style.webkitTransition = "all ease-out .4s";
-			pages[current].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
+			}
+			if ( deg < 90 && distY > 0 && current !== pages.length ) { // flip back down
 
-			current++;
+				pages[current].style.webkitTransition = "all ease-out .6s";
+				pages[current].style.webkitTransform = "rotateX("+0+"deg)";
 
-		}
-		if ( deg < 90 && distY > 0 && current !== pages.length ) { // flip back down
+			}
+			if ( ( deg < 90 || ms < 300 || ( ms > 300 && ms < 800 && distY < -100 && deg > 90 ) ) && distY < 0 && current !== 1 ) { // flip down
 
-			pages[current].style.webkitTransition = "all ease-out .6s";
-			pages[current].style.webkitTransform = "rotateX("+0+"deg)";
+				pages[(current-1)].style.webkitTransition = "all ease-out .4s";
+				pages[(current-1)].style.webkitTransform = "rotateX("+0+"deg)";
 
-		}
-		if ( ( deg < 90 || ms < 300 || ( ms > 300 && ms < 800 && distY < -100 && deg > 90 ) ) && distY < 0 && current !== 1 ) { // flip down
+				current--;
 
-			pages[(current-1)].style.webkitTransition = "all ease-out .4s";
-			pages[(current-1)].style.webkitTransform = "rotateX("+0+"deg)";
+				updateIndex();
 
-			current--;
+			}
+			
+			time = 0;
 
-			updateZindex();
+		},
 
-		}
+		enable = function () {
 		
-		time = 0;
+			flipscreen.addEventListener('touchstart', start, false);
+			flipscreen.addEventListener('touchmove', move, false);
+			flipscreen.addEventListener('touchend', end, false);
 
-	},
+		},
 
-	enableFlip = function () {
-	
-		flipscreen.addEventListener('touchstart', flipStart, false);
-		flipscreen.addEventListener('touchmove', flipMove, false);
-		flipscreen.addEventListener('touchend', flipEnd, false);
+		disable = function () {
 
-	},
+			flipscreen.removeEventListener('touchstart', start);
+			flipscreen.removeEventListener('touchmove', move);
+			flipscreen.removeEventListener('touchend', end);
 
-	disableFlip = function () {
+		};
 
-		flipscreen.removeEventListener('touchstart', flipStart);
-		flipscreen.removeEventListener('touchmove', flipMove);
-		flipscreen.removeEventListener('touchend', flipEnd);
+		return {
 
-	},
+			enable: enable,
+			disable: disable
+
+		};
+
+	})(),
 
 	// JSONP
 	// -------------------------------------------------------------
