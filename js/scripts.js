@@ -389,7 +389,7 @@ var flibbble = (function () {
 				window[ _jsonp ] = null;
 			};
 
-			load(url + query + (callbackName||config['callbackName']||'callback') + '=' + _jsonp);
+			load(url + query + (callbackName||config.callbackName||'callback') + '=' + _jsonp);
 			return _jsonp;
 
 		}

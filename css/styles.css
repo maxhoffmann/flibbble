@@ -33,7 +33,6 @@ body {
   height: 50%;
   -webkit-transform-style: preserve-3d;
   -webkit-transform-origin: center top;
-  -webkit-backface-visibility: hidden;
 }
 .page.first {
   top: 0;
