@@ -31,11 +31,7 @@ var flibbble = (function () {
 
 			if ( destination === "following" || destination === "likes" ) {
 
-				if ( ! user ) {
-
-					user = prompt("Dribbble username:");
-
-				}
+				user = prompt("Dribbble username:", user);
 
 				if ( user ) {
 
