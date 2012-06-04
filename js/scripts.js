@@ -14,7 +14,7 @@ var flibbble = (function () {
 
 		enableFlip();
 
-		JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'50', page:'1'}, function(data) { render(data); } );
+		JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'20', page:'1'}, function(data) { render(data); } );
 
 	},
 
@@ -72,12 +72,12 @@ var flibbble = (function () {
 			page.style.zIndex = z;
 			front.innerHTML   = "Loading";
 			front.className   = "front shot";
-			link.href         = shotsdata.url;
+			shot.height       = 240;
+			shot.width        = 320;
 			shot.src          = shotsdata.image_url;
 			shot.alt          = shotsdata.title;
 
-			link.appendChild(shot);
-			front.appendChild(link);
+			front.appendChild(shot);
 			page.appendChild(front);
 			return page;
 
@@ -97,8 +97,10 @@ var flibbble = (function () {
 			front.innerHTML = "Loading";
 			back.className  = "back shot";
 			back.innerHTML  = "Loading";
-			link1.href      = shotsdata1.url;
-			link2.href      = shotsdata2.url;
+			shot1.height    = 240;
+			shot1.width     = 320;
+			shot2.height    = 240;
+			shot2.width     = 320;
 			shot1.src       = shotsdata1.image_url;
 			shot1.alt       = shotsdata1.title;
 			shot2.src       = shotsdata2.image_url;
@@ -110,10 +112,8 @@ var flibbble = (function () {
 				page.style.visibility = "hidden";
 			}
 
-			link1.appendChild(shot1);
-			link2.appendChild(shot2);
-			front.appendChild(link1);
-			back.appendChild(link2);
+			front.appendChild(shot1);
+			back.appendChild(shot2);
 			page.appendChild(front);
 			page.appendChild(back);
 			return page;
@@ -131,23 +131,28 @@ var flibbble = (function () {
 			}
 
 			if ( shotsdata.image_url && shotsdata.title ) {
+
 				var shot        = document.createElement('img'),
 				link            = document.createElement('a');
 				front.className = "front shot";
 				front.innerHTML = "Loading";
-				link.href       = shotsdata.url;
+				shot.height     = 240;
+				shot.width      = 320;
 				shot.src        = shotsdata.image_url;
 				shot.alt        = shotsdata.title;
 
-				link.appendChild(shot);
-				front.appendChild(link);
+				front.appendChild(shot);
+
 			} else {
+
 				front.className = "front text";
 				front.innerHTML = "END";
+
 			}
 			
 			page.appendChild(front);
 			return page;
+
 		};
 
 		build();
@@ -155,7 +160,7 @@ var flibbble = (function () {
 
 	},
 
-	// Swipe Functions
+	// Flip Functions
 	// -------------------------------------------------------------
 
 	updateZindex = function () {
