@@ -1,6 +1,6 @@
 var flibbble = (function () {
 
-	// Initialization
+	// initialization
 	// -------------------------------------------------------------
 
 	var flipscreen = document.getElementById('flipper'),
@@ -18,7 +18,7 @@ var flibbble = (function () {
 
 	},
 
-	// Rendering
+	// rendering
 	// -------------------------------------------------------------
 
 	render = function(data) {
@@ -160,7 +160,7 @@ var flibbble = (function () {
 
 	},
 
-	// Flip Functions
+	// flip functions
 	// -------------------------------------------------------------
 
 	updateZindex = function () {
@@ -178,14 +178,10 @@ var flibbble = (function () {
 			pages[(current+1)].style.zIndex = 2;
 		}
 		if ( pages.length-current > 2 ) {
-			pages[(current+2)].style.zIndex = 1;
-			pages[(current+2)].style.visibility = "";
-			pages[(current+2)].style.webkitTransform = "";
-			pages[(current+2)].style.webkitTransition = "";
+			pages[(current+2)].style.cssText = "z-index: 1;";
 		}
 		if ( pages.length-current > 3 ) {
-			pages[(current+3)].style.visibility = "hidden";
-			pages[(current+3)].style.zIndex = "";
+			pages[(current+3)].style.cssText = "visibility: hidden;";
 		}
 
 	},
