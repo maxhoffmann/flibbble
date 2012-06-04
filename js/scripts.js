@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // -------------------------------------------------------------
 
 var body = document.body,
-		flip = document.getElementsByClassName('flip')[0],
+		flip = document.getElementById('flipper'),
 		pages, startY, startX, distY, distX, deg, time, current = 1;
 
 body.ontouchmove = function (e) {
@@ -24,7 +24,7 @@ JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'20', page:'1'}, f
 function renderShots(data) {
 	
 	var length = data.shots.length,
-	flip       = document.getElementsByClassName('flip')[0],
+	flip       = document.getElementById('flipper'),
 	container  = document.createDocumentFragment(),
 	i          = 0,
 	z					 = 3;
@@ -264,8 +264,6 @@ function flipEnd(e) {
 
 		current++;
 
-		console.log(pages.length-current);
-
 	}
 	if ( deg < 90 && distY > 0 && current !== pages.length ) { // flip back down
 
@@ -283,18 +281,6 @@ function flipEnd(e) {
 		updateZindex();
 
 	}
-
-	/* Slide aside
-	if ( distX < -100 ) {
-		flip.style.webkitTransition = "-webkit-transform ease-out .2s";
-		flip.style.webkitTransform = "translateX("+280+"px)";
-	}
-
-	if ( distX > 20 ) {
-		flip.style.webkitTransition = "-webkit-transform ease-out .2s";
-		flip.style.webkitTransform = "translateX("+0+"px)";
-	}
-	*/
 	
 	time = 0;
 
