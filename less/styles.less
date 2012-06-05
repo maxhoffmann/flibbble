@@ -1,7 +1,16 @@
 /*
- * 3D Page Flip Effect
+ * flibbble styles
  * (C) by Maximilian Hoffmann & Stefan Schwartze
  */
+
+@text-color: hsl(200, 0%, 95%);
+@text-light-color: hsl(200, 0%, 100%);
+@text-shadow-color: hsl(200, 0%, 75%);
+@text-inset-color: hsl(200, 0%, 80%);
+@text-inset-light-color: hsl(200, 0%, 97%);
+@text-inset-shadow-color: hsl(200, 0%, 70%);
+@bg-color: hsl(200, 0%, 87%);
+@shadow: hsl(200, 0%, 75%);
 
 * {
 	-webkit-box-sizing: border-box;
@@ -10,7 +19,7 @@
 body {	
 	margin: 0;
 	padding: 0;
-	background: hsl(200, 0%, 87%);
+	background: @bg-color;
 	font: 14px/1.5em "Helvetica Neue", Helvetica, sans-serif;
 	-webkit-user-select: none;
   -webkit-backface-visibility: hidden;
@@ -28,8 +37,8 @@ body {
 	-webkit-transform-origin: 0% 50%;
   -webkit-backface-visibility: hidden;
   -webkit-transition: -webkit-transform ease .3s;
-  background: hsl(200, 0%, 87%);
-  box-shadow: -2px 0 10px hsl(200, 0%, 57%);
+  background: @bg-color;
+  box-shadow: -2px 0 10px @shadow;
   overflow: hidden;
   z-index: 3;
 }
@@ -44,7 +53,7 @@ body {
 .page.first {
 	top: 0;
   -webkit-transform-origin: center bottom;
-  box-shadow: 0 -5px 10px hsl(200, 0%, 75%);
+  box-shadow: 0 -5px 10px @shadow;
 }
 .page .front,
 .page .back {
@@ -54,9 +63,9 @@ body {
 	height: 100%;
 	padding-top: 80px;
 	color: white;
-  background: hsl(200, 0%, 87%);
-	text-shadow: 0 1px 0 hsl(200, 0%, 75%),
-							 0 -1px 0 hsl(200, 0%, 100%);
+  background: @bg-color;
+	text-shadow: 0 1px 0 @text-shadow-color,
+							 0 -1px 0 @text-light-color;
 	font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
 	text-align: center;
   -webkit-transform-style: preserve-3d;
@@ -64,10 +73,10 @@ body {
   overflow: hidden;
 }
 .last .front {
-  background: hsl(200, 0%, 87%);
+  background: @bg-color;
 }
 .page.last {
-  box-shadow: 0 5px 10px hsl(200, 0%, 75%);	
+  box-shadow: 0 5px 10px @shadow;	
 }
 .page .back {
 	-webkit-transform: rotateX(-180deg);
@@ -80,11 +89,11 @@ body {
 }
 #menu {
 	padding: 20px;
-	background: hsl(200, 0%, 87%);
+	background: @bg-color;
 	z-index: 2;
 }
 #shot {
-	background: hsl(200, 0%, 87%);
+	background: @bg-color;
 	z-index: 1;
 }
 ul {
@@ -97,15 +106,15 @@ ul {
 	margin: 0;
 	padding: 0;	
 	font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
-	color: hsl(200, 0%, 95%);
-	text-shadow: 0 1px 0 hsl(200, 0%, 75%),
-							 0 -1px 0 hsl(200, 0%, 100%);
+	color: @text-color;
+	text-shadow: 0 1px 0 @text-shadow-color,
+							 0 -1px 0 @text-light-color;
 }
 #menu #logo {
 	height: 60px;
 	font-size: 32px;
-	color: hsl(200, 0%, 80%);
+	color: @text-inset-color;
 	text-align: center;
-	text-shadow: 0 1px 0 hsl(200, 0%, 97%),
-							 0 -1px 0 hsl(200, 0%, 70%);
+	text-shadow: 0 1px 0 @text-inset-light-color,
+							 0 -1px 0 @text-inset-shadow-color;
 }
