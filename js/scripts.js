@@ -13,10 +13,9 @@ var flibbble = (function () {
 		};
 
 		navigate.enable();
+		navigate.to('popular');
 		flip.enable();
 		slide.enable();
-
-		JSONP.get( 'http://api.dribbble.com/shots/popular', {per_page:'20', page:'1'}, function(data) { render(data); } );
 
 	},
 
@@ -25,18 +24,28 @@ var flibbble = (function () {
 
 	navigate = (function () {
 
-		var user,
+		var url = "http://api.dribbble.com/shots/popular",
+				loading = false,
+				page = 1,
+				maxpage = 1,
+				user,
 
 		to = function (destination) {
 
+			var that = this;
+
 			if ( destination === "following" || destination === "likes" ) {
 
-				user = prompt("Dribbble username:", user);
+				user = prompt("dribbble username:", user);
 
 				if ( user ) {
 
-					JSONP.get( 'http://api.dribbble.com/players/'+user+'/shots/'+destination, {per_page:'20', page:'1'}, function(data) {
+					this.url = 'http://api.dribbble.com/players/'+user+'/shots/'+destination;
+
+					JSONP.get( this.url, {per_page:'20', page:'1'}, function(data) {
 							render(data);
+							that.page = 1;
+							that.maxpage = data.pages;
 							slide.center();
 					});
 
@@ -44,8 +53,12 @@ var flibbble = (function () {
 
 			} else {
 
-				JSONP.get( 'http://api.dribbble.com/shots/'+destination, {per_page:'20', page:'1'}, function(data) {
+				this.url = 'http://api.dribbble.com/shots/'+destination;
+
+				JSONP.get( this.url, {per_page:'20', page:'1'}, function(data) {
 					render(data);
+					that.page = 1;
+					that.maxpage = data.pages;
 					slide.center();
 				});
 
@@ -67,12 +80,27 @@ var flibbble = (function () {
 			debuts.addEventListener('touchstart', function(e) { navigate.to('debuts'); }, false);
 			everyone.addEventListener('touchstart', function(e) { navigate.to('everyone'); }, false);
 
+		},
+
+		more = function (current) {
+
+			console.log(this.maxpage);
+
+			if ( ! loading && this.page < this.maxpage ) {
+				loading = true;
+				JSONP.get( this.url, {per_page:'20', page: ++this.page}, function(data) {
+					render(data);
+					loading = false;
+				});
+			}
+
 		};
 
 		return {
 			to: to,
 			enable: enable,
-			user: user
+			more: more,
+			url: url
 		};
 
 	})(),
@@ -86,13 +114,18 @@ var flibbble = (function () {
 		container  = document.createDocumentFragment(),
 		i          = 0,
 		z          = 3,
+		backshot,
 
 		build = function () {
 
 			for ( ; i < length; i++ ) {
 
-				if ( i === 0 ) {
+				if ( i === 0 && data.page === 1 ) {
 					container.appendChild( firstPage( data.shots[0], z ) );
+				}
+				if ( i === 0 && data.page > 1 ) {
+					backshot = backPage( data.shots[0] );
+					z--;
 				}
 				if ( i === length-1 ) {
 
@@ -123,12 +156,20 @@ var flibbble = (function () {
 
 		},
 
+		append = function () {
+
+			pages[pages.length-1].appendChild(backshot);
+			pages[pages.length-1].classList.remove('last');
+			flipscreen.appendChild(container);
+			pages = document.getElementsByClassName('page');
+
+		},
+
 		firstPage = function( shotsdata, z ) {
 
 			var page          = document.createElement('div'),
 			front             = document.createElement('div'),
-			shot              = document.createElement('img'),
-			link              = document.createElement('a');
+			shot              = document.createElement('img');
 			page.className    = "page first";
 			page.style.zIndex = z;
 			front.innerHTML   = "Loading";
@@ -149,8 +190,6 @@ var flibbble = (function () {
 			var page        = document.createElement('div'),
 			front           = document.createElement('div'),
 			back            = document.createElement('div'),
-			link1           = document.createElement('a'),
-			link2           = document.createElement('a'),
 			shot1           = document.createElement('img'),
 			shot2           = document.createElement('img');
 			page.className  = "page";
@@ -193,8 +232,7 @@ var flibbble = (function () {
 
 			if ( shotsdata.image_url && shotsdata.title ) {
 
-				var shot        = document.createElement('img'),
-				link            = document.createElement('a');
+				var shot        = document.createElement('img');
 				front.className = "front shot";
 				front.innerHTML = "Loading";
 				shot.height     = 240;
@@ -214,10 +252,32 @@ var flibbble = (function () {
 			page.appendChild(front);
 			return page;
 
+		},
+
+		backPage = function ( shotsdata ) {
+
+			var shot        = document.createElement('img'),
+			back            = document.createElement('div');
+			back.className  = "back shot";
+			back.innerHTML  = "Loading";
+			shot.height     = 240;
+			shot.width      = 320;
+			shot.src        = shotsdata.image_url;
+			shot.alt        = shotsdata.title;
+
+			back.appendChild(shot);
+
+			return back;
+
 		};
 
-		build();
-		insert();
+		if ( data.page === 1 ) {
+			build();
+			insert();
+		} else {
+			build();
+			append();
+		}
 
 	},
 
@@ -334,6 +394,11 @@ var flibbble = (function () {
 		},
 
 		end = function(e) {
+
+
+			if ( current === pages.length-1 ) {
+				navigate.more(current);
+			}
 
 			var ms = new Date().getTime()-time;
 
