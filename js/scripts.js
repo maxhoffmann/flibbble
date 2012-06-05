@@ -392,26 +392,19 @@ var flibbble = (function () {
 
 		end = function(e) {
 
-
 			if ( current === pages.length-1 ) {
 				navigate.more(current);
 			}
 
 			var ms = new Date().getTime()-time;
 
-			if ( deg < 0 && distY < 0 && current === 1 ) { // flip first back up
+			if ( current === 1 && deg < 0 && distY < 0 ) { // flip first back up
 
 				pages[(current-1)].style.webkitTransition = "all ease-out .6s";
 				pages[(current-1)].style.webkitTransform = "rotateX("+0+"deg) translateZ(0)";
 
 			}
-			if ( deg >= 90 && distY < 0 && current !== 1 ) { // flip back up
-
-				pages[(current-1)].style.webkitTransition = "all ease-out .6s";
-				pages[(current-1)].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
-
-			}
-			if ( ( deg >= 90 || ms < 300 || ( ms > 300 && ms < 800 && distY > 100 && deg < 90 ) ) && distY > 0 && current < pages.length-1 && Math.abs(distX) < Math.abs(distY) ) { // flip up
+			if ( ( deg >= 90 || ms <= 500 ) && distY > 0 && current < pages.length-1 && Math.abs(distX) < Math.abs(distY) ) { // flip up
 
 				pages[current].style.webkitTransition = "all ease-out .4s";
 				pages[current].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
@@ -421,13 +414,13 @@ var flibbble = (function () {
 				current++;
 
 			}
-			if ( deg < 90 && distY > 0 && current !== pages.length ) { // flip back down
+			if ( deg < 90 && ( ms > 500 || current === pages.length-1 ) && distY > 0 ) { // flip back down
 
 				pages[current].style.webkitTransition = "all ease-out .6s";
 				pages[current].style.webkitTransform = "rotateX("+0+"deg)";
 
 			}
-			if ( ( deg < 90 || ms < 300 || ( ms > 300 && ms < 800 && distY < -100 && deg > 90 ) ) && distY < 0 && current !== 1 && Math.abs(distX) < Math.abs(distY) ) { // flip down
+			if ( ( deg < 90 || ms < 500 ) && distY < 0 && current !== 1 && Math.abs(distX) < Math.abs(distY) ) { // flip down
 
 				pages[(current-1)].style.webkitTransition = "all ease-out .4s";
 				pages[(current-1)].style.webkitTransform = "rotateX("+0+"deg)";
@@ -435,6 +428,12 @@ var flibbble = (function () {
 				current--;
 
 				updateIndex();
+
+			}
+			if ( deg >= 90 && ms > 500 && distY < 0 && current !== 1 ) { // flip back up
+
+				pages[(current-1)].style.webkitTransition = "all ease-out .6s";
+				pages[(current-1)].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
 
 			}
 
