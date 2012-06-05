@@ -347,8 +347,6 @@ var flibbble = (function () {
 						pages[(current-1)].style.webkitTransform = "rotateX(180deg) translateZ(0)";
 					}
 
-					updateIndex();
-
 				}
 
 				if ( current === pages.length-1 ) { // transform last
@@ -418,6 +416,8 @@ var flibbble = (function () {
 
 				pages[current].style.webkitTransition = "all ease-out .4s";
 				pages[current].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
+
+				updateIndex();
 
 				current++;
 
