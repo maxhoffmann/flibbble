@@ -284,7 +284,10 @@ var flibbble = (function () {
 
 	flip = (function () {
 
-		var startY, startX, distY, distX, deg, time, current = 1,
+		var current  = 1,
+		updatedIndex = false,
+		
+		startY, startX, distY, distX, deg, time,
 
 		updateIndex = function () {
 
@@ -343,7 +346,11 @@ var flibbble = (function () {
 						pages[0].style.webkitTransform = "";
 					} else {
 						pages[(current-1)].style.webkitTransform = "rotateX(180deg) translateZ(0)";
-						pages[(current+1)].style.zIndex = 2;
+					}
+
+					if ( ! updatedIndex ) {
+						updateIndex();
+						updatedIndex = true;
 					}
 
 				}
@@ -409,8 +416,6 @@ var flibbble = (function () {
 				pages[current].style.webkitTransition = "all ease-out .4s";
 				pages[current].style.webkitTransform = "rotateX("+180+"deg) translateZ(0)";
 
-				updateIndex();
-
 				current++;
 
 			}
@@ -437,6 +442,7 @@ var flibbble = (function () {
 
 			}
 
+			updatedIndex = false;
 			time = 0;
 
 			slide.enable();
