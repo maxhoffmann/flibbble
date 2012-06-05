@@ -84,8 +84,6 @@ var flibbble = (function () {
 
 		more = function (current) {
 
-			console.log(this.maxpage);
-
 			if ( ! loading && this.page < this.maxpage ) {
 				loading = true;
 				JSONP.get( this.url, {per_page:'20', page: ++this.page}, function(data) {
@@ -345,6 +343,7 @@ var flibbble = (function () {
 						pages[0].style.webkitTransform = "";
 					} else {
 						pages[(current-1)].style.webkitTransform = "rotateX(180deg) translateZ(0)";
+						pages[(current+1)].style.zIndex = 2;
 					}
 
 				}
