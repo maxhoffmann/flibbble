@@ -286,7 +286,7 @@ var flibbble = (function () {
 
 		var current  = 1,
 		updatedIndex = false,
-		
+
 		startY, startX, distY, distX, deg, time,
 
 		updateIndex = function () {
@@ -501,7 +501,7 @@ var flibbble = (function () {
 
 		end = function(e) {
 
-			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX < -100 ) {
+			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX < -50 ) {
 
 				right();
 
