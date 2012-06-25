@@ -16,6 +16,7 @@ var flibbble = (function () {
 		navigate.to('popular');
 		flip.enable();
 		slide.enable();
+		tap.enable();
 
 	},
 
@@ -30,39 +31,52 @@ var flibbble = (function () {
 				maxpage = 1,
 				user,
 
-		to = function (destination) {
+		to = function (destination, el) {
 
 			var that = this;
 
-			if ( destination === "following" || destination === "likes" ) {
+			switch ( destination ) {
 
-				user = prompt("dribbble username:", user);
+				case "following":
+				case "likes":
+					user = prompt("dribbble username:", user);
 
-				if ( user ) {
+					if ( user ) {
 
-					this.url = 'http://api.dribbble.com/players/'+user+'/shots/'+destination;
+						this.url = 'http://api.dribbble.com/players/'+user+'/shots/'+destination;
+
+						JSONP.get( this.url, {per_page:'20', page:'1'}, function(data) {
+								render(data);
+								that.page = 1;
+								that.maxpage = data.pages;
+								slide.center();
+						});
+
+					}
+				break;
+
+				default:
+
+					this.url = 'http://api.dribbble.com/shots/'+destination;
 
 					JSONP.get( this.url, {per_page:'20', page:'1'}, function(data) {
-							render(data);
-							that.page = 1;
-							that.maxpage = data.pages;
-							slide.center();
+						render(data);
+						that.page = 1;
+						that.maxpage = data.pages;
+						slide.center();
 					});
 
-				}
-
-			} else {
-
-				this.url = 'http://api.dribbble.com/shots/'+destination;
-
-				JSONP.get( this.url, {per_page:'20', page:'1'}, function(data) {
-					render(data);
-					that.page = 1;
-					that.maxpage = data.pages;
-					slide.center();
-				});
-
+				break;
 			}
+
+		},
+
+		activate = function (item) {
+
+			if ( document.getElementsByClassName('active')[0] ) {
+				document.getElementsByClassName('active')[0].classList.remove('active');
+			}
+			item.classList.add('active');
 
 		},
 
@@ -74,11 +88,11 @@ var flibbble = (function () {
 			debuts      = document.getElementById('debuts'),
 			everyone    = document.getElementById('everyone');
 
-			popular.addEventListener('touchstart', function(e) { navigate.to('popular'); }, false);
-			following.addEventListener('touchstart', function(e) { navigate.to('following'); }, false);
-			likes.addEventListener('touchstart', function(e) { navigate.to('likes'); }, false);
-			debuts.addEventListener('touchstart', function(e) { navigate.to('debuts'); }, false);
-			everyone.addEventListener('touchstart', function(e) { navigate.to('everyone'); }, false);
+			popular.addEventListener('touchstart', function(e) { navigate.activate(this); navigate.to('popular'); }, false);
+			following.addEventListener('touchstart', function(e) { navigate.activate(this); navigate.to('following'); }, false);
+			likes.addEventListener('touchstart', function(e) { navigate.activate(this); navigate.to('likes'); }, false);
+			debuts.addEventListener('touchstart', function(e) { navigate.activate(this); navigate.to('debuts'); }, false);
+			everyone.addEventListener('touchstart', function(e) { navigate.activate(this); navigate.to('everyone'); }, false);
 
 		},
 
@@ -98,7 +112,8 @@ var flibbble = (function () {
 			to: to,
 			enable: enable,
 			more: more,
-			url: url
+			url: url,
+			activate: activate
 		};
 
 	})(),
@@ -119,7 +134,8 @@ var flibbble = (function () {
 			for ( ; i < length; i++ ) {
 
 				if ( i === 0 && data.page === 1 ) {
-					container.appendChild( firstPage( data.shots[0], z ) );
+					container.appendChild( firstPage( data.shots[0], (z-1) ) );
+					z++;
 				}
 				if ( i === 0 && data.page > 1 ) {
 					backshot = backPage( data.shots[0] );
@@ -170,12 +186,14 @@ var flibbble = (function () {
 			shot              = document.createElement('img');
 			page.className    = "page first";
 			page.style.zIndex = z;
-			front.innerHTML   = "Loading";
-			front.className   = "front shot";
+			front.className   = "front";
 			shot.height       = 240;
 			shot.width        = 320;
 			shot.src          = shotsdata.image_url;
 			shot.alt          = shotsdata.title;
+			shot.className    = "shot";
+
+			front.innerHTML = '<h2>'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div>';
 
 			front.appendChild(shot);
 			page.appendChild(front);
@@ -191,10 +209,8 @@ var flibbble = (function () {
 			shot1           = document.createElement('img'),
 			shot2           = document.createElement('img');
 			page.className  = "page";
-			front.className = "front shot";
-			front.innerHTML = "Loading";
-			back.className  = "back shot";
-			back.innerHTML  = "Loading";
+			front.className = "front";
+			back.className  = "back";
 			shot1.height    = 240;
 			shot1.width     = 320;
 			shot2.height    = 240;
@@ -203,6 +219,12 @@ var flibbble = (function () {
 			shot1.alt       = shotsdata1.title;
 			shot2.src       = shotsdata2.image_url;
 			shot2.alt       = shotsdata2.title;
+			shot1.className = "shot";
+			shot2.className = "shot";
+
+			front.innerHTML = '<h2>'+shotsdata1.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata1.likes_count+' <span class="views"></span> '+shotsdata1.views_count+' <span class="comments"></span> '+shotsdata1.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata1.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata1.player.name+'</div></div>';
+			back.innerHTML = '<h2>'+shotsdata2.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata2.likes_count+' <span class="views"></span> '+shotsdata2.views_count+' <span class="comments"></span> '+shotsdata2.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata2.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata2.player.name+'</div></div>';
+
 
 			if ( z > 0 ) {
 				page.style.zIndex = z;
@@ -231,12 +253,14 @@ var flibbble = (function () {
 			if ( shotsdata.image_url && shotsdata.title ) {
 
 				var shot        = document.createElement('img');
-				front.className = "front shot";
-				front.innerHTML = "Loading";
+				front.className = "front";
 				shot.height     = 240;
 				shot.width      = 320;
 				shot.src        = shotsdata.image_url;
 				shot.alt        = shotsdata.title;
+				shot.className  = "shot";
+
+				front.innerHTML = '<h2>'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div>';
 
 				front.appendChild(shot);
 
@@ -256,12 +280,14 @@ var flibbble = (function () {
 
 			var shot        = document.createElement('img'),
 			back            = document.createElement('div');
-			back.className  = "back shot";
-			back.innerHTML  = "Loading";
+			back.className  = "back";
 			shot.height     = 240;
 			shot.width      = 320;
 			shot.src        = shotsdata.image_url;
 			shot.alt        = shotsdata.title;
+			shot.className  = "shot";
+
+			back.innerHTML = '<h2>'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div>';
 
 			back.appendChild(shot);
 
@@ -269,11 +295,11 @@ var flibbble = (function () {
 
 		};
 
+		build();
+
 		if ( data.page === 1 ) {
-			build();
 			insert();
 		} else {
-			build();
 			append();
 		}
 
@@ -330,6 +356,7 @@ var flibbble = (function () {
 			if ( distY > 0 && Math.abs(distX) < Math.abs(distY) ) { // flip up
 			
 				slide.disable();
+				tap.disable();
 
 				if ( current < pages.length-1 ) {
 
@@ -369,6 +396,7 @@ var flibbble = (function () {
 			if ( distY < 0 && Math.abs(distX) < Math.abs(distY) ) { // flip Down
 
 				slide.disable();
+				tap.disable();
 
 				if ( current !== 1 ) {
 
@@ -446,6 +474,7 @@ var flibbble = (function () {
 			time = 0;
 
 			slide.enable();
+			tap.enable();
 
 		},
 
@@ -491,12 +520,14 @@ var flibbble = (function () {
 			startX = e.targetTouches[0].pageX;
 			distY = 0;
 			distX = 0;
+		
 		},
 
 		move = function(e) {
 			e.preventDefault();
 			distY = startY-e.targetTouches[0].pageY;
 			distX = startX-e.targetTouches[0].pageX;
+		
 		},
 
 		end = function(e) {
@@ -519,6 +550,7 @@ var flibbble = (function () {
 
 			flipscreen.style.webkitTransform = "translateX(240px) translateZ(0)";
 			flip.disable();
+			tap.disable();
 			position = "right";
 
 		},
@@ -527,6 +559,7 @@ var flibbble = (function () {
 
 			flipscreen.style.webkitTransform = "translateX(0px) translateZ(0)";
 			flip.enable();
+			tap.enable();
 			position = "center";
 
 		},
@@ -552,6 +585,68 @@ var flibbble = (function () {
 			disable: disable,
 			right: right,
 			center: center
+		};
+
+	})(),
+
+	// tap functions
+	// -------------------------------------------------------------
+
+	tap = (function () {
+
+		var toggleDetail = function (e) {
+
+			if ( e.target.classList.contains('shot') ) {
+
+				e.target.classList.toggle('hide');
+
+			}
+
+		},
+
+		enable = function () {
+
+			var frontpages = flipscreen.getElementsByClassName('front'),
+			backpages = flipscreen.getElementsByClassName('back'),
+			i = 0;
+
+			for ( ; i < frontpages.length; i++ ) {
+		
+				frontpages[i].addEventListener('click', toggleDetail, false);
+
+			}
+
+			for ( i = 0; i < backpages.length; i++ ) {
+
+				backpages[i].addEventListener('click', toggleDetail, false);
+
+			}
+
+		},
+
+		disable = function () {
+
+			var frontpages = flipscreen.getElementsByClassName('front'),
+			backpages = flipscreen.getElementsByClassName('back'),
+			i = 0;
+
+			for ( ; i < frontpages.length; i++ ) {
+		
+				frontpages[i].removeEventListener('click', toggleDetail);
+
+			}
+
+			for ( i = 0; i < backpages.length; i++ ) {
+
+				backpages[i].removeEventListener('click', toggleDetail);
+
+			}
+
+		};
+
+		return {
+			enable: enable,
+			disable: disable
 		};
 
 	})(),

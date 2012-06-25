@@ -7,29 +7,27 @@
 	<meta name="viewport" content="width=device-width,user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
-	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114-precomposed.png">
-	<link rel="apple-touch-startup-image" href="startup.png">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114-precomposed.png?871623">
+	<link rel="apple-touch-startup-image" href="startup.png?1823">
 
-	<link rel="stylesheet" href="css/styles.min.css">
+	<link rel="stylesheet" href="css/styles.css?1926391">
 </head>
 <body>
 
-	<div id="menu" class="screen">
-		<ul>
-			<li id="logo">flibbble</li>
-			<li id="popular">Popular</li>
-			<li id="following">Following</li>
-			<li id="likes">Likes</li>
-			<li id="debuts">Debuts</li>
-			<li id="everyone">Everyone</li>			
-		</ul>
-	</div>
+	<script>
 
-	<div id="flipper" class="screen"></div>
+		if ( navigator.standalone ) {
+			document.body.innerHTML = '<div id="menu" class="screen"><ul><li id="logo">flibbble</li><li id="popular" class="active">Popular</li><li id="following">Following</li><li id="likes">Likes</li><li id="debuts">Debuts</li><li id="everyone">Everyone</li></ul></div><div id="flipper" class="screen"></div>';
 
-	<div id="shot" class="screen"></div>
+		} else {
 
-<script src="js/scripts.min.js"></script>
+			document.body.innerHTML = '<h2 id="logo">flibbble</h2><p class="meta">Add this app to your homescreen.</p><p>works on iOS 5</p>';
+
+		}
+
+	</script>
+
+<script src="js/scripts.js?12731"></script>
 
 </body>
 </html>
