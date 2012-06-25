@@ -1,7 +1,11 @@
 /*
- * 3D Page Flip Effect
+ * flibbble styles
  * (C) by Maximilian Hoffmann & Stefan Schwartze
  */
+/* Variables
+------------------------------------------------------------ */
+/* Styles
+------------------------------------------------------------ */
 * {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -9,22 +13,32 @@
 body {
   margin: 0;
   padding: 0;
-  background: black;
+  background: #454c54;
   font: 14px/1.5em "Helvetica Neue", Helvetica, sans-serif;
   -webkit-user-select: none;
   -webkit-backface-visibility: hidden;
 }
+p {
+  text-align: center;
+  font-size: 16px;
+  color: #e6e6e6;
+}
 .screen {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 320px;
   height: 460px;
 }
 #flipper {
-  position: relative;
   -webkit-perspective: 800px;
   -webkit-transform-origin: 0% 50%;
   -webkit-backface-visibility: hidden;
+  -webkit-transition: -webkit-transform ease 0.3s;
+  background: #454c54;
+  box-shadow: -2px 0 10px #2e3338;
   overflow: hidden;
+  z-index: 2;
 }
 .page {
   position: absolute;
@@ -37,6 +51,7 @@ body {
 .page.first {
   top: 0;
   -webkit-transform-origin: center bottom;
+  box-shadow: 0 -5px 10px #2e3338;
 }
 .page .front,
 .page .back {
@@ -44,24 +59,120 @@ body {
   top: 0;
   width: 100%;
   height: 100%;
-  padding-top: 80px;
-  color: white;
-  background: #222;
-  font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
-  text-align: center;
+  padding: 20px;
+  color: #e6e6e6;
+  background: #454c54;
+  font: bold 16px/1.5em 'Helvetica Neue', Helvetica, sans-serif;
   -webkit-transform-style: preserve-3d;
   -webkit-backface-visibility: hidden;
   overflow: hidden;
 }
-.page.last .front {
-  background: black;
+.last .front {
+  background: #454c54;
+}
+.page.last {
+  box-shadow: 0 5px 10px #2e3338;
 }
 .page .back {
   -webkit-transform: rotatex(-180deg);
 }
-.shot img {
+.page .shot {
   position: absolute;
   top: -5px;
   left: 0;
   width: 100%;
+  box-shadow: 2px 0 10px #2e3338;
+  -webkit-transition: all ease-out 0.2s;
+}
+#menu {
+  padding: 20px;
+  background: #454c54;
+  z-index: 1;
+  -webkit-transition: -webkit-transform ease 0.3s;
+}
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+#menu li {
+  height: 70px;
+  margin: 0;
+  padding: 0;
+  font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
+  color: #e6e6e6;
+  text-shadow: 0 1px 0 #394046, 0 -1px 0 #ffffff;
+}
+#menu li.active {
+  color: #353b41;
+  text-shadow: 0 1px 0 #5c6670, 0 -1px 0 #22262a;
+}
+#logo {
+  height: 60px;
+  font-size: 32px;
+  color: #353b41;
+  text-align: center;
+  text-shadow: 0 1px 0 #5c6670, 0 -1px 0 #22262a;
+}
+.page h2 {
+  width: 280px;
+  font: bold 21px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
+  margin: 12px 0 24px 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.meta {
+  margin: 0 0 24px 0;
+}
+.author-image {
+  float: left;
+  margin-right: 14px;
+  border: 4px solid #5c6670;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  line-height: 0;
+  box-shadow: 0 1px 2px #2e3338;
+}
+.author-image img {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+.author-name {
+  padding: 16px 0 0 0;
+}
+.hide {
+  opacity: 0;
+}
+.likes,
+.views,
+.open,
+.comments {
+  display: inline-block;
+}
+.likes {
+  background: url('../img/stripes.png') no-repeat 0 0;
+  width: 13px;
+  height: 12px;
+  background-size: 29px 25px;
+}
+.views {
+  margin-left: 10px;
+  background: url('../img/stripes.png') no-repeat -14px 0px;
+  width: 15px;
+  height: 12px;
+  background-size: 29px 25px;
+}
+.open {
+  background: url('../img/stripes.png') no-repeat 0 -13px;
+  width: 16px;
+  height: 12px;
+  background-size: 29px 25px;
+}
+.comments {
+  margin-left: 10px;
+  background: url('../img/stripes.png') no-repeat -16px -13px;
+  width: 14px;
+  height: 12px;
+  background-size: 29px 25px;
 }
