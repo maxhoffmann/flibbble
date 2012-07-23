@@ -360,7 +360,7 @@ var flibbble = (function () {
 
 				if ( current < pages.length-1 ) {
 
-					deg = Math.min( Math.max( (distY-20)*0.55, 0 ), 180 );
+					deg = Math.min( Math.max( (distY-20)*0.485, 0 ), 180 );
 
 					pages[current].style.webkitTransition = "";
 					pages[current].style.webkitTransform = "rotateX(" + deg + "deg)";
@@ -400,7 +400,7 @@ var flibbble = (function () {
 
 				if ( current !== 1 ) {
 
-					deg = Math.max( Math.min( (340 + distY) * 0.55, 180), 0 );
+					deg = Math.max( Math.min( (340 + distY) * 0.485, 180), 0 );
 
 					pages[(current-1)].style.webkitTransition = "";
 					pages[(current-1)].style.webkitTransform = "rotateX(" + deg +"deg)";
