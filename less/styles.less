@@ -137,6 +137,7 @@ ul {
 							 0 -1px 0 @text-inset-shadow-color;
 }
 
+#menu #logo,
 #logo {
 	height: 60px;
 	font-size: 32px;
@@ -144,6 +145,29 @@ ul {
 	text-align: center;
 	text-shadow: 0 1px 0 @text-inset-light-color,
 							 0 -1px 0 @text-inset-shadow-color;
+}
+
+.logo-img {
+	display: block;
+	opacity: 0;
+	width: 94px;
+	margin: -0.8em auto 3em auto;	
+	-webkit-animation: rolling 2.8s 1s forwards;
+	animation: rolling 2.8s 1s forwards;	
+}
+
+@-webkit-keyframes rolling {
+	0%   { -webkit-transform: translateX(-240px) rotate(-180deg); }
+	20% { opacity: 1; }
+	51% { -webkit-transform: translateX(8px) rotate(10deg);  }	
+	100% { -webkit-transform: translateX(0px) rotate(0deg); opacity: 1; }
+}
+
+@keyframes rolling {
+	0%   { opacity: 0; -webkit-transform: translateX(-240px) rotate(-180deg); }
+	20% { opacity: 1; }
+	61% { -webkit-transform: translateX(15px) rotate(20deg);  }	
+	100% { -webkit-transform: translateX(0px) rotate(0deg); }
 }
 
 .page h2 {
@@ -180,6 +204,10 @@ ul {
 
 .hide {
 	opacity: 0;
+}
+
+.hidden {
+	visibility: hidden;
 }
 
 .likes,

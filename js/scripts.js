@@ -59,6 +59,9 @@ var flibbble = (function () {
 
 					this.url = 'http://api.dribbble.com/shots/'+destination;
 
+					//local
+					//this.url = 'http://localhost/js/popular.php';
+
 					JSONP.get( this.url, {per_page:'20', page:'1'}, function(data) {
 						render(data);
 						that.page = 1;
@@ -193,9 +196,10 @@ var flibbble = (function () {
 			shot.alt          = shotsdata.title;
 			shot.className    = "shot";
 
-			front.innerHTML = '<h2>'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div>';
-
 			front.appendChild(shot);
+
+			front.innerHTML += '<div class="details hidden"><h2>'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
+
 			page.appendChild(front);
 			return page;
 
@@ -222,10 +226,6 @@ var flibbble = (function () {
 			shot1.className = "shot";
 			shot2.className = "shot";
 
-			front.innerHTML = '<h2>'+shotsdata1.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata1.likes_count+' <span class="views"></span> '+shotsdata1.views_count+' <span class="comments"></span> '+shotsdata1.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata1.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata1.player.name+'</div></div>';
-			back.innerHTML = '<h2>'+shotsdata2.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata2.likes_count+' <span class="views"></span> '+shotsdata2.views_count+' <span class="comments"></span> '+shotsdata2.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata2.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata2.player.name+'</div></div>';
-
-
 			if ( z > 0 ) {
 				page.style.zIndex = z;
 			} else {
@@ -234,6 +234,8 @@ var flibbble = (function () {
 
 			front.appendChild(shot1);
 			back.appendChild(shot2);
+			front.innerHTML += '<div class="details hidden"><h2>'+shotsdata1.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata1.likes_count+' <span class="views"></span> '+shotsdata1.views_count+' <span class="comments"></span> '+shotsdata1.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata1.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata1.player.name+'</div></div></div>';
+			back.innerHTML += '<div class="details hidden"><h2>'+shotsdata2.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata2.likes_count+' <span class="views"></span> '+shotsdata2.views_count+' <span class="comments"></span> '+shotsdata2.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata2.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata2.player.name+'</div></div></div>';			
 			page.appendChild(front);
 			page.appendChild(back);
 			return page;
@@ -260,9 +262,8 @@ var flibbble = (function () {
 				shot.alt        = shotsdata.title;
 				shot.className  = "shot";
 
-				front.innerHTML = '<h2>'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div>';
-
 				front.appendChild(shot);
+				front.innerHTML += '<div class="details hidden"><h2>'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
 
 			} else {
 
@@ -287,9 +288,8 @@ var flibbble = (function () {
 			shot.alt        = shotsdata.title;
 			shot.className  = "shot";
 
-			back.innerHTML = '<h2>'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div>';
-
 			back.appendChild(shot);
+			back.innerHTML += '<div class="details hidden"><h2>'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
 
 			return back;
 
@@ -599,6 +599,7 @@ var flibbble = (function () {
 			if ( e.target.classList.contains('shot') ) {
 
 				e.target.classList.toggle('hide');
+				e.target.nextElementSibling.classList.toggle('hidden');
 
 			}
 
@@ -748,5 +749,9 @@ var flibbble = (function () {
 
 })();
 
-document.addEventListener( "DOMContentLoaded", flibbble.init );
+document.addEventListener( "DOMContentLoaded", function () {
+	//if ( navigator.standalone && navigator.platform === 'iPhone' ) {
+		flibbble.init();
+	//}
+});
 
