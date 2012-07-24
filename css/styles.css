@@ -13,15 +13,11 @@
 body {
   margin: 0;
   padding: 0;
+  color: #e6e6e6;
   background: #454c54;
-  font: 14px/1.5em "Helvetica Neue", Helvetica, sans-serif;
+  font: 16px/1.5em "Helvetica Neue", Helvetica, sans-serif;
   -webkit-user-select: none;
   -webkit-backface-visibility: hidden;
-}
-p {
-  text-align: center;
-  font-size: 16px;
-  color: #e6e6e6;
 }
 .screen {
   position: absolute;
@@ -47,11 +43,11 @@ p {
   height: 50%;
   -webkit-transform-style: preserve-3d;
   -webkit-transform-origin: center top;
+  -webkit-transform: rotatex(0deg);
+  -webkit-transition: -webkit-transform 0.5s ease-out;
 }
-.page.first {
-  top: 0;
-  -webkit-transform-origin: center bottom;
-  box-shadow: 0 -5px 10px #2e3338;
+.page.up {
+  -webkit-transform: rotatex(180deg) translatez(0);
 }
 .page .front,
 .page .back {
@@ -60,21 +56,27 @@ p {
   width: 100%;
   height: 100%;
   padding: 20px;
+  font: bold 16px/1.5em 'Helvetica Neue', Helvetica, sans-serif;
   color: #e6e6e6;
   background: #454c54;
-  font: bold 16px/1.5em 'Helvetica Neue', Helvetica, sans-serif;
+  overflow: hidden;
   -webkit-transform-style: preserve-3d;
   -webkit-backface-visibility: hidden;
-  overflow: hidden;
 }
-.last .front {
-  background: #454c54;
+.page .back {
+  -webkit-transform: rotatex(-180deg);
+}
+.page.first {
+  top: 0;
+  box-shadow: 0 -5px 10px #2e3338;
+  -webkit-transform-origin: center bottom;
+  -webkit-transform: rotatex(0deg) translatez(0);
 }
 .page.last {
   box-shadow: 0 5px 10px #2e3338;
 }
-.page .back {
-  -webkit-transform: rotatex(-180deg);
+.last .front {
+  background: #454c54;
 }
 .page .shot {
   position: absolute;
@@ -84,75 +86,14 @@ p {
   box-shadow: 2px 0 10px #2e3338;
   -webkit-transition: all ease-out 0.2s;
 }
-#menu {
-  padding: 20px;
-  background: #454c54;
-  z-index: 1;
-  -webkit-transition: -webkit-transform ease 0.3s;
-}
-ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-#menu li {
-  height: 70px;
-  margin: 0;
-  padding: 0;
-  font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
-  color: #e6e6e6;
-  text-shadow: 0 1px 0 #394046, 0 -1px 0 #ffffff;
-}
-#menu li.active {
-  color: #353b41;
-  text-shadow: 0 1px 0 #5c6670, 0 -1px 0 #22262a;
-}
-#menu #logo,
-#logo {
-  height: 60px;
-  font-size: 32px;
-  color: #353b41;
-  text-align: center;
-  text-shadow: 0 1px 0 #5c6670, 0 -1px 0 #22262a;
-}
-.logo-img {
-  display: block;
+.hide {
   opacity: 0;
-  width: 94px;
-  margin: -0.8em auto 3em auto;
-  -webkit-animation: rolling 2.8s 1s forwards;
-  animation: rolling 2.8s 1s forwards;
 }
-@-webkit-keyframes rolling {
-  0% {
-    -webkit-transform: translatex(-240px) rotate(-180deg);
-  }
-  20% {
-    opacity: 1;
-  }
-  51% {
-    -webkit-transform: translatex(8px) rotate(10deg);
-  }
-  100% {
-    -webkit-transform: translatex(0px) rotate(0deg);
-    opacity: 1;
-  }
+.hidden {
+  visibility: hidden;
 }
-@keyframes rolling {
-  0% {
-    opacity: 0;
-    -webkit-transform: translatex(-240px) rotate(-180deg);
-  }
-  20% {
-    opacity: 1;
-  }
-  61% {
-    -webkit-transform: translatex(15px) rotate(20deg);
-  }
-  100% {
-    -webkit-transform: translatex(0px) rotate(0deg);
-  }
-}
+/* Details
+   ========================================================================== */
 .page h2 {
   width: 280px;
   font: bold 21px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
@@ -178,14 +119,46 @@ ul {
   border-radius: 5px;
 }
 .author-name {
+  width: 200px;
   padding: 16px 0 0 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
-.hide {
-  opacity: 0;
+/* Menu
+   ========================================================================== */
+#menu {
+  padding: 20px;
+  background: #454c54;
+  z-index: 1;
+  -webkit-transition: -webkit-transform ease 0.3s;
 }
-.hidden {
-  visibility: hidden;
+#menu ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
+#menu li {
+  height: 70px;
+  margin: 0;
+  padding: 0;
+  font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
+  color: #e6e6e6;
+  text-shadow: 0 1px 0 #394046, 0 -1px 0 #ffffff;
+}
+#menu li.active {
+  color: #353b41;
+  text-shadow: 0 1px 0 #5c6670, 0 -1px 0 #22262a;
+}
+#menu #logo {
+  height: 60px;
+  font-size: 32px;
+  color: #353b41;
+  text-align: center;
+  text-shadow: 0 1px 0 #5c6670, 0 -1px 0 #22262a;
+}
+/* Sprites
+   ========================================================================== */
 .likes,
 .views,
 .open,

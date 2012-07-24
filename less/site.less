@@ -1,0 +1,22 @@
+.logo-img {
+	display: block;
+	opacity: 0;
+	width: 94px;
+	margin: -0.8em auto 3em auto;	
+	-webkit-animation: rolling 2.8s 1s forwards;
+	animation: rolling 2.8s 1s forwards;	
+}
+
+@-webkit-keyframes rolling {
+	0%   { -webkit-transform: translateX(-240px) rotate(-180deg); }
+	20% { opacity: 1; }
+	51% { -webkit-transform: translateX(8px) rotate(10deg);  }	
+	100% { -webkit-transform: translateX(0px) rotate(0deg); opacity: 1; }
+}
+
+@keyframes rolling {
+	0%   { opacity: 0; -webkit-transform: translateX(-240px) rotate(-180deg); }
+	20% { opacity: 1; }
+	61% { -webkit-transform: translateX(15px) rotate(20deg);  }	
+	100% { -webkit-transform: translateX(0px) rotate(0deg); }
+}
