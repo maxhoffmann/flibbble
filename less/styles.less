@@ -42,15 +42,23 @@ body {
 }
 
 #flipper {
-	-webkit-perspective: 800px;
-	-webkit-transform-origin: 0% 50%;
-  -webkit-backface-visibility: hidden;
-  -webkit-transition: -webkit-transform ease .3s;
   background: @bg-color;
   box-shadow: -2px 0 10px @shadow;
   overflow: hidden;
   z-index: 2;
+	-webkit-perspective: 800px;
+	-webkit-transform-origin: 0% 50%;
+  -webkit-backface-visibility: hidden;
+  -webkit-transition: -webkit-transform ease .3s;
+  -webkit-transform: translateX(0) translateZ(0);  
 }
+
+#flipper.right {
+  -webkit-transform: translateX(240px) translateZ(0);	
+}
+
+/* Pages
+   ========================================================================== */
 
 .page {
 	position: absolute;

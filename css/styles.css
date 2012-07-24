@@ -27,15 +27,21 @@ body {
   height: 460px;
 }
 #flipper {
-  -webkit-perspective: 800px;
-  -webkit-transform-origin: 0% 50%;
-  -webkit-backface-visibility: hidden;
-  -webkit-transition: -webkit-transform ease 0.3s;
   background: #454c54;
   box-shadow: -2px 0 10px #2e3338;
   overflow: hidden;
   z-index: 2;
+  -webkit-perspective: 800px;
+  -webkit-transform-origin: 0% 50%;
+  -webkit-backface-visibility: hidden;
+  -webkit-transition: -webkit-transform ease 0.3s;
+  -webkit-transform: translatex(0) translatez(0);
 }
+#flipper.right {
+  -webkit-transform: translatex(240px) translatez(0);
+}
+/* Pages
+   ========================================================================== */
 .page {
   position: absolute;
   top: 50%;

@@ -552,7 +552,7 @@ var flibbble = (function () {
 
 		right = function() {
 
-			flipscreen.style.webkitTransform = "translateX(240px) translateZ(0)";
+			flipscreen.classList.add('right');
 			flip.disable();
 			tap.disable();
 			position = "right";
@@ -561,7 +561,7 @@ var flibbble = (function () {
 
 		center = function() {
 
-			flipscreen.style.webkitTransform = "translateX(0px) translateZ(0)";
+			flipscreen.classList.remove('right');
 			flip.enable();
 			tap.enable();
 			position = "center";
