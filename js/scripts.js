@@ -3,7 +3,7 @@ var flibbble = (function () {
 	// initialization
 	// -------------------------------------------------------------
 
-	var flipscreen = document.getElementById('flipper'),
+	var flipscreen,
 			pages,
 
 	init = function () {
@@ -11,6 +11,10 @@ var flibbble = (function () {
 		document.body.ontouchmove = function (e) {
 			e.preventDefault();
 		};
+
+		document.body.innerHTML = '<div id="menu" class="screen"><ul><li id="logo">flibbble</li><li id="popular" class="active">Popular</li><li id="following">Following</li><li id="likes">Likes</li><li id="debuts">Debuts</li><li id="everyone">Everyone</li></ul></div><div id="flipper" class="screen"></div>';
+
+		flipscreen = document.getElementById('flipper');
 
 		navigate.enable();
 		navigate.to('popular');
