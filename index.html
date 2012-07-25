@@ -18,9 +18,11 @@
   <script>
 
 		var	app    = document.createElement('script'),
-				styles = document.createElement('link');
+				styles = document.createElement('link'),
+				livereload = document.createElement('script');
 				styles.rel = "stylesheet";
 				debug = true;
+				livereload.src = 'http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1';
 
     if ( ( navigator.standalone && navigator.platform === 'iPhone' ) || debug ) {
 
@@ -29,14 +31,15 @@
       document.head.appendChild(styles);    	
       document.head.appendChild(app);
 
+      if ( debug ) {
+      	document.head.appendChild(livereload);
+      }
+
     } else {
       document.write('Add to homescreen.');
     }
 
   </script>
-
-<!-- Live Reload Skript (development only) -->
-<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 
 </body>
 </html>
