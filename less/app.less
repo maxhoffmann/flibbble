@@ -34,6 +34,12 @@ body {
 	-webkit-user-select: none;
 }
 
+a {
+	color: @color;
+	text-decoration: none;
+	-webkit-tap-highlight-color: transparent;
+}
+
 .screen {
 	position: absolute;
 	top: 0;
@@ -81,7 +87,7 @@ body {
 	top: 0;
 	width: 100%;
 	height: 100%;
-	padding: 20px;
+	padding: 20px 20px 20px 60px;
 	overflow: hidden;
 
 	font: bold 16px/1.5em 'Helvetica Neue', Helvetica, sans-serif;	
@@ -135,8 +141,7 @@ body {
    ========================================================================== */
 
 .details {
-		padding-left: 40px;
-		text-shadow: 0 1px 0 @shadow;
+	text-shadow: 0 1px 0 @shadow;
 }
 
 .title {
@@ -194,13 +199,13 @@ body {
   -webkit-transition: -webkit-transform ease .3s;
 }
 
-.navigation {
+#navigation {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-.navigation li {
+#navigation li {
 	position: relative;
 	height: 70px;
 	margin: 0;
@@ -212,25 +217,14 @@ body {
 	-webkit-transition: all ease .3s;		
 }
 
-.navigation li:before {
-	position: absolute;
-	top: -2px;
-	left: -50px;
-	content: "→";
-	font-size: .7em;
-	text-shadow: none;
-	opacity: 1;
+#navigation .active a {
+	color: @logo-color;
+	text-shadow:
+		0 1px 0 @logo-light,
+		0 -1px 0 @logo-shadow;	
 }
 
-.navigation li.active {
-	-webkit-transform: translateX(30px);
-}
-
-.navigation li.active:before {
-	left: -30px;
-}
-
-.navigation .logo {
+#navigation .logo {
 	height: 60px;
 	font-size: 32px;
 	color: @logo-color;
@@ -251,7 +245,7 @@ body {
 }
 
 .likes {
-	background: url('../img/stripes.png') no-repeat 0 0;
+	background: url('../images/stripes.png') no-repeat 0 0;
 	width: 13px;
 	height: 12px;
 	background-size: 29px 25px;
@@ -259,7 +253,7 @@ body {
 
 .views {
 	margin-left: 10px;
-	background: url('../img/stripes.png') no-repeat -14px 0px;
+	background: url('../images/stripes.png') no-repeat -14px 0px;
 	width: 15px;
 	height: 12px;	
 	background-size: 29px 25px;
@@ -267,7 +261,7 @@ body {
 
 .open {
 	margin-left: 10px;	
-	background: url('../img/stripes.png') no-repeat 0 -13px;
+	background: url('../images/stripes.png') no-repeat 0 -13px;
 	width: 16px;
 	height: 12px;
 	background-size: 29px 25px;
@@ -275,7 +269,7 @@ body {
 
 .comments {
 	margin-left: 10px;	
-	background: url('../img/stripes.png') no-repeat -16px -13px;
+	background: url('../images/stripes.png') no-repeat -16px -13px;
 	width: 14px;
 	height: 12px;
 	background-size: 29px 25px;
