@@ -193,7 +193,7 @@
 
 			front.appendChild(shot);
 
-			front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
+			front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50" width="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
 
 			page.appendChild(front);
 			return page;
@@ -227,8 +227,8 @@
 
 			front.appendChild(shot1);
 			back.appendChild(shot2);
-			front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata1.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata1.likes_count+' <span class="views"></span> '+shotsdata1.views_count+' <span class="comments"></span> '+shotsdata1.comments_count+' <a href="'+shotsdata1.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata1.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata1.player.name+'</div></div></div>';
-			back.innerHTML += '<div class="details"><h2 class="title">'+shotsdata2.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata2.likes_count+' <span class="views"></span> '+shotsdata2.views_count+' <span class="comments"></span> '+shotsdata2.comments_count+' <a href="'+shotsdata2.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata2.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata2.player.name+'</div></div></div>';			
+			front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata1.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata1.likes_count+' <span class="views"></span> '+shotsdata1.views_count+' <span class="comments"></span> '+shotsdata1.comments_count+' <a href="'+shotsdata1.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata1.player.avatar_url+'" height="50" width="50"></div><div class="author-name">'+shotsdata1.player.name+'</div></div></div>';
+			back.innerHTML += '<div class="details"><h2 class="title">'+shotsdata2.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata2.likes_count+' <span class="views"></span> '+shotsdata2.views_count+' <span class="comments"></span> '+shotsdata2.comments_count+' <a href="'+shotsdata2.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata2.player.avatar_url+'" height="50" width="50"></div><div class="author-name">'+shotsdata2.player.name+'</div></div></div>';			
 			page.appendChild(front);
 			page.appendChild(back);
 			return page;
@@ -252,7 +252,7 @@
 				shot.className  = "shot";
 
 				front.appendChild(shot);
-				front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
+				front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50" width="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
 
 			} else {
 
@@ -278,7 +278,7 @@
 			shot.className  = "shot";
 
 			back.appendChild(shot);
-			back.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
+			back.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50" width="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
 
 			return back;
 
