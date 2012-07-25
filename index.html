@@ -12,12 +12,28 @@
 	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114-precomposed.png">
 	<link rel="apple-touch-startup-image" href="startup.png">
 
-	<link rel="stylesheet" href="css/styles.css">
-
 </head>
 <body>
 
-<script src="js/scripts.js"></script>
+  <script>
+
+		var	app    = document.createElement('script'),
+				styles = document.createElement('link');
+				styles.rel = "stylesheet";
+				debug = true;
+
+    if ( ( navigator.standalone && navigator.platform === 'iPhone' ) || debug ) {
+
+    	styles.href = "css/app.css";
+    	app.src = "js/app.js";
+      document.head.appendChild(styles);    	
+      document.head.appendChild(app);
+
+    } else {
+      document.write('Add to homescreen.');
+    }
+
+  </script>
 
 <!-- Live Reload Skript (development only) -->
 <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>

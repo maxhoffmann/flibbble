@@ -12,7 +12,7 @@ var flibbble = (function () {
 			e.preventDefault();
 		};
 
-		document.body.innerHTML = '<div id="menu" class="screen"><ul><li id="logo">flibbble</li><li id="popular" class="active">Popular</li><li id="following">Following</li><li id="likes">Likes</li><li id="debuts">Debuts</li><li id="everyone">Everyone</li></ul></div><div id="flipper" class="screen"></div>';
+		document.body.innerHTML = '<div id="menu" class="screen"><ul class="navigation"><li class="logo">flibbble</li><li id="popular" class="active">Popular</li><li id="following">Following</li><li id="likes">Likes</li><li id="debuts">Debuts</li><li id="everyone">Everyone</li></ul></div><div id="flipper" class="screen"></div>';
 
 		flipscreen = document.getElementById('flipper');
 
@@ -20,7 +20,6 @@ var flibbble = (function () {
 		navigate.to('popular');
 		flip.enable();
 		slide.enable();
-		tap.enable();
 
 	},
 
@@ -35,7 +34,7 @@ var flibbble = (function () {
 				maxpage = 1,
 				user,
 
-		to = function (destination, el) {
+		to = function (destination) {
 
 			var that = this;
 
@@ -109,6 +108,7 @@ var flibbble = (function () {
 				loading = true;
 				JSONP.get( this.url, {per_page:'20', page: ++this.page}, function(data) {
 					render(data);
+					pages[current+1].classList.add('hidden');
 					loading = false;
 				});
 			}
@@ -197,7 +197,7 @@ var flibbble = (function () {
 
 			front.appendChild(shot);
 
-			front.innerHTML += '<div class="details hidden"><h2>'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
+			front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
 
 			page.appendChild(front);
 			return page;
@@ -231,8 +231,8 @@ var flibbble = (function () {
 
 			front.appendChild(shot1);
 			back.appendChild(shot2);
-			front.innerHTML += '<div class="details hidden"><h2>'+shotsdata1.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata1.likes_count+' <span class="views"></span> '+shotsdata1.views_count+' <span class="comments"></span> '+shotsdata1.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata1.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata1.player.name+'</div></div></div>';
-			back.innerHTML += '<div class="details hidden"><h2>'+shotsdata2.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata2.likes_count+' <span class="views"></span> '+shotsdata2.views_count+' <span class="comments"></span> '+shotsdata2.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata2.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata2.player.name+'</div></div></div>';			
+			front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata1.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata1.likes_count+' <span class="views"></span> '+shotsdata1.views_count+' <span class="comments"></span> '+shotsdata1.comments_count+' <a href="'+shotsdata1.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata1.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata1.player.name+'</div></div></div>';
+			back.innerHTML += '<div class="details"><h2 class="title">'+shotsdata2.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata2.likes_count+' <span class="views"></span> '+shotsdata2.views_count+' <span class="comments"></span> '+shotsdata2.comments_count+' <a href="'+shotsdata2.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata2.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata2.player.name+'</div></div></div>';			
 			page.appendChild(front);
 			page.appendChild(back);
 			return page;
@@ -256,7 +256,7 @@ var flibbble = (function () {
 				shot.className  = "shot";
 
 				front.appendChild(shot);
-				front.innerHTML += '<div class="details hidden"><h2>'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
+				front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
 
 			} else {
 
@@ -282,7 +282,7 @@ var flibbble = (function () {
 			shot.className  = "shot";
 
 			back.appendChild(shot);
-			back.innerHTML += '<div class="details hidden"><h2>'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
+			back.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+'</div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
 
 			return back;
 
@@ -326,7 +326,6 @@ var flibbble = (function () {
 			if ( distY > 0 && Math.abs(distX) < Math.abs(distY) ) {
 			
 				slide.disable();
-				tap.disable();
 
 				if ( current < pages.length-1 ) {
 
@@ -370,7 +369,6 @@ var flibbble = (function () {
 			if ( distY < 0 && Math.abs(distX) < Math.abs(distY) ) {
 
 				slide.disable();
-				tap.disable();
 
 				if ( current !== 1 ) {
 
@@ -400,10 +398,6 @@ var flibbble = (function () {
 				if ( pages[current].style.webkitTransition !== "" && pages[current].style.webkitTransform !== "" ) {
 					pages[current].style.webkitTransition = "";
 					pages[current].style.webkitTransform = "";
-				}
-
-				if ( current < pages.length-1 ) {
-					pages[current+1].classList.add('hidden');
 				}
 
 			}
@@ -468,8 +462,13 @@ var flibbble = (function () {
 				pages[current-1].style.webkitTransition = "";
 				pages[current-1].style.webkitTransform = "";
 				pages[current-1].classList.remove('up');
+
+				if ( current < pages.length-1 ) {
+					pages[current+1].classList.add('hidden');
+				}
+
 				pages[current].style.zIndex = "";
-				pages[current].classList.add('hidden');
+				pages[current].classList.add('hidden');				
 
 				if ( current-3 >= 0 ) {
 					pages[current-3].classList.remove('hidden');					
@@ -482,7 +481,6 @@ var flibbble = (function () {
 			time = 0;
 
 			slide.enable();
-			tap.enable();
 
 		},
 
@@ -540,10 +538,23 @@ var flibbble = (function () {
 
 		end = function(e) {
 
+			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX > 50 ) {
+
+				if ( e.target.classList.contains('shot') ) {
+					e.target.classList.add('left');
+					e.target.parentNode.addEventListener('touchend', hideDetails, false);
+				}
+
+			}
+
 			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX < -50 ) {
 
-				right();
+				if ( e.target.classList.contains('shot') && ! e.target.classList.contains('left') ) {
 
+					right();
+				
+				}
+			
 			}
 
 			if ( position === "right" && Math.abs(distX) > Math.abs(distY) && distX > 0 ) {
@@ -554,11 +565,22 @@ var flibbble = (function () {
 
 		},
 
+		hideDetails = function( e ) {
+
+			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX < -50 ) {
+				
+				this.children[0].classList.remove('left');
+				e.stopPropagation();
+				this.removeEventListener('touchend', hideDetails);
+
+			}
+
+		},
+
 		right = function() {
 
 			flipscreen.classList.add('right');
 			flip.disable();
-			tap.disable();
 			position = "right";
 
 		},
@@ -567,7 +589,6 @@ var flibbble = (function () {
 
 			flipscreen.classList.remove('right');
 			flip.enable();
-			tap.enable();
 			position = "center";
 
 		},
@@ -593,69 +614,6 @@ var flibbble = (function () {
 			disable: disable,
 			right: right,
 			center: center
-		};
-
-	})(),
-
-	// tap functions
-	// -------------------------------------------------------------
-
-	tap = (function () {
-
-		var toggleDetail = function (e) {
-
-			if ( e.target.classList.contains('shot') ) {
-
-				e.target.classList.toggle('hide');
-				e.target.nextElementSibling.classList.toggle('hidden');
-
-			}
-
-		},
-
-		enable = function () {
-
-			var frontpages = flipscreen.getElementsByClassName('front'),
-			backpages = flipscreen.getElementsByClassName('back'),
-			i = 0;
-
-			for ( ; i < frontpages.length; i++ ) {
-		
-				frontpages[i].addEventListener('click', toggleDetail, false);
-
-			}
-
-			for ( i = 0; i < backpages.length; i++ ) {
-
-				backpages[i].addEventListener('click', toggleDetail, false);
-
-			}
-
-		},
-
-		disable = function () {
-
-			var frontpages = flipscreen.getElementsByClassName('front'),
-			backpages = flipscreen.getElementsByClassName('back'),
-			i = 0;
-
-			for ( ; i < frontpages.length; i++ ) {
-		
-				frontpages[i].removeEventListener('click', toggleDetail);
-
-			}
-
-			for ( i = 0; i < backpages.length; i++ ) {
-
-				backpages[i].removeEventListener('click', toggleDetail);
-
-			}
-
-		};
-
-		return {
-			enable: enable,
-			disable: disable
 		};
 
 	})(),
@@ -762,4 +720,3 @@ document.addEventListener( "DOMContentLoaded", function () {
 		flibbble.init();
 	//}
 });
-

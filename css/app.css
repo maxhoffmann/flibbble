@@ -1,11 +1,12 @@
 /*
  * flibbble styles
- * (C) by Maximilian Hoffmann & Stefan Schwartze
+ *
+ * 2012 by Maximilian Hoffmann & Stefan Schwartze 
  */
 /* Variables
------------------------------------------------------------- */
+   ========================================================================== */
 /* Styles
------------------------------------------------------------- */
+   ========================================================================== */
 * {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -17,7 +18,6 @@ body {
   background: #454c54;
   font: 16px/1.5em "Helvetica Neue", Helvetica, sans-serif;
   -webkit-user-select: none;
-  -webkit-backface-visibility: hidden;
 }
 .screen {
   position: absolute;
@@ -25,20 +25,19 @@ body {
   left: 0;
   width: 320px;
   height: 460px;
+  overflow: hidden;
 }
 #flipper {
   background: #454c54;
-  box-shadow: -2px 0 10px #2e3338;
-  overflow: hidden;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.4);
   z-index: 2;
   -webkit-perspective: 800px;
   -webkit-transform-origin: 0% 50%;
-  -webkit-backface-visibility: hidden;
   -webkit-transition: -webkit-transform ease 0.3s;
-  -webkit-transform: translatex(0) translatez(0);
+  -webkit-transform: translatex(0);
 }
 #flipper.right {
-  -webkit-transform: translatex(240px) translatez(0);
+  -webkit-transform: translatex(240px);
 }
 /* Pages
    ========================================================================== */
@@ -49,8 +48,8 @@ body {
   height: 50%;
   -webkit-transform-style: preserve-3d;
   -webkit-transform-origin: center top;
-  -webkit-transform: rotatex(0deg);
-  -webkit-transition: -webkit-transform 0.5s ease-out;
+  -webkit-transform: rotatex(0);
+  -webkit-transition: all ease-out 0.5s;
 }
 .page.up {
   -webkit-transform: rotatex(180deg) translatez(0);
@@ -62,24 +61,23 @@ body {
   width: 100%;
   height: 100%;
   padding: 20px;
-  font: bold 16px/1.5em 'Helvetica Neue', Helvetica, sans-serif;
-  color: #e6e6e6;
-  background: #454c54;
   overflow: hidden;
-  -webkit-transform-style: preserve-3d;
+  font: bold 16px/1.5em 'Helvetica Neue', Helvetica, sans-serif;
+  background: -webkit-radial-gradient(center, #454c54, #2e3338);
   -webkit-backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
 }
 .page .back {
   -webkit-transform: rotatex(-180deg);
 }
 .page.first {
   top: 0;
-  box-shadow: 0 -5px 10px #2e3338;
+  box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.4);
   -webkit-transform-origin: center bottom;
   -webkit-transform: rotatex(0deg) translatez(0);
 }
 .page.last {
-  box-shadow: 0 5px 10px #2e3338;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
 }
 .last .front {
   background: #454c54;
@@ -89,8 +87,11 @@ body {
   top: -5px;
   left: 0;
   width: 100%;
-  box-shadow: 2px 0 10px #2e3338;
-  -webkit-transition: all ease-out 0.2s;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.4);
+  -webkit-transition: -webkit-transform ease 0.3s;
+}
+.shot.left {
+  -webkit-transform: translate(-300px);
 }
 .hide {
   opacity: 0;
@@ -100,16 +101,22 @@ body {
 }
 /* Details
    ========================================================================== */
-.page h2 {
-  width: 280px;
+.details {
+  padding-left: 40px;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+.title {
+  width: 230px;
+  margin: 0;
   font: bold 21px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
-  margin: 12px 0 24px 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.meta {
-  margin: 0 0 24px 0;
+.author:after {
+  content: "";
+  display: table;
+  clear: both;
 }
 .author-image {
   float: left;
@@ -118,50 +125,68 @@ body {
   -webkit-border-radius: 8px;
   border-radius: 8px;
   line-height: 0;
-  box-shadow: 0 1px 2px #2e3338;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 .author-image img {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
 .author-name {
-  width: 200px;
-  padding: 16px 0 0 0;
+  display: block;
+  width: 160px;
+  padding-top: 32px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+.title,
+.meta,
+.author-image {
+  margin-top: 16px;
 }
 /* Menu
    ========================================================================== */
 #menu {
   padding: 20px;
-  background: #454c54;
+  background: -webkit-radial-gradient(center, #454c54, #25292d);
   z-index: 1;
   -webkit-transition: -webkit-transform ease 0.3s;
 }
-#menu ul {
+.navigation {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-#menu li {
+.navigation li {
+  position: relative;
   height: 70px;
   margin: 0;
   padding: 0;
   font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
-  color: #e6e6e6;
-  text-shadow: 0 1px 0 #394046, 0 -1px 0 #ffffff;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.4), 0 -1px 0 #ffffff;
+  -webkit-transition: all ease .3s;
 }
-#menu li.active {
-  color: #353b41;
-  text-shadow: 0 1px 0 #5c6670, 0 -1px 0 #22262a;
+.navigation li:before {
+  position: absolute;
+  top: -2px;
+  left: -50px;
+  content: "→";
+  font-size: .7em;
+  text-shadow: none;
+  opacity: 1;
 }
-#menu #logo {
+.navigation li.active {
+  -webkit-transform: translatex(30px);
+}
+.navigation li.active:before {
+  left: -30px;
+}
+.navigation .logo {
   height: 60px;
   font-size: 32px;
-  color: #353b41;
+  color: #292e32;
   text-align: center;
-  text-shadow: 0 1px 0 #5c6670, 0 -1px 0 #22262a;
+  text-shadow: 0 1px 0 #464a4e, 0 -1px 0 #1c1f22;
 }
 /* Sprites
    ========================================================================== */
@@ -185,6 +210,7 @@ body {
   background-size: 29px 25px;
 }
 .open {
+  margin-left: 10px;
   background: url('../img/stripes.png') no-repeat 0 -13px;
   width: 16px;
   height: 12px;

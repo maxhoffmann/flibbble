@@ -1,5 +1,5 @@
-/*!
- * flibbble stylesheet
+/*
+ * flibbble styles
  *
  * 2012 by Maximilian Hoffmann & Stefan Schwartze 
  */
@@ -7,14 +7,15 @@
 /* Variables
    ========================================================================== */
 
-@text-color: hsl(210, 0%, 90%);
-@text-light-color: hsl(210, 0%, 100%);
-@text-shadow-color: hsl(210, 10%, 25%);
-@text-inset-color: hsl(210, 10%, 23%);
-@text-inset-light-color: hsl(210, 10%, 40%);
-@text-inset-shadow-color: hsl(210, 10%, 15%);
-@bg-color: hsl(210, 10%, 30%);
-@shadow: hsl(210, 10%, 20%);
+@color: hsl(210, 0%, 90%);
+@light: white;
+@shadow: rgba(0, 0, 0, .4);
+
+@logo-color: hsl(210, 10%, 18%);
+@logo-light: hsl(210, 5%, 29%);
+@logo-shadow: hsl(210, 10%, 12%);
+
+@background: hsl(210, 10%, 30%);
 
 /* Styles
    ========================================================================== */
@@ -27,11 +28,10 @@
 body {	
 	margin: 0;
 	padding: 0;
-	color: @text-color;	
-	background: @bg-color;
+	color: @color;	
+	background: @background;
 	font: 16px/1.5em "Helvetica Neue", Helvetica, sans-serif;
 	-webkit-user-select: none;
-  -webkit-backface-visibility: hidden;
 }
 
 .screen {
@@ -40,22 +40,21 @@ body {
 	left: 0;
 	width: 320px;
 	height: 460px;
+  overflow: hidden;	
 }
 
 #flipper {
-  background: @bg-color;
+  background: @background;
   box-shadow: -2px 0 10px @shadow;
-  overflow: hidden;
   z-index: 2;
 	-webkit-perspective: 800px;
 	-webkit-transform-origin: 0% 50%;
-  -webkit-backface-visibility: hidden;
   -webkit-transition: -webkit-transform ease .3s;
-  -webkit-transform: translateX(0) translateZ(0);  
+  -webkit-transform: translateX(0);  
 }
 
 #flipper.right {
-  -webkit-transform: translateX(240px) translateZ(0);	
+  -webkit-transform: translateX(240px);	
 }
 
 /* Pages
@@ -68,8 +67,8 @@ body {
 	height: 50%;
   -webkit-transform-style: preserve-3d;
   -webkit-transform-origin: center top;
-  -webkit-transform: rotateX(0deg);
-  -webkit-transition: -webkit-transform 0.5s ease-out;
+  -webkit-transform: rotateX(0);
+  -webkit-transition: all ease-out .5s; // -webkit-transform ease-out .5s, visibility ease-out .5s; causes flicker
 }
 
 .page.up {
@@ -83,12 +82,13 @@ body {
 	width: 100%;
 	height: 100%;
 	padding: 20px;
+	overflow: hidden;
+
 	font: bold 16px/1.5em 'Helvetica Neue', Helvetica, sans-serif;	
-	color: @text-color;
-  background: @bg-color;
-  overflow: hidden;	
-  -webkit-transform-style: preserve-3d;
+  background: -webkit-radial-gradient(center, @background, darken(@background, 10%));
+
   -webkit-backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d; // fixes Chrome flicker  
 }
 
 .page .back {
@@ -107,7 +107,7 @@ body {
 }
 
 .last .front {
-  background: @bg-color;
+  background: @background;
 }
 
 .page .shot {
@@ -116,7 +116,11 @@ body {
 	left: 0;
 	width: 100%;
   box-shadow: 2px 0 10px @shadow;
-	-webkit-transition: all ease-out .2s;
+	-webkit-transition: -webkit-transform ease .3s;
+}
+
+.shot.left {
+	-webkit-transform: translate(-300px);
 }
 
 .hide {
@@ -130,17 +134,24 @@ body {
 /* Details
    ========================================================================== */
 
-.page h2 {
-	width: 280px;
+.details {
+		padding-left: 40px;
+		text-shadow: 0 1px 0 @shadow;
+}
+
+.title {
+	width: 230px;
+	margin: 0;
 	font: bold 21px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
-	margin: 12px 0 24px 0;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
 
-.meta {
-	margin: 0 0 24px 0;	
+.author:after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 .author-image {
@@ -159,11 +170,18 @@ body {
 }
 
 .author-name {
-	width: 200px;
-	padding: 16px 0 0 0;
+	display: block;
+	width: 160px;
+	padding-top: 32px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;	
+}
+
+.title,
+.meta,
+.author-image {
+	margin-top: 16px;
 }
 
 /* Menu
@@ -171,43 +189,55 @@ body {
 
 #menu {
 	padding: 20px;
-	background: @bg-color;
+  background: -webkit-radial-gradient(center, @background, darken(@background, 14%));
 	z-index: 1;
-  -webkit-transition: -webkit-transform ease .3s;	
+  -webkit-transition: -webkit-transform ease .3s;
 }
 
-#menu ul {
+.navigation {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-#menu li {
+.navigation li {
+	position: relative;
 	height: 70px;
 	margin: 0;
 	padding: 0;	
 	font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
-	color: @text-color;
 	text-shadow:
-		0 1px 0 @text-shadow-color,
-		0 -1px 0 @text-light-color;
+		0 2px 0 @shadow,
+		0 -1px 0 @light;
+	-webkit-transition: all ease .3s;		
 }
 
-#menu li.active {
-	color: @text-inset-color;	
-	text-shadow:
-		0 1px 0 @text-inset-light-color,
-		0 -1px 0 @text-inset-shadow-color;
+.navigation li:before {
+	position: absolute;
+	top: -2px;
+	left: -50px;
+	content: "→";
+	font-size: .7em;
+	text-shadow: none;
+	opacity: 1;
 }
 
-#menu #logo {
+.navigation li.active {
+	-webkit-transform: translateX(30px);
+}
+
+.navigation li.active:before {
+	left: -30px;
+}
+
+.navigation .logo {
 	height: 60px;
 	font-size: 32px;
-	color: @text-inset-color;
+	color: @logo-color;
 	text-align: center;
 	text-shadow:
-		0 1px 0 @text-inset-light-color,
-		0 -1px 0 @text-inset-shadow-color;
+		0 1px 0 @logo-light,
+		0 -1px 0 @logo-shadow;
 }
 
 /* Sprites
@@ -236,6 +266,7 @@ body {
 }
 
 .open {
+	margin-left: 10px;	
 	background: url('../img/stripes.png') no-repeat 0 -13px;
 	width: 16px;
 	height: 12px;
