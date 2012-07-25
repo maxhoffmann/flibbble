@@ -19,6 +19,11 @@ body {
   font: 16px/1.5em "Helvetica Neue", Helvetica, sans-serif;
   -webkit-user-select: none;
 }
+a {
+  color: #e6e6e6;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
 .screen {
   position: absolute;
   top: 0;
@@ -60,7 +65,7 @@ body {
   top: 0;
   width: 100%;
   height: 100%;
-  padding: 20px;
+  padding: 20px 20px 20px 60px;
   overflow: hidden;
   font: bold 16px/1.5em 'Helvetica Neue', Helvetica, sans-serif;
   background: -webkit-radial-gradient(center, #454c54, #2e3338);
@@ -102,7 +107,6 @@ body {
 /* Details
    ========================================================================== */
 .details {
-  padding-left: 40px;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
 }
 .title {
@@ -152,12 +156,12 @@ body {
   z-index: 1;
   -webkit-transition: -webkit-transform ease 0.3s;
 }
-.navigation {
+#navigation {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.navigation li {
+#navigation li {
   position: relative;
   height: 70px;
   margin: 0;
@@ -166,22 +170,11 @@ body {
   text-shadow: 0 2px 0 rgba(0, 0, 0, 0.4), 0 -1px 0 #ffffff;
   -webkit-transition: all ease .3s;
 }
-.navigation li:before {
-  position: absolute;
-  top: -2px;
-  left: -50px;
-  content: "→";
-  font-size: .7em;
-  text-shadow: none;
-  opacity: 1;
+#navigation .active a {
+  color: #292e32;
+  text-shadow: 0 1px 0 #464a4e, 0 -1px 0 #1c1f22;
 }
-.navigation li.active {
-  -webkit-transform: translatex(30px);
-}
-.navigation li.active:before {
-  left: -30px;
-}
-.navigation .logo {
+#navigation .logo {
   height: 60px;
   font-size: 32px;
   color: #292e32;
@@ -197,28 +190,28 @@ body {
   display: inline-block;
 }
 .likes {
-  background: url('../img/stripes.png') no-repeat 0 0;
+  background: url('../images/stripes.png') no-repeat 0 0;
   width: 13px;
   height: 12px;
   background-size: 29px 25px;
 }
 .views {
   margin-left: 10px;
-  background: url('../img/stripes.png') no-repeat -14px 0px;
+  background: url('../images/stripes.png') no-repeat -14px 0px;
   width: 15px;
   height: 12px;
   background-size: 29px 25px;
 }
 .open {
   margin-left: 10px;
-  background: url('../img/stripes.png') no-repeat 0 -13px;
+  background: url('../images/stripes.png') no-repeat 0 -13px;
   width: 16px;
   height: 12px;
   background-size: 29px 25px;
 }
 .comments {
   margin-left: 10px;
-  background: url('../img/stripes.png') no-repeat -16px -13px;
+  background: url('../images/stripes.png') no-repeat -16px -13px;
   width: 14px;
   height: 12px;
   background-size: 29px 25px;
