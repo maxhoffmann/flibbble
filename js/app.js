@@ -6,18 +6,21 @@
 	var flipscreen,
 			pages,
 
-	init = function () {
+	init = function() {
 
-		document.body.ontouchmove = function (e) {
+		document.body.ontouchmove = function ( e ) {
 			e.preventDefault();
 		};
 
-		document.body.innerHTML = '<div id="menu" class="screen"><ul class="navigation"><li class="logo">flibbble</li><li id="popular" class="active">Popular</li><li id="following">Following</li><li id="likes">Likes</li><li id="debuts">Debuts</li><li id="everyone">Everyone</li></ul></div><div id="flipper" class="screen"></div>';
+		document.body.innerHTML = '<div id="menu" class="screen"><ul id="navigation"><li class="logo">flibbble</li><li class="active"><a href="#popular">Popular</a></li><li><a href="#following">Following</li><li id="likes"><a href="#likes">Likes</a></li><li><a href="#debuts">Debuts</a></li><li><a href="#everyone">Everyone</a></li></ul></div><div id="flipper" class="screen"></div>';
 
-		flipscreen = document.getElementById('flipper');
+		flipscreen = document.getElementById( 'flipper' );
+
+		window.addEventListener( 'hashchange', navigate.to );
 
 		navigate.enable();
-		navigate.to('popular');
+		navigate.to();
+
 		flip.enable();
 		slide.enable();
 
@@ -26,7 +29,7 @@
 	// navigate
 	// -------------------------------------------------------------
 
-	navigate = (function () {
+	navigate = (function() {
 
 		var url = "http://api.dribbble.com/shots/popular",
 				loading = false,
@@ -34,9 +37,10 @@
 				maxpage = 1,
 				user,
 
-		to = function (destination) {
+		to = function() {
 
-			var that = this;
+			var that = this,
+					destination = location.hash.slice(1) || 'popular';
 
 			switch ( destination ) {
 
@@ -48,54 +52,49 @@
 
 						this.url = 'http://api.dribbble.com/players/'+user+'/shots/'+destination;
 
-						JSONP.get( this.url, {per_page:'20', page:'1'}, function(data) {
-								render(data);
-								that.page = 1;
-								that.maxpage = data.pages;
-								slide.center();
-						});
-
 					}
-				break;
 
+				break;
 				default:
 
 					this.url = 'http://api.dribbble.com/shots/'+destination;
 
-					JSONP.get( this.url, {per_page:'20', page:'1'}, function(data) {
-						render(data);
-						that.page = 1;
-						that.maxpage = data.pages;
-						slide.center();
-					});
-
 				break;
 			}
 
-		},
-
-		activate = function (item) {
-
-			if ( document.getElementsByClassName('active')[0] ) {
-				document.getElementsByClassName('active')[0].classList.remove('active');
-			}
-			item.classList.add('active');
+			JSONP.get( this.url, {per_page:'20', page:'1'}, function(data) {
+				render(data);
+				that.page = 1;
+				that.maxpage = data.pages;
+				slide.center();
+			});			
 
 		},
 
 		enable = function () {
 
-			var popular = document.getElementById('popular'),
-			following   = document.getElementById('following'),
-			likes       = document.getElementById('likes'),
-			debuts      = document.getElementById('debuts'),
-			everyone    = document.getElementById('everyone');
+			var navigation = document.getElementById( 'navigation' ),
+			popular        = navigation.children[1],
+			following      = navigation.children[2],
+			likes          = navigation.children[3],
+			debuts         = navigation.children[4],
+			everyone       = navigation.children[5];
 
-			popular.addEventListener('touchstart', function(e) { navigate.activate(this); navigate.to('popular'); }, false);
-			following.addEventListener('touchstart', function(e) { navigate.activate(this); navigate.to('following'); }, false);
-			likes.addEventListener('touchstart', function(e) { navigate.activate(this); navigate.to('likes'); }, false);
-			debuts.addEventListener('touchstart', function(e) { navigate.activate(this); navigate.to('debuts'); }, false);
-			everyone.addEventListener('touchstart', function(e) { navigate.activate(this); navigate.to('everyone'); }, false);
+			popular.addEventListener('touchstart', navigate.activate, false);
+			following.addEventListener('touchstart', navigate.activate, false);
+			likes.addEventListener('touchstart', navigate.activate, false);
+			debuts.addEventListener('touchstart', navigate.activate, false);
+			everyone.addEventListener('touchstart', navigate.activate, false);
+
+		},
+
+		activate = function () {
+
+			if ( document.getElementsByClassName('active')[0] ) {
+				document.getElementsByClassName('active')[0].classList.remove('active');
+			}
+			location.hash = this.href;
+			this.classList.add('active');
 
 		},
 
@@ -114,9 +113,9 @@
 
 		return {
 			to: to,
-			enable: enable,
 			more: more,
 			url: url,
+			enable: enable,
 			activate: activate
 		};
 
@@ -335,7 +334,7 @@
 					}
 
 				} else {
-					
+
 					deg = Math.min( Math.max( (distY-20)*0.485, 0 ), 180 );
 
 					pages[current].style.webkitTransform = "rotateX(" + deg + "deg)";
@@ -462,7 +461,7 @@
 				pages[current].classList.add('hidden');				
 
 				if ( current-3 >= 0 ) {
-					pages[current-3].classList.remove('hidden');					
+					pages[current-3].classList.remove('hidden');
 				}
 
 				current--;
