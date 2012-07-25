@@ -1,4 +1,4 @@
-var flibbble = (function () {
+(function flibbble( window, document, undefined ) {
 
 	// initialization
 	// -------------------------------------------------------------
@@ -61,9 +61,6 @@ var flibbble = (function () {
 				default:
 
 					this.url = 'http://api.dribbble.com/shots/'+destination;
-
-					//local
-					//this.url = 'http://localhost/js/popular.php';
 
 					JSONP.get( this.url, {per_page:'20', page:'1'}, function(data) {
 						render(data);
@@ -327,8 +324,18 @@ var flibbble = (function () {
 			
 				slide.disable();
 
-				if ( current < pages.length-1 ) {
+				if ( current === pages.length-1 ) { // LAST
 
+					deg = Math.min(-Math.log(distY)*25+75,0);
+
+					pages[current].style.webkitTransform = "rotateX(" + -deg + "deg)";
+
+					if ( pages[current].style.webkitTransition !== "none" ) { 
+						pages[current].style.webkitTransition = "none";
+					}
+
+				} else {
+					
 					deg = Math.min( Math.max( (distY-20)*0.485, 0 ), 180 );
 
 					pages[current].style.webkitTransform = "rotateX(" + deg + "deg)";
@@ -343,22 +350,9 @@ var flibbble = (function () {
 
 					pages[current+1].classList.remove('hidden');
 
-					// reset transformations of previous page
 					if ( pages[current-1].style.webkitTransition !== "" && pages[current-1].style.webkitTransform !== "" ) {
 						pages[current-1].style.webkitTransition = "";
 						pages[current-1].style.webkitTransform = "";
-					}
-
-				}
-
-				if ( current === pages.length-1 ) { // transform last
-
-					deg = Math.min(-Math.log(distY)*25+75,0);
-
-					pages[current].style.webkitTransform = "rotateX(" + -deg + "deg)";
-
-					if ( pages[current].style.webkitTransition !== "none" ) { 
-						pages[current].style.webkitTransition = "none";
 					}
 
 				}
@@ -370,7 +364,17 @@ var flibbble = (function () {
 
 				slide.disable();
 
-				if ( current !== 1 ) {
+				if ( current === 1 ) { // FIRST
+
+					deg = Math.min(-Math.log(-distY)*25+75,0);
+
+					pages[0].style.webkitTransform = "rotateX(" + deg + "deg)";
+
+					if ( pages[0].style.webkitTransition !== "none" ) {
+						pages[0].style.webkitTransition = "none";
+					}
+
+				} else {
 
 					deg = Math.max( Math.min( (340 + distY) * 0.485, 180), 0 );
 
@@ -382,19 +386,6 @@ var flibbble = (function () {
 
 				}
 
-				if ( current === 1 ) { // transform first
-
-					deg = Math.min(-Math.log(-distY)*25+75,0);
-
-					pages[0].style.webkitTransform = "rotateX(" + deg + "deg)";
-
-					if ( pages[0].style.webkitTransition !== "none" ) {
-						pages[0].style.webkitTransition = "none";
-					}
-
-				}
-
-				// reset transformations for flip down
 				if ( pages[current].style.webkitTransition !== "" && pages[current].style.webkitTransform !== "" ) {
 					pages[current].style.webkitTransition = "";
 					pages[current].style.webkitTransform = "";
@@ -704,19 +695,6 @@ var flibbble = (function () {
 
 	})();
 
-	// public functions
-	// -------------------------------------------------------------
+	init();
 
-	return {
-
-		init: init
-
-	};
-
-})();
-
-document.addEventListener( "DOMContentLoaded", function () {
-	//if ( navigator.standalone && navigator.platform === 'iPhone' ) {
-		flibbble.init();
-	//}
-});
+})( window, document );
