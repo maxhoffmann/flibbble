@@ -175,9 +175,8 @@ a {
   padding: 0;
   font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
-  -webkit-transition: all ease .3s;
 }
-#navigation .active a {
+#navigation .active {
   color: #d0d4dc;
   text-shadow: 0 1px 0 #f9fafa, 0 -1px 0 #bcc1cd;
 }

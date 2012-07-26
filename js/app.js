@@ -12,11 +12,15 @@
 			e.preventDefault();
 		};
 
-		document.body.innerHTML = '<div id="menu" class="screen"><ul id="navigation"><li class="logo">flibbble</li><li class="active"><a href="#popular">Popular</a></li><li><a href="#following">Following</li><li id="likes"><a href="#likes">Likes</a></li><li><a href="#debuts">Debuts</a></li><li><a href="#everyone">Everyone</a></li></ul></div><div id="flipper" class="screen"></div>';
+		document.body.innerHTML = '<div id="menu" class="screen"><ul id="navigation"><li class="logo">flibbble</li><li data-open="#/popular">Popular</li><li data-open="#/following">Following</li><li data-open="#/likes">Likes</a></li><li data-open="#/debuts">Debuts</li><li data-open="#/everyone">Everyone</li></ul></div><div id="flipper" class="screen"></div>';
 
 		flipscreen = document.getElementById( 'flipper' );
 
-		window.addEventListener( 'hashchange', navigate.to );
+		var handler = function() {
+			navigate.to();
+		};
+
+		window.addEventListener( 'hashchange', handler );
 
 		navigate.enable();
 		navigate.to();
@@ -31,7 +35,7 @@
 
 	navigate = (function() {
 
-		var url = "http://api.dribbble.com/shots/popular",
+		var url = localStorage.getItem('url'),
 				loading = false,
 				page = 1,
 				maxpage = 1,
@@ -40,24 +44,29 @@
 		to = function() {
 
 			var that = this,
-					destination = location.hash.slice(1) || 'popular';
+					destination = ( location.hash ) ? location.hash.slice(2).split("/") : [];
 
-			switch ( destination ) {
+			switch ( destination[0] ) {
 
+				case "player":
+
+					this.url = 'http://api.dribbble.com/players/'+destination[1]+'/shots/';
+
+				break;
 				case "following":
 				case "likes":
 					user = prompt("dribbble username:", user);
 
 					if ( user ) {
 
-						this.url = 'http://api.dribbble.com/players/'+user+'/shots/'+destination;
+						this.url = 'http://api.dribbble.com/players/'+user+'/shots/'+destination[0];
 
 					}
 
 				break;
 				default:
 
-					this.url = 'http://api.dribbble.com/shots/'+destination;
+					this.url = ( ( destination[0] ) ? 'http://api.dribbble.com/shots/'+destination[0] : localStorage.getItem('url') ) || 'http://api.dribbble.com/shots/popular';
 
 				break;
 			}
@@ -67,7 +76,11 @@
 				that.page = 1;
 				that.maxpage = data.pages;
 				slide.center();
-			});			
+				localStorage.setItem('url', that.url);
+			});
+
+			this.page = that.page;
+			this.maxpage = that.maxpage;
 
 		},
 
@@ -88,12 +101,12 @@
 
 		},
 
-		activate = function () {
+		activate = function (e) {
 
 			if ( document.getElementsByClassName('active')[0] ) {
 				document.getElementsByClassName('active')[0].classList.remove('active');
 			}
-			location.hash = this.href;
+			location.hash = this.getAttribute('data-open');
 			this.classList.add('active');
 
 		},
@@ -193,7 +206,7 @@
 
 			front.appendChild(shot);
 
-			front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50" width="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
+			front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span>'+shotsdata.likes_count+' <span class="views"></span>'+shotsdata.views_count+' <span class="comments"></span>'+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><a href="#/player/'+shotsdata.player.username+'" class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50" width="50"></a><a href="#/player/'+shotsdata.player.username+'" class="author-name">'+shotsdata.player.name+'</a></div></div>';
 
 			page.appendChild(front);
 			return page;
@@ -227,8 +240,8 @@
 
 			front.appendChild(shot1);
 			back.appendChild(shot2);
-			front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata1.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata1.likes_count+' <span class="views"></span> '+shotsdata1.views_count+' <span class="comments"></span> '+shotsdata1.comments_count+' <a href="'+shotsdata1.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata1.player.avatar_url+'" height="50" width="50"></div><div class="author-name">'+shotsdata1.player.name+'</div></div></div>';
-			back.innerHTML += '<div class="details"><h2 class="title">'+shotsdata2.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata2.likes_count+' <span class="views"></span> '+shotsdata2.views_count+' <span class="comments"></span> '+shotsdata2.comments_count+' <a href="'+shotsdata2.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata2.player.avatar_url+'" height="50" width="50"></div><div class="author-name">'+shotsdata2.player.name+'</div></div></div>';			
+			front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata1.title+'</h2><div class="meta"><span class="likes"></span>'+shotsdata1.likes_count+' <span class="views"></span>'+shotsdata1.views_count+' <span class="comments"></span>'+shotsdata1.comments_count+' <a href="'+shotsdata1.url+'" class="open"></a></div><div class="author"><a href="#/player/'+shotsdata1.player.username+'" class="author-image"><img src="'+shotsdata1.player.avatar_url+'" height="50" width="50"></a><a href="#/player/'+shotsdata1.player.username+'" class="author-name">'+shotsdata1.player.name+'</a></div></div>';
+			back.innerHTML += '<div class="details"><h2 class="title">'+shotsdata2.title+'</h2><div class="meta"><span class="likes"></span>'+shotsdata2.likes_count+' <span class="views"></span>'+shotsdata2.views_count+' <span class="comments"></span>'+shotsdata2.comments_count+' <a href="'+shotsdata2.url+'" class="open"></a></div><div class="author"><a href="#/player/'+shotsdata2.player.username+'" class="author-image"><img src="'+shotsdata2.player.avatar_url+'" height="50" width="50"></a><a href="#/player/'+shotsdata2.player.username+'" class="author-name">'+shotsdata2.player.name+'</a></div></div>';			
 			page.appendChild(front);
 			page.appendChild(back);
 			return page;
@@ -239,7 +252,11 @@
 			
 			var page          = document.createElement('div'),
 			front             = document.createElement('div');
-			page.className    = "page last hidden";
+			if ( length > 2 ) {
+				page.className    = "page last hidden";
+			} else {
+				page.className    = "page last";				
+			}
 
 			if ( shotsdata !== undefined ) {
 
@@ -252,7 +269,7 @@
 				shot.className  = "shot";
 
 				front.appendChild(shot);
-				front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50" width="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
+				front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span>'+shotsdata.likes_count+' <span class="views"></span>'+shotsdata.views_count+' <span class="comments"></span>'+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><a href="#/player/'+shotsdata.player.username+'" class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50" width="50"></a><a href="#/player/'+shotsdata.player.username+'" class="author-name">'+shotsdata.player.name+'</a></div></div>';
 
 			} else {
 
@@ -278,7 +295,7 @@
 			shot.className  = "shot";
 
 			back.appendChild(shot);
-			back.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span> '+shotsdata.likes_count+' <span class="views"></span> '+shotsdata.views_count+' <span class="comments"></span> '+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><div class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50" width="50"></div><div class="author-name">'+shotsdata.player.name+'</div></div></div>';
+			back.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span>'+shotsdata.likes_count+' <span class="views"></span>'+shotsdata.views_count+' <span class="comments"></span>'+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><a href="#/player/'+shotsdata.player.username+'" class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50" width="50"></a><a href="#/player/'+shotsdata.player.username+'" class="author-name">'+shotsdata.player.name+'</a></div></div>';
 
 			return back;
 
@@ -539,7 +556,7 @@
 
 			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX < -50 ) {
 
-				if ( e.target.classList.contains('shot') && ! e.target.classList.contains('left') ) {
+				if ( ( e.target.classList.contains('shot') && ! e.target.classList.contains('left') ) || e.target.classList.contains('text') ) {
 
 					right();
 				
