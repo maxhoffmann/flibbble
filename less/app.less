@@ -36,9 +36,16 @@ body {
 }
 
 a {
-	color: darken(@color, 5%);
+	color: @color;
 	text-decoration: none;
 	-webkit-tap-highlight-color: transparent;
+}
+
+a:hover,
+a:active {
+	color: darken(@logo-color, 5%);
+	text-shadow:
+		0 1px 0 white;
 }
 
 .screen {
@@ -118,6 +125,7 @@ a {
 	padding-top: 85px;
 	padding-left: 30px;
 	text-align: center;
+	text-shadow: 0 1px 0 white;
 }
 
 .page .shot {
@@ -148,10 +156,6 @@ a {
 	text-shadow: 0 1px 0 @light;
 }
 
-.details a {
-	color: @color;
-}
-
 .title {
 	width: 240px;
 	margin: 0;
@@ -177,6 +181,11 @@ a {
 	box-shadow: 0 1px 2px @shadow;
 }
 
+.author-image:hover,
+.autor-image:active {
+	border-color: @color;
+}
+
 .author-image img {
 	background: transparent;
 	-webkit-border-radius: 5px;
@@ -184,18 +193,21 @@ a {
 }
 
 .author-name {
-	display: block;
+	float: left;
 	width: 168px;
-	padding-top: 32px;
+	margin-top: 17px;
+	display: block;	
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;	
 }
 
 .title,
-.meta,
-.author-image {
+.meta {
 	margin-top: 16px;
+}
+.author {
+	margin-top: 22px;
 }
 
 /* Menu
@@ -219,6 +231,7 @@ a {
 	height: 70px;
 	margin: 0;
 	padding: 0;	
+	color: darken(@color, 5%);
 	font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
 	text-shadow:
 		0 1px 0 @light;
@@ -268,10 +281,10 @@ a {
 }
 
 .open {
-	margin-left: 10px;	
-	background: url('../images/stripes-color.png') no-repeat 0 -13px;
+	margin-left: 10px;
 	width: 16px;
 	height: 12px;
+	background: url('../images/stripes-color.png') no-repeat 0 -13px;
 	background-size: 29px 25px;
 }
 
