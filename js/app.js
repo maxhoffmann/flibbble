@@ -39,7 +39,7 @@
 				loading = false,
 				page = 1,
 				maxpage = 1,
-				user,
+				player,
 
 		to = function() {
 
@@ -55,28 +55,35 @@
 				break;
 				case "following":
 				case "likes":
-					user = prompt("dribbble username:", user);
+					player = prompt("dribbble username:", player);
 
-					if ( user ) {
+					if ( player ) {
 
-						this.url = 'http://api.dribbble.com/players/'+user+'/shots/'+destination[0];
+						this.url = 'http://api.dribbble.com/players/'+player+'/shots/'+destination[0];
 
 					}
 
 				break;
+				case "popular":
+				case "debuts":
+				case "everyone":
+
+					this.url = 'http://api.dribbble.com/shots/'+destination[0];
+
+				break;
 				default:
 
-					this.url = ( ( destination[0] ) ? 'http://api.dribbble.com/shots/'+destination[0] : localStorage.getItem('url') ) || 'http://api.dribbble.com/shots/popular';
+					this.url = localStorage.getItem('url') || 'http://api.dribbble.com/shots/popular';
 
 				break;
 			}
 
 			JSONP.get( this.url, {per_page:'20', page:'1'}, function(data) {
-				render(data);
-				that.page = 1;
-				that.maxpage = data.pages;
-				slide.center();
-				localStorage.setItem('url', that.url);
+					render(data);
+					that.page = 1;
+					that.maxpage = data.pages;
+					slide.center();
+					localStorage.setItem('url', that.url);
 			});
 
 			this.page = that.page;
@@ -345,31 +352,20 @@
 					deg = Math.min(-Math.log(distY)*25+75,0);
 
 					pages[current].style.webkitTransform = "rotateX(" + -deg + "deg)";
-
-					if ( pages[current].style.webkitTransition !== "none" ) { 
-						pages[current].style.webkitTransition = "none";
-					}
+					pages[current].style.webkitTransition = "none";					
 
 				} else {
 
 					deg = Math.min( Math.max( (distY-20)*0.485, 0 ), 180 );
 
 					pages[current].style.webkitTransform = "rotateX(" + deg + "deg)";
-
-					if ( pages[current].style.webkitTransition !== "none" ) { 
-						pages[current].style.webkitTransition = "none";
-					}
-					
-					if ( pages[current].style.zIndex === "" ) {
-						pages[current].style.zIndex = +pages[current-1].style.zIndex+1;
-					}
+					pages[current].style.webkitTransition = "none";					
+					pages[current].style.zIndex = +pages[current-1].style.zIndex+1;
 
 					pages[current+1].classList.remove('hidden');
 
-					if ( pages[current-1].style.webkitTransition !== "" && pages[current-1].style.webkitTransform !== "" ) {
-						pages[current-1].style.webkitTransition = "";
-						pages[current-1].style.webkitTransform = "";
-					}
+					pages[current-1].style.webkitTransition = "";
+					pages[current-1].style.webkitTransform = "";
 
 				}
 
@@ -385,27 +381,21 @@
 					deg = Math.min(-Math.log(-distY)*25+75,0);
 
 					pages[0].style.webkitTransform = "rotateX(" + deg + "deg)";
-
-					if ( pages[0].style.webkitTransition !== "none" ) {
-						pages[0].style.webkitTransition = "none";
-					}
+					pages[0].style.webkitTransition = "none";
 
 				} else {
 
 					deg = Math.max( Math.min( (340 + distY) * 0.485, 180), 0 );
 
 					pages[current-1].style.webkitTransform = "rotateX(" + deg +"deg)";
+					pages[current-1].style.webkitTransition = "none";
 
-					if ( pages[current-1].style.webkitTransition !== "none" ) {
-						pages[current-1].style.webkitTransition = "none";
-					}
+					pages[current-2].classList.remove('hidden');
 
 				}
 
-				if ( pages[current].style.webkitTransition !== "" && pages[current].style.webkitTransform !== "" ) {
-					pages[current].style.webkitTransition = "";
-					pages[current].style.webkitTransform = "";
-				}
+				pages[current].style.webkitTransition = "";
+				pages[current].style.webkitTransform = "";
 
 			}
 
@@ -433,6 +423,9 @@
 				pages[current-1].style.webkitTransition = "";
 				pages[current-1].style.webkitTransform = "";
 				pages[current-1].classList.add('up');
+				if ( current-2 >= 0 ) {				
+					pages[current-2].classList.add('hidden');
+				}
 
 			}
 
@@ -443,8 +436,8 @@
 				pages[current].style.webkitTransform = "";
 				pages[current].classList.add('up');
 
-				if ( current-2 >= 0 ) {
-					pages[current-2].classList.add('hidden');					
+				if ( current-1 >= 0 ) {
+					pages[current-1].classList.add('hidden');
 				}
 
 				current++;
@@ -475,11 +468,7 @@
 				}
 
 				pages[current].style.zIndex = "";
-				pages[current].classList.add('hidden');				
-
-				if ( current-3 >= 0 ) {
-					pages[current-3].classList.remove('hidden');
-				}
+				pages[current].classList.add('hidden');
 
 				current--;
 
