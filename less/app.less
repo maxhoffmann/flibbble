@@ -30,7 +30,7 @@ body {
 	padding: 0;
 	color: @color;	
 	background: darken(@background, 10%);
-	font: 16px/1.5em "Helvetica Neue", Helvetica, sans-serif;
+	font: 16px/24px "Helvetica Neue", Helvetica, sans-serif;
 	-webkit-user-select: none;
 }
 
@@ -70,6 +70,25 @@ a:active {
   -webkit-transform: translateX(240px);	
 }
 
+.loading {
+	margin-top: 427px;
+	text-align: center;
+	text-shadow: 0 1px 0 white;	
+}
+
+.arrow {
+	display: inline-block;
+	margin-right: 5px;
+	font-size: 1.8em;
+	font-weight: bold;	
+	vertical-align: bottom;
+	-webkit-transition: -webkit-transform ease-out .4s; 
+}
+
+.spin {
+	-webkit-transform: rotate(-360deg);
+}
+
 /* Pages
    ========================================================================== */
 
@@ -80,12 +99,16 @@ a:active {
 	height: 50%;
   -webkit-transform-style: preserve-3d;
   -webkit-transform-origin: center top;
-  -webkit-transform: rotateX(0);
-  -webkit-transition: all ease-out .5s; // -webkit-transform ease-out .5s, visibility ease-out .5s; causes flicker
+  -webkit-transform: rotateX(0) translateZ(0);
+  -webkit-transition: all ease-out .5s;
 }
 
 .page.up {
 	-webkit-transform: rotateX(180deg) translateZ(0);
+}
+
+.page.hidden {
+  -webkit-transition: -webkit-transform ease-out .5s, visibility ease-out .4s; // fixes flicker on flip down
 }
 
 .page .front,
@@ -97,11 +120,14 @@ a:active {
 	padding: 20px 30px 20px 50px;
 	overflow: hidden;
 
-	font: bold 16px/1.5em 'Helvetica Neue', Helvetica, sans-serif;	
+	font: bold 16px/24px 'Helvetica Neue', Helvetica, sans-serif;	
   background: -webkit-radial-gradient(center, @background, darken(@background, 10%));
-
   -webkit-backface-visibility: hidden;
-  -webkit-transform-style: preserve-3d; // fixes Chrome flicker  
+  -webkit-transform-style: preserve-3d; // fixes Chrome flicker
+
+  // Baseline Grid
+  //background: -webkit-linear-gradient(top, transparent 16px, black 25px);
+  //background-size: 24px;
 }
 
 .page .back {
@@ -121,7 +147,7 @@ a:active {
 
 .last .text {
 	font-size: 2em;
-	padding-top: 85px;
+	padding-top: 99px;
 	padding-left: 30px;
 	text-align: center;
 	text-shadow: 0 1px 0 white;
@@ -157,7 +183,7 @@ a:active {
 
 .title {
 	width: 240px;
-	margin: 0;
+	margin: 24px 0 0 0;
 	font: bold 21px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
 	overflow: hidden;
 	white-space: nowrap;
@@ -191,7 +217,7 @@ a:active {
 
 .author-name {
 	float: left;
-	width: 168px;
+	width: 167px;
 	margin-top: 17px;
 	display: block;	
 	overflow: hidden;
@@ -199,40 +225,50 @@ a:active {
 	text-overflow: ellipsis;	
 }
 
-.title,
-.meta {
-	margin-top: 16px;
+.title {
+	margin-top: 24px 0 0 0;
 }
+
+.meta {
+	margin-top: 6px;
+	padding-left: 1px;
+}
+
 .author {
-	margin-top: 22px;
+	margin-top: 17px;
+	padding-left: 1px;
 }
 
 /* Menu
    ========================================================================== */
 
 #menu {
-	padding: 20px;
   background: -webkit-radial-gradient(center, @background, darken(@background, 10%));
 	z-index: 1;
   -webkit-transition: -webkit-transform ease .3s;
 }
 
 #navigation {
-	margin: 0;
+	margin: 20px 0 0 0;
 	padding: 0;
 	list-style: none;
 }
 
 #navigation li {
 	position: relative;
-	height: 70px;
 	margin: 0;
-	padding: 0;	
+	padding: 10px 0 16px 20px;	
 	color: darken(@color, 5%);
-	font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
+	font: bold 42px/1em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
 	text-shadow:
 		0 1px 0 @light;
 }
+
+// #navigation .active {
+// 	color: hsl(220, 10%, 100%);
+// 	text-shadow: 0 1px 0 hsl(220, 10%, 63%);
+// 	background: -webkit-linear-gradient(top, hsl(220, 14%, 70%), hsl(220, 18%, 80%) );
+// }
 
 #navigation .active {
 	color: @logo-color;
@@ -242,7 +278,6 @@ a:active {
 }
 
 #navigation .logo {
-	height: 60px;
 	font-size: 32px;
 	color: @logo-color;
 	text-align: center;

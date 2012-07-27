@@ -8,7 +8,7 @@
 
 	init = function() {
 
-		document.body.ontouchmove = function ( e ) {
+		document.body.ontouchmove = function( e ) {
 			e.preventDefault();
 		};
 
@@ -91,34 +91,29 @@
 
 		},
 
-		enable = function () {
+		enable = function() {
 
-			var navigation = document.getElementById( 'navigation' ),
-			popular        = navigation.children[1],
-			following      = navigation.children[2],
-			likes          = navigation.children[3],
-			debuts         = navigation.children[4],
-			everyone       = navigation.children[5];
+			var navigation = document.getElementById( 'navigation' );
 
-			popular.addEventListener('touchstart', navigate.activate, false);
-			following.addEventListener('touchstart', navigate.activate, false);
-			likes.addEventListener('touchstart', navigate.activate, false);
-			debuts.addEventListener('touchstart', navigate.activate, false);
-			everyone.addEventListener('touchstart', navigate.activate, false);
+			navigation.children[1].addEventListener('touchstart', navigate.activate, false);
+			navigation.children[2].addEventListener('touchstart', navigate.activate, false);
+			navigation.children[3].addEventListener('touchstart', navigate.activate, false);
+			navigation.children[4].addEventListener('touchstart', navigate.activate, false);
+			navigation.children[5].addEventListener('touchstart', navigate.activate, false);
 
 		},
 
-		activate = function (e) {
+		activate = function() {
 
 			if ( document.getElementsByClassName('active')[0] ) {
 				document.getElementsByClassName('active')[0].classList.remove('active');
 			}
+			this.classList.add('active');			
 			location.hash = this.getAttribute('data-open');
-			this.classList.add('active');
 
 		},
 
-		more = function (current) {
+		more = function(current) {
 
 			if ( ! loading && this.page < this.maxpage ) {
 				loading = true;
@@ -181,9 +176,12 @@
 		},
 
 		insert = function() {
-			
-			flipscreen.innerHTML = "";
+
 			flip.reset();
+			flipscreen.innerHTML = "";
+			if ( data.pages > 1 ) {
+				flipscreen.appendChild( loading() );
+			}			
 			flipscreen.appendChild(container);
 			pages = document.getElementsByClassName('page');
 
@@ -191,6 +189,9 @@
 
 		append = function() {
 
+			if ( data.page === data.pages ) {
+				flipscreen.removeChild( flipscreen.firstChild );
+			}
 			pages[pages.length-1].appendChild(backshot);
 			pages[pages.length-1].classList.remove('last');
 			flipscreen.appendChild(container);
@@ -290,7 +291,7 @@
 
 		},
 
-		backPage = function ( shotsdata ) {
+		backPage = function( shotsdata ) {
 
 			var shot        = document.createElement('img'),
 			back            = document.createElement('div');
@@ -305,6 +306,16 @@
 			back.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span>'+shotsdata.likes_count+' <span class="views"></span>'+shotsdata.views_count+' <span class="comments"></span>'+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><a href="#/player/'+shotsdata.player.username+'" class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50" width="50"></a><a href="#/player/'+shotsdata.player.username+'" class="author-name">'+shotsdata.player.name+'</a></div></div>';
 
 			return back;
+
+		},
+
+		loading = function() {
+
+			var loading = document.createElement('div');
+			loading.className = "loading";
+			loading.innerHTML = '<span class="arrow">↺</span>drag up for more shots';
+
+			return loading;
 
 		};
 
@@ -321,9 +332,9 @@
 	// flip functions
 	// -------------------------------------------------------------
 
-	flip = (function () {
+	flip = (function() {
 
-		var current  = 1,
+		var current = 1,
 
 		startY, startX, distY, distX, deg, time,
 
@@ -349,18 +360,23 @@
 
 				if ( current === pages.length-1 ) { // LAST
 
-					deg = Math.min(-Math.log(distY)*25+75,0);
+					deg = Math.min(-Math.log(distY)*25+75,1);
 
 					pages[current].style.webkitTransform = "rotateX(" + -deg + "deg)";
 					pages[current].style.webkitTransition = "none";					
 
+					if ( deg < -60 ) {
+						flipscreen.firstChild.firstChild.classList.add('spin');
+					} else {
+						flipscreen.firstChild.firstChild.classList.remove('spin');							
+					}
+
 				} else {
 
-					deg = Math.min( Math.max( (distY-20)*0.485, 0 ), 180 );
+					deg = Math.min( Math.max( (distY-20)*0.485, 1 ), 180 );
 
 					pages[current].style.webkitTransform = "rotateX(" + deg + "deg)";
 					pages[current].style.webkitTransition = "none";					
-					pages[current].style.zIndex = +pages[current-1].style.zIndex+1;
 
 					pages[current+1].classList.remove('hidden');
 
@@ -378,14 +394,14 @@
 
 				if ( current === 1 ) { // FIRST
 
-					deg = Math.min(-Math.log(-distY)*25+75,0);
+					deg = Math.min(-Math.log(-distY)*25+75, 1 );
 
 					pages[0].style.webkitTransform = "rotateX(" + deg + "deg)";
 					pages[0].style.webkitTransition = "none";
 
 				} else {
 
-					deg = Math.max( Math.min( (340 + distY) * 0.485, 180), 0 );
+					deg = Math.max( Math.min( (340 + distY) * 0.485, 180), 1 );
 
 					pages[current-1].style.webkitTransform = "rotateX(" + deg +"deg)";
 					pages[current-1].style.webkitTransition = "none";
@@ -402,10 +418,6 @@
 		},
 
 		end = function(e) {
-
-			if ( current === pages.length-1 ) {
-				navigate.more(current);
-			}
 
 			var ms = new Date().getTime()-time;
 
@@ -429,6 +441,28 @@
 
 			}
 
+			// flip back down
+			if ( deg < 90 && ( ms > 500 || current === pages.length-1 ) && distY > 0 ) {
+
+				pages[current].style.webkitTransition = "";
+				pages[current].style.webkitTransform = "";
+				if ( current < pages.length-1 ) {
+					pages[current+1].classList.add('hidden');
+				}
+
+				if ( current === pages.length-1) {
+
+					pages[current-1].style.webkitTransition = "";
+					pages[current-1].style.webkitTransform = "";
+
+					if ( deg < -60 ) {
+						navigate.more(current);
+					}
+
+				}
+
+			}
+
 			// flip up			
 			if ( ( deg >= 90 || ms <= 500 ) && distY > 0 && current < pages.length-1 && Math.abs(distX) < Math.abs(distY) ) {
 
@@ -444,18 +478,6 @@
 
 			}
 
-			// flip back down
-			if ( deg < 90 && ( ms > 500 || current === pages.length-1 ) && distY > 0 ) {
-
-				pages[current].style.webkitTransition = "";
-				pages[current].style.webkitTransform = "";
-
-				if ( current === pages.length-1 ) {
-					pages[current].style.zIndex = +pages[current-1].style.zIndex+1;
-				}
-
-			}
-
 			// flip down			
 			if ( ( deg < 90 || ms < 500 ) && distY < 0 && current !== 1 && Math.abs(distX) < Math.abs(distY) ) {
 
@@ -467,7 +489,6 @@
 					pages[current+1].classList.add('hidden');
 				}
 
-				pages[current].style.zIndex = "";
 				pages[current].classList.add('hidden');
 
 				current--;
@@ -480,7 +501,7 @@
 
 		},
 
-		enable = function () {
+		enable = function() {
 		
 			flipscreen.addEventListener('touchstart', start, false);
 			flipscreen.addEventListener('touchmove', move, false);
@@ -488,7 +509,7 @@
 
 		},
 
-		disable = function () {
+		disable = function() {
 
 			flipscreen.removeEventListener('touchstart', start);
 			flipscreen.removeEventListener('touchmove', move);
@@ -496,7 +517,7 @@
 
 		},
 
-		reset = function () {
+		reset = function() {
 			current = 1;
 		};
 
@@ -513,7 +534,7 @@
 	// slide functions
 	// -------------------------------------------------------------
 
-	slide = (function () {
+	slide = (function() {
 
 		var startY, startX, distY, distX, position = "center",
 
@@ -589,7 +610,7 @@
 
 		},
 
-		enable = function () {
+		enable = function() {
 		
 			flipscreen.addEventListener('touchstart', start, false);
 			flipscreen.addEventListener('touchmove', move, false);
@@ -597,7 +618,7 @@
 
 		},
 
-		disable = function () {
+		disable = function() {
 
 			flipscreen.removeEventListener('touchstart', start);
 			flipscreen.removeEventListener('touchmove', move);
@@ -617,7 +638,7 @@
 	// JSONP
 	// -------------------------------------------------------------
 
-	JSONP = (function () {
+	JSONP = (function() {
 
 		var counter = 0, head, query, key, window = this, config = {};
 
@@ -628,7 +649,7 @@
 			script.src   = url;
 			script.async = true;
 
-			script.onload = script.onreadystatechange = function () {
+			script.onload = script.onreadystatechange = function() {
 
 				if ( !done && (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") ) {
 

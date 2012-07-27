@@ -15,7 +15,7 @@ body {
   padding: 0;
   color: #737b8c;
   background: #dcdfe5;
-  font: 16px/1.5em "Helvetica Neue", Helvetica, sans-serif;
+  font: 16px/24px "Helvetica Neue", Helvetica, sans-serif;
   -webkit-user-select: none;
 }
 a {
@@ -48,6 +48,22 @@ a:active {
 #flipper.right {
   -webkit-transform: translatex(240px);
 }
+.loading {
+  margin-top: 427px;
+  text-align: center;
+  text-shadow: 0 1px 0 white;
+}
+.arrow {
+  display: inline-block;
+  margin-right: 5px;
+  font-size: 1.8em;
+  font-weight: bold;
+  vertical-align: bottom;
+  -webkit-transition: -webkit-transform ease-out 0.4s;
+}
+.spin {
+  -webkit-transform: rotate(-360deg);
+}
 /* Pages
    ========================================================================== */
 .page {
@@ -57,11 +73,14 @@ a:active {
   height: 50%;
   -webkit-transform-style: preserve-3d;
   -webkit-transform-origin: center top;
-  -webkit-transform: rotatex(0);
+  -webkit-transform: rotatex(0) translatez(0);
   -webkit-transition: all ease-out 0.5s;
 }
 .page.up {
   -webkit-transform: rotatex(180deg) translatez(0);
+}
+.page.hidden {
+  -webkit-transition: -webkit-transform ease-out 0.5s, visibility ease-out 0.4s;
 }
 .page .front,
 .page .back {
@@ -71,7 +90,7 @@ a:active {
   height: 100%;
   padding: 20px 30px 20px 50px;
   overflow: hidden;
-  font: bold 16px/1.5em 'Helvetica Neue', Helvetica, sans-serif;
+  font: bold 16px/24px 'Helvetica Neue', Helvetica, sans-serif;
   background: -webkit-radial-gradient(center, #f9fafb, #dcdfe5);
   -webkit-backface-visibility: hidden;
   -webkit-transform-style: preserve-3d;
@@ -90,7 +109,7 @@ a:active {
 }
 .last .text {
   font-size: 2em;
-  padding-top: 85px;
+  padding-top: 99px;
   padding-left: 30px;
   text-align: center;
   text-shadow: 0 1px 0 white;
@@ -119,7 +138,7 @@ a:active {
 }
 .title {
   width: 240px;
-  margin: 0;
+  margin: 24px 0 0 0;
   font: bold 21px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
   overflow: hidden;
   white-space: nowrap;
@@ -148,40 +167,42 @@ a:active {
 }
 .author-name {
   float: left;
-  width: 168px;
+  width: 167px;
   margin-top: 17px;
   display: block;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.title,
+.title {
+  margin-top: 24px 0 0 0;
+}
 .meta {
-  margin-top: 16px;
+  margin-top: 6px;
+  padding-left: 1px;
 }
 .author {
-  margin-top: 22px;
+  margin-top: 17px;
+  padding-left: 1px;
 }
 /* Menu
    ========================================================================== */
 #menu {
-  padding: 20px;
   background: -webkit-radial-gradient(center, #f9fafb, #dcdfe5);
   z-index: 1;
   -webkit-transition: -webkit-transform ease 0.3s;
 }
 #navigation {
-  margin: 0;
+  margin: 20px 0 0 0;
   padding: 0;
   list-style: none;
 }
 #navigation li {
   position: relative;
-  height: 70px;
   margin: 0;
-  padding: 0;
+  padding: 10px 0 16px 20px;
   color: #676f7e;
-  font: bold 42px/1.5em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
+  font: bold 42px/1em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 #navigation .active {
@@ -189,7 +210,6 @@ a:active {
   text-shadow: 0 1px 0 #f9fafa, 0 -1px 0 #bcc1cd;
 }
 #navigation .logo {
-  height: 60px;
   font-size: 32px;
   color: #d0d4dc;
   text-align: center;
