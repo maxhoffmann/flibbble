@@ -385,6 +385,10 @@
 
 				}
 
+				if ( current > 1 ) {
+					pages[current-2].classList.add('hidden');
+				}
+
 			}
 
 			// FLIP DOWN
@@ -412,6 +416,10 @@
 
 				pages[current].style.webkitTransition = "";
 				pages[current].style.webkitTransform = "";
+
+				if ( current < pages.length-1 ) {
+					pages[current+1].classList.add('hidden');					
+				}
 
 			}
 
