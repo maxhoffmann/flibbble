@@ -78,7 +78,7 @@
 				break;
 			}
 
-			JSONP.get( this.url, {per_page:'20', page:'1'}, function(data) {
+			JSONP.get( this.url, {per_page:'20', page:'1'}, function( data ) {
 					render(data);
 					that.page = 1;
 					that.maxpage = data.pages;
@@ -113,7 +113,7 @@
 
 		},
 
-		more = function(current) {
+		more = function( current ) {
 
 			if ( ! loading && this.page < this.maxpage ) {
 				loading = true;
@@ -139,38 +139,86 @@
 	// rendering
 	// -------------------------------------------------------------
 
-	render = function(data) {
+	render = function( data ) {
 		
 		var length = data.shots.length,
 		container  = document.createDocumentFragment(),
 		i          = 0,
-		backshot,
-
+		
 		build = function() {
 
 			for ( ; i < length; i++ ) {
 
+				var page = document.createElement('div');
+				page.className = "page";
+
+				// first page
 				if ( i === 0 && data.page === 1 ) {
-					container.appendChild( firstPage( data.shots[0] ) );
+
+					page.appendChild( side() );
+					page.classList.add('first');						
+					page.firstChild.classList.add('front');
+
+					container.appendChild( page );
+
 				}
+
+				// back of last page
 				if ( i === 0 && data.page > 1 ) {
-					backshot = backPage( data.shots[0] );
+					pages[pages.length-1].appendChild( side() );
+					pages[pages.length-1].classList.remove('last');
+					pages[pages.length-1].lastChild.classList.add('back');					
+				}				
+
+				// page with front and back
+				if ( i !== 0 && i !== length-1 ) {
+
+					if ( i !== 1 ) {
+						page.classList.add('hidden');
+					}
+
+					page.appendChild( side() );
+					i++;
+					page.appendChild( side() );
+
+					page.firstChild.classList.add('front');
+					page.lastChild.classList.add('back');
+
+					container.appendChild( page );
+
 				}
+
+				// last page
 				if ( i === length-1 ) {
 
+					console.log(i, length-1);
+
 					if ( length%2 === 0) {
-						container.appendChild( lastPage( data.shots[length-1] ) );
+
+						page.classList.add('last');
+						if ( i !== 1 ) {
+							page.classList.add('hidden');
+						}
+						page.appendChild( side() );
+						page.firstChild.classList.add('front');
+
 					} else {
-						container.appendChild( lastPage() );
+
+						container.appendChild( page );
+
+						page = document.createElement('div');
+						page.className = "page last";
+						if ( i !== 0 ) {
+							page.classList.add('hidden');
+						}
+						page.innerHTML += '<div class="front text">END</div>';
+
 					}
 
+					container.appendChild( page );
+
 				}
-				if ( i !== 0 && i !== length-1 ) {
-					container.appendChild( page( data.shots[i], data.shots[i+1] ) );
-					if ( i !== length-2 ) {
-						i++;
-					}
-				}
+
 			}
 
 		},
@@ -192,120 +240,48 @@
 			if ( data.page === data.pages ) {
 				flipscreen.removeChild( flipscreen.firstChild );
 			}
-			pages[pages.length-1].appendChild(backshot);
-			pages[pages.length-1].classList.remove('last');
 			flipscreen.appendChild(container);
 			pages = document.getElementsByClassName('page');
 
 		},
 
-		firstPage = function( shotsdata ) {
+		side = function() {
 
-			var page          = document.createElement('div'),
-			front             = document.createElement('div'),
-			shot              = document.createElement('img');
-			page.className    = "page first";
-			front.className   = "front";
+			var side = document.createElement('div'),
+			shot = document.createElement('img'),
+			details = document.createElement('div'),
+			author = document.createElement('div'),
+			authorImageLink = document.createElement('a'),
+			authorImage = document.createElement('img');
+
+			shot.className    = "shot";
 			shot.height       = 240;
 			shot.width        = 320;
-			shot.src          = shotsdata.image_url;
-			shot.alt          = shotsdata.title;
-			shot.className    = "shot";
+			shot.src          = data.shots[i].image_url;			
 
-			front.appendChild(shot);
+			details.className = "details";
+			details.innerHTML = '<h2 class="title">'+data.shots[i].title+'</h2>';
+			details.innerHTML += '<div class="meta"><span class="likes"></span>'+data.shots[i].likes_count+' <span class="views"></span>'+data.shots[i].views_count+' <span class="comments"></span>'+data.shots[i].comments_count+' <a href="'+data.shots[i].url+'" class="open"></a></div>';
 
-			front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span>'+shotsdata.likes_count+' <span class="views"></span>'+shotsdata.views_count+' <span class="comments"></span>'+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><a href="#/player/'+shotsdata.player.username+'" class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50" width="50"></a><a href="#/player/'+shotsdata.player.username+'" class="author-name">'+shotsdata.player.name+'</a></div></div>';
+			author.className = "author";
 
-			page.appendChild(front);
-			return page;
+			authorImageLink.className = "author-image";
+			authorImageLink.href = '#/player/'+data.shots[i].player.username;
 
-		},
+			authorImage.width = "50";
+			authorImage.height = "50";
+			authorImage.src = data.shots[i].player.avatar_url;
 
-		page = function( shotsdata1, shotsdata2 ) {
+			authorImageLink.appendChild(authorImage);
 
-			var page        = document.createElement('div'),
-			front           = document.createElement('div'),
-			back            = document.createElement('div'),
-			shot1           = document.createElement('img'),
-			shot2           = document.createElement('img');
-			if ( i === 1 ) {
-				page.className  = "page";
-			} else {
-				page.className  = "page hidden";				
-			}
-			front.className = "front";
-			back.className  = "back";
-			shot1.height    = 240;
-			shot1.width     = 320;
-			shot2.height    = 240;
-			shot2.width     = 320;
-			shot1.src       = shotsdata1.image_url;
-			shot1.alt       = shotsdata1.title;
-			shot2.src       = shotsdata2.image_url;
-			shot2.alt       = shotsdata2.title;
-			shot1.className = "shot";
-			shot2.className = "shot";
+			author.appendChild(authorImageLink);
+			author.innerHTML += '<a href="#/player/'+data.shots[i].player.username+'" class="author-name">'+data.shots[i].player.name+'</a>';
 
-			front.appendChild(shot1);
-			back.appendChild(shot2);
-			front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata1.title+'</h2><div class="meta"><span class="likes"></span>'+shotsdata1.likes_count+' <span class="views"></span>'+shotsdata1.views_count+' <span class="comments"></span>'+shotsdata1.comments_count+' <a href="'+shotsdata1.url+'" class="open"></a></div><div class="author"><a href="#/player/'+shotsdata1.player.username+'" class="author-image"><img src="'+shotsdata1.player.avatar_url+'" height="50" width="50"></a><a href="#/player/'+shotsdata1.player.username+'" class="author-name">'+shotsdata1.player.name+'</a></div></div>';
-			back.innerHTML += '<div class="details"><h2 class="title">'+shotsdata2.title+'</h2><div class="meta"><span class="likes"></span>'+shotsdata2.likes_count+' <span class="views"></span>'+shotsdata2.views_count+' <span class="comments"></span>'+shotsdata2.comments_count+' <a href="'+shotsdata2.url+'" class="open"></a></div><div class="author"><a href="#/player/'+shotsdata2.player.username+'" class="author-image"><img src="'+shotsdata2.player.avatar_url+'" height="50" width="50"></a><a href="#/player/'+shotsdata2.player.username+'" class="author-name">'+shotsdata2.player.name+'</a></div></div>';			
-			page.appendChild(front);
-			page.appendChild(back);
-			return page;
+			details.appendChild(author);
+			side.appendChild(shot);
+			side.appendChild(details);
 
-		},
-
-		lastPage = function( shotsdata ) {
-			
-			var page          = document.createElement('div'),
-			front             = document.createElement('div');
-			if ( length > 2 ) {
-				page.className    = "page last hidden";
-			} else {
-				page.className    = "page last";				
-			}
-
-			if ( shotsdata !== undefined ) {
-
-				var shot        = document.createElement('img');
-				front.className = "front";
-				shot.height     = 240;
-				shot.width      = 320;
-				shot.src        = shotsdata.image_url;
-				shot.alt        = shotsdata.title;
-				shot.className  = "shot";
-
-				front.appendChild(shot);
-				front.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span>'+shotsdata.likes_count+' <span class="views"></span>'+shotsdata.views_count+' <span class="comments"></span>'+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><a href="#/player/'+shotsdata.player.username+'" class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50" width="50"></a><a href="#/player/'+shotsdata.player.username+'" class="author-name">'+shotsdata.player.name+'</a></div></div>';
-
-			} else {
-
-				front.className = "front text";
-				front.innerHTML = "END";
-
-			}
-			
-			page.appendChild(front);
-			return page;
-
-		},
-
-		backPage = function( shotsdata ) {
-
-			var shot        = document.createElement('img'),
-			back            = document.createElement('div');
-			back.className  = "back";
-			shot.height     = 240;
-			shot.width      = 320;
-			shot.src        = shotsdata.image_url;
-			shot.alt        = shotsdata.title;
-			shot.className  = "shot";
-
-			back.appendChild(shot);
-			back.innerHTML += '<div class="details"><h2 class="title">'+shotsdata.title+'</h2><div class="meta"><span class="likes"></span>'+shotsdata.likes_count+' <span class="views"></span>'+shotsdata.views_count+' <span class="comments"></span>'+shotsdata.comments_count+' <a href="'+shotsdata.url+'" class="open"></a></div><div class="author"><a href="#/player/'+shotsdata.player.username+'" class="author-image"><img src="'+shotsdata.player.avatar_url+'" height="50" width="50"></a><a href="#/player/'+shotsdata.player.username+'" class="author-name">'+shotsdata.player.name+'</a></div></div>';
-
-			return back;
+			return side;
 
 		},
 
@@ -313,7 +289,7 @@
 
 			var loading = document.createElement('div');
 			loading.className = "loading";
-			loading.innerHTML = '<span class="arrow">↺</span>drag up for more shots';
+			loading.innerHTML = '<span class="arrow">&#8634;</span>drag up for more shots';
 
 			return loading;
 
@@ -338,7 +314,7 @@
 
 		startY, startX, distY, distX, deg, time,
 
-		start = function(e) {
+		start = function( e ) {
 			startY = e.targetTouches[0].pageY;
 			startX = e.targetTouches[0].pageX;
 			distY = 0;
@@ -347,7 +323,7 @@
 			time = new Date().getTime();
 		},
 
-		move = function(e) {
+		move = function( e ) {
 
 			e.preventDefault();
 			distY = startY-e.targetTouches[0].pageY;
@@ -425,7 +401,7 @@
 
 		},
 
-		end = function(e) {
+		end = function( e ) {
 
 			var ms = new Date().getTime()-time;
 
@@ -546,7 +522,7 @@
 
 		var startY, startX, distY, distX, position = "center",
 
-		start = function(e) {
+		start = function( e ) {
 			startY = e.targetTouches[0].pageY;
 			startX = e.targetTouches[0].pageX;
 			distY = 0;
@@ -554,14 +530,14 @@
 		
 		},
 
-		move = function(e) {
+		move = function( e ) {
 			e.preventDefault();
 			distY = startY-e.targetTouches[0].pageY;
 			distX = startX-e.targetTouches[0].pageX;
 		
 		},
 
-		end = function(e) {
+		end = function( e ) {
 
 			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX > 50 ) {
 
@@ -704,7 +680,7 @@
 				callback(data);
 				try {
 					delete window[ _jsonp ];
-				} catch (e) {}
+				} catch ( e ) {}
 				window[ _jsonp ] = null;
 			};
 
@@ -713,7 +689,7 @@
 
 		}
 
-		function setDefaults(obj){
+		function setDefaults( obj ){
 
 			config = obj;
 
