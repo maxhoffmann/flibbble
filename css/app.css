@@ -222,32 +222,27 @@ a:active {
 .open,
 .comments {
   display: inline-block;
-  margin-right: 5px;
+  margin: 0 5px 0 10px;
+  background: url('../images/stripes-color.png') no-repeat;
+  background-size: 29px 25px;
 }
 .likes {
-  background: url('../images/stripes-color.png') no-repeat 0 0;
+  margin-left: 0;
   width: 13px;
   height: 12px;
-  background-size: 29px 25px;
 }
 .views {
-  margin-left: 10px;
-  background: url('../images/stripes-color.png') no-repeat -14px 0px;
   width: 15px;
   height: 12px;
-  background-size: 29px 25px;
+  background-position: -14px 0;
 }
 .open {
-  margin-left: 10px;
   width: 16px;
   height: 12px;
-  background: url('../images/stripes-color.png') no-repeat 0 -13px;
-  background-size: 29px 25px;
+  background-position: 0 -13px;
 }
 .comments {
-  margin-left: 10px;
-  background: url('../images/stripes-color.png') no-repeat -16px -13px;
   width: 14px;
   height: 12px;
-  background-size: 29px 25px;
+  background-position: -16px -13px;
 }
