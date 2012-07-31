@@ -60,11 +60,8 @@
 
 					player = prompt("dribbble username:", player);
 
-					if ( player ) {
-
-						this.url = 'http://api.dribbble.com/players/'+player+'/shots/'+destination[0];
-
-					}
+					this.url = 'http://api.dribbble.com/players/'+player+'/shots/'+destination[0];
+					localStorage.setItem('player', player);
 
 				break;
 				case "popular":
@@ -98,12 +95,12 @@
 		enable = function() {
 
 			var navigation = document.getElementById( 'navigation' ),
-			destination = JSON.parse(localStorage.getItem('destination'))[0] || 'popular',
+			destination = JSON.parse(localStorage.getItem('destination')) || ['popular'],
 			i = 1;
 
 			for ( ; i < navigation.children.length; i++ ) {
 				navigation.children[i].addEventListener('touchstart', navigate.activate, false);
-				if ( navigation.children[i].getAttribute('data-open').slice(2) === destination ) {
+				if ( navigation.children[i].getAttribute('data-open').slice(2) === destination[0] ) {
 					navigation.children[i].classList.add('active');
 				}
 			}
