@@ -257,7 +257,7 @@
 			shot.className    = "shot";
 			shot.height       = 240;
 			shot.width        = 320;
-			shot.src          = data.shots[i].image_url;			
+			shot.src          = data.shots[i].image_url;
 
 			details.className = "details";
 			details.innerHTML = '<h2 class="title">'+data.shots[i].title+'</h2>';
@@ -267,12 +267,7 @@
 
 			authorImageLink.className = "author-image";
 			authorImageLink.href = '#/player/'+data.shots[i].player.username;
-
-			authorImage.width = "50";
-			authorImage.height = "50";
-			authorImage.src = data.shots[i].player.avatar_url;
-
-			authorImageLink.appendChild(authorImage);
+			authorImageLink.setAttribute('data-src', data.shots[i].player.avatar_url);
 
 			author.appendChild(authorImageLink);
 			author.innerHTML += '<a href="#/player/'+data.shots[i].player.username+'" class="author-name">'+data.shots[i].player.name+'</a>';
@@ -381,7 +376,7 @@
 
 				} else {
 
-					deg = Math.max( Math.min( (340 + distY) * 0.485, 180), 1 );
+					deg = Math.max( Math.min( (380 + distY) * 0.485, 180), 1 );
 
 					pages[current-1].style.webkitTransform = "rotateX(" + deg +"deg)";
 					pages[current-1].style.webkitTransition = "none";
@@ -542,6 +537,23 @@
 			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX > 50 ) {
 
 				if ( e.target.classList.contains('shot') ) {
+
+					var authorImageLink = e.target.parentNode.querySelector('.author-image');
+
+					if ( authorImageLink.hasAttribute('data-src') ) {
+
+						var authorImage = document.createElement('img');
+						authorImage.width = "50";
+						authorImage.height = "50";
+						authorImage.src = authorImageLink.getAttribute('data-src');						
+						authorImageLink.appendChild(authorImage);
+						authorImageLink.removeAttribute('data-src');						
+						authorImage.addEventListener('load', function loaded() {
+							authorImage.classList.add('loaded');
+							authorImage.removeEventListener('load', loaded);
+						}, false);						
+					}
+
 					e.target.classList.add('left');
 					e.target.parentNode.addEventListener('touchend', hideDetails, false);
 				}

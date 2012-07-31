@@ -121,6 +121,7 @@ a:active {
   width: 100%;
   box-shadow: 2px 0 10px rgba(1, 17, 50, 0.30000000000000004);
   -webkit-transition: -webkit-transform ease 0.3s;
+  z-index: 2;
 }
 .shot.left {
   -webkit-transform: translate(-300px);
@@ -152,6 +153,8 @@ a:active {
 .author-image {
   float: left;
   margin-right: 14px;
+  width: 58px;
+  height: 58px;
   border: 4px solid white;
   border-radius: 8px;
   line-height: 0;
@@ -162,8 +165,13 @@ a:active {
   border-color: #737b8c;
 }
 .author-image img {
-  background: transparent;
   border-radius: 5px;
+  opacity: 0;
+  z-index: 1;
+}
+.author-image img.loaded {
+  opacity: 1;
+  -webkit-transition: opacity ease 1s;
 }
 .author-name {
   float: left;
