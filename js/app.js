@@ -16,11 +16,13 @@
 
 		flipscreen = document.getElementById( 'flipper' );
 
+
 		var handler = function() {
 			navigate.to();
 		};
 
-		window.addEventListener( 'hashchange', handler );
+		window.addEventListener( 'hashchange', handler, false );
+		window.addEventListener( 'orientationchange', orientation, false );
 
 		navigate.enable();
 		navigate.to();
@@ -44,7 +46,7 @@
 		to = function() {
 
 			var that = this,
-					destination = ( location.hash ) ? location.hash.slice(2).split("/") : [];
+					destination = ( location.hash ) ? location.hash.slice(2).split("/") : JSON.parse(localStorage.getItem('destination')) || [];
 
 			switch ( destination[0] ) {
 
@@ -55,6 +57,7 @@
 				break;
 				case "following":
 				case "likes":
+
 					player = prompt("dribbble username:", player);
 
 					if ( player ) {
@@ -73,7 +76,7 @@
 				break;
 				default:
 
-					this.url = localStorage.getItem('url') || 'http://api.dribbble.com/shots/popular';
+					this.url = 'http://api.dribbble.com/shots/popular';
 
 				break;
 			}
@@ -83,7 +86,7 @@
 					that.page = 1;
 					that.maxpage = data.pages;
 					slide.center();
-					localStorage.setItem('url', that.url);
+					localStorage.setItem( 'destination', JSON.stringify(location.hash.slice(2).split("/")) );
 			});
 
 			this.page = that.page;
@@ -93,13 +96,16 @@
 
 		enable = function() {
 
-			var navigation = document.getElementById( 'navigation' );
+			var navigation = document.getElementById( 'navigation' ),
+			destination = JSON.parse(localStorage.getItem('destination'))[0],
+			i = 1;
 
-			navigation.children[1].addEventListener('touchstart', navigate.activate, false);
-			navigation.children[2].addEventListener('touchstart', navigate.activate, false);
-			navigation.children[3].addEventListener('touchstart', navigate.activate, false);
-			navigation.children[4].addEventListener('touchstart', navigate.activate, false);
-			navigation.children[5].addEventListener('touchstart', navigate.activate, false);
+			for ( ; i < navigation.children.length; i++ ) {
+				navigation.children[i].addEventListener('touchstart', navigate.activate, false);
+				if ( navigation.children[i].getAttribute('data-open').slice(2) === destination ) {
+					navigation.children[i].classList.add('active');
+				}
+			}
 
 		},
 
@@ -190,8 +196,6 @@
 
 				// last page
 				if ( i === length-1 ) {
-
-					console.log(i, length-1);
 
 					if ( length%2 === 0) {
 
@@ -630,6 +634,39 @@
 		};
 
 	})(),
+
+	// orientation functions
+	// -------------------------------------------------------------
+
+	orientation = function() {
+
+		// Portrait
+		if ( window.orientation === 0 ) {
+
+			flip.enable();
+
+			document.body.classList.remove('landscape');
+			document.body.classList.remove('left');
+			document.body.classList.remove('right');
+
+		// Landscape
+		} else {
+
+			flip.disable();
+
+			document.body.classList.add('landscape');
+
+			if ( window.orientation > 0 ) {
+				document.body.classList.remove('right');				
+				document.body.classList.add('left');
+			} else {
+				document.body.classList.remove('left');				
+				document.body.classList.add('right');
+			}
+
+		}
+
+	},
 
 	// JSONP
 	// -------------------------------------------------------------

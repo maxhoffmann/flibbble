@@ -100,7 +100,7 @@ a:active {
   -webkit-transform-style: preserve-3d;
   -webkit-transform-origin: center top;
   -webkit-transform: rotateX(0) translateZ(0);
-  -webkit-transition: all ease-out .5s;
+  -webkit-transition: -webkit-transform ease-out .5s;
 }
 
 .page.up {
@@ -330,4 +330,49 @@ a:active {
   width: 14px;
   height: 12px;
   background-position: -16px -13px;  
+}
+
+
+/* Landscape
+   ========================================================================== */
+
+@media only screen and (orientation: landscape) {
+
+	.screen {
+		height: 300px;
+		width: 480px;
+	}
+
+	.loading {
+		display: none;
+	}
+
+	.page {
+		top: 300px;
+		height: 100%;
+		width: 100%;
+	}
+
+	.landscape.right .page {
+		top: 0;
+	}
+
+	.landscape.right .page .text {
+		top: 300px;
+	}
+
+	.page .front,
+	.page .back {
+		padding: 50px 0 0 150px;
+	}
+
+	.page .shot {
+		top: 10px;
+		left: 63px;
+		width: 360px;
+		height: 280px;
+		border: 3px solid white;
+  	box-shadow: 0 0 10px @bigshadow;		
+	}
+
 }
