@@ -35,7 +35,7 @@
 
 	navigate = (function() {
 
-		var url = localStorage.getItem('url'),
+		var url,
 				loading = false,
 				page = 1,
 				maxpage = 1,
@@ -336,7 +336,7 @@
 
 				if ( current === pages.length-1 ) { // LAST
 
-					deg = Math.min(-Math.log(distY)*25+75,1);
+					deg = Math.min(-Math.log(distY)*25+75,-1);
 
 					pages[current].style.webkitTransform = "rotateX(" + -deg + "deg)";
 					pages[current].style.webkitTransition = "none";					
