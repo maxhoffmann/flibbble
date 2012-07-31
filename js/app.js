@@ -564,11 +564,12 @@
 
 					e.target.classList.add('left');
 					e.target.parentNode.addEventListener('touchend', hideDetails, false);
+
 				}
 
 			}
 
-			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX < -50 ) {
+			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX < -50 && ! document.body.classList.contains('landscape') ) {
 
 				if ( ( e.target.classList.contains('shot') && ! e.target.classList.contains('left') ) || e.target.classList.contains('text') ) {
 
