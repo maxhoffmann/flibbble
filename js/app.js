@@ -374,7 +374,7 @@
 
 				if ( current === 1 ) { // FIRST
 
-					deg = Math.min(-Math.log(-distY)*25+75, 1 );
+					deg = Math.min(-Math.log(-distY)*25+75, -1 );
 
 					pages[0].style.webkitTransform = "rotateX(" + deg + "deg)";
 					pages[0].style.webkitTransition = "none";
