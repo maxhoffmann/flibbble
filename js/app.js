@@ -79,6 +79,7 @@
 					this.url = 'http://api.dribbble.com/shots/popular';
 
 				break;
+
 			}
 
 			JSONP.get( this.url, {per_page:'20', page:'1'}, function( data ) {
@@ -97,7 +98,7 @@
 		enable = function() {
 
 			var navigation = document.getElementById( 'navigation' ),
-			destination = JSON.parse(localStorage.getItem('destination'))[0],
+			destination = JSON.parse(localStorage.getItem('destination'))[0] || 'popular',
 			i = 1;
 
 			for ( ; i < navigation.children.length; i++ ) {
@@ -251,12 +252,12 @@
 
 		side = function() {
 
-			var side = document.createElement('div'),
-			shot = document.createElement('img'),
-			details = document.createElement('div'),
-			author = document.createElement('div'),
+			var side        = document.createElement('div'),
+			shot            = document.createElement('img'),
+			details         = document.createElement('div'),
+			author          = document.createElement('div'),
 			authorImageLink = document.createElement('a'),
-			authorImage = document.createElement('img');
+			authorImage     = document.createElement('img');
 
 			shot.className    = "shot";
 			shot.height       = 240;
@@ -316,10 +317,10 @@
 		start = function( e ) {
 			startY = e.targetTouches[0].pageY;
 			startX = e.targetTouches[0].pageX;
-			distY = 0;
-			distX = 0;
-			deg = 0;
-			time = new Date().getTime();
+			distY  = 0;
+			distX  = 0;
+			deg    = 0;
+			time   = new Date().getTime();
 		},
 
 		move = function( e ) {
@@ -547,15 +548,18 @@
 					if ( authorImageLink.hasAttribute('data-src') ) {
 
 						var authorImage = document.createElement('img');
+
 						authorImage.width = "50";
 						authorImage.height = "50";
 						authorImage.src = authorImageLink.getAttribute('data-src');						
 						authorImageLink.appendChild(authorImage);
-						authorImageLink.removeAttribute('data-src');						
+						authorImageLink.removeAttribute('data-src');
+
 						authorImage.addEventListener('load', function loaded() {
 							authorImage.classList.add('loaded');
 							authorImage.removeEventListener('load', loaded);
-						}, false);						
+						}, false);
+
 					}
 
 					e.target.classList.add('left');
