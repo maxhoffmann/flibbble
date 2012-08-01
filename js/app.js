@@ -264,8 +264,8 @@
 			shot.src          = data.shots[i].image_url;
 
 			details.className = "details";
-			details.innerHTML = '<h2 class="title">'+data.shots[i].title+'</h2>';
-			details.innerHTML += '<div class="meta"><span class="likes"></span>'+data.shots[i].likes_count+' <span class="views"></span>'+data.shots[i].views_count+' <span class="comments"></span>'+data.shots[i].comments_count+' <a href="'+data.shots[i].url+'" class="open"></a></div>';
+			details.innerHTML = '<h2 class="title"><a href="'+data.shots[i].url+'">'+data.shots[i].title+'</a></h2>';
+			details.innerHTML += '<div class="meta"><span class="likes"></span>'+data.shots[i].likes_count+' <span class="views"></span>'+data.shots[i].views_count+' <span class="comments"></span>'+data.shots[i].comments_count+'</div>';
 
 			author.className = "author";
 
