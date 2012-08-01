@@ -1,5 +1,7 @@
 (function flibbble( window, document, undefined ) {
 
+	"use strict";
+
 	// initialization
 	// -------------------------------------------------------------
 
@@ -677,7 +679,7 @@
 
 	JSONP = (function() {
 
-		var counter = 0, head, query, key, window = this, config = {};
+		var counter = 0, head, query, key, config = {};
 
 		function load(url) {
 
