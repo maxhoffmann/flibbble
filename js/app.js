@@ -46,7 +46,7 @@
 		to = function() {
 
 			var that = this,
-					destination = ( location.hash ) ? location.hash.slice(2).split("/") : JSON.parse(localStorage.getItem('destination')) || [];
+					destination = ( location.hash.length ) ? location.hash.slice(2).split("/") : JSON.parse(localStorage.getItem('destination'));
 
 			switch ( destination[0] ) {
 
@@ -84,7 +84,7 @@
 					that.page = 1;
 					that.maxpage = data.pages;
 					slide.center();
-					localStorage.setItem( 'destination', JSON.stringify(location.hash.slice(2).split("/")) );
+					localStorage.setItem( 'destination', JSON.stringify(destination) );
 			});
 
 			this.page = that.page;
@@ -95,7 +95,7 @@
 		enable = function() {
 
 			var navigation = document.getElementById( 'navigation' ),
-			destination = JSON.parse(localStorage.getItem('destination')) || ['popular'],
+			destination = ( localStorage.getItem('destination') !== null ) ? JSON.parse(localStorage.getItem('destination')) : ["popular"],
 			i = 1;
 
 			for ( ; i < navigation.children.length; i++ ) {
@@ -104,6 +104,8 @@
 					navigation.children[i].classList.add('active');
 				}
 			}
+
+			localStorage.setItem('destination', JSON.stringify(destination));
 
 		},
 
