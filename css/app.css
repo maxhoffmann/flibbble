@@ -49,7 +49,9 @@ a:active {
   -webkit-transform: translatex(240px);
 }
 .loading {
-  margin-top: 427px;
+  position: absolute;
+  bottom: 9px;
+  width: 100%;
   text-align: center;
   text-shadow: 0 1px 0 white;
 }

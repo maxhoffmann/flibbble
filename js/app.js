@@ -674,7 +674,7 @@
 
 	},
 
-	// JSONP
+	// Lightweight JSONP fetcher by Erik Karlsson.
 	// -------------------------------------------------------------
 
 	JSONP = (function() {
