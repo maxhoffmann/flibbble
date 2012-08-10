@@ -254,16 +254,22 @@
 		side = function() {
 
 			var side        = document.createElement('div'),
+			shotWrapper     = document.createElement('div'),
 			shot            = document.createElement('img'),
 			details         = document.createElement('div'),
 			author          = document.createElement('div'),
 			authorImageLink = document.createElement('a'),
 			authorImage     = document.createElement('img');
 
-			shot.className    = "shot";
-			shot.height       = 240;
-			shot.width        = 320;
-			shot.src          = data.shots[i].image_url;
+			shotWrapper.className = "shot";
+			shotWrapper.innerHTML = "Loading";
+			shot.className        = "hide";
+			shot.src              = data.shots[i].image_url;
+
+			shot.addEventListener('load', function loaded() {
+				shot.classList.remove('hide');
+				shot.removeEventListener('load', loaded);
+			}, false);
 
 			details.className = "details";
 			details.innerHTML = '<h2 class="title"><a href="'+data.shots[i].url+'">'+data.shots[i].title+'</a></h2>';
@@ -279,8 +285,9 @@
 			author.innerHTML += '<a href="#/player/'+data.shots[i].player.username+'" class="author-name">'+data.shots[i].player.name+'</a>';
 
 			details.appendChild(author);
-			side.appendChild(shot);
-			side.appendChild(details);
+			shotWrapper.appendChild(shot);
+			side.appendChild(shotWrapper);
+			side.appendChild(details);			
 
 			return side;
 
@@ -540,31 +547,41 @@
 
 		end = function( e ) {
 
+			console.log(e.target.className);
+
 			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX > 50 ) {
 
+				var element = false;
+
+				if ( e.target.parentNode.classList.contains('shot') ) {
+					element = e.target.parentNode;
+				}
 				if ( e.target.classList.contains('shot') ) {
+					element = e.target;
+				}
 
-					var authorImageLink = e.target.parentNode.querySelector('.author-image');
+				if ( element ) {
+					element.classList.add('left');
+					element.parentNode.addEventListener('touchend', hideDetails, false);
+				}
 
-					if ( authorImageLink.hasAttribute('data-src') ) {
+				var authorImageLink = e.target.parentNode.parentNode.querySelector('.author-image');
 
-						var authorImage = document.createElement('img');
+				if ( authorImageLink.hasAttribute('data-src') ) {
 
-						authorImage.width = "50";
-						authorImage.height = "50";
-						authorImage.src = authorImageLink.getAttribute('data-src');						
-						authorImageLink.appendChild(authorImage);
-						authorImageLink.removeAttribute('data-src');
+					var authorImage = document.createElement('img');
 
-						authorImage.addEventListener('load', function loaded() {
-							authorImage.classList.add('loaded');
-							authorImage.removeEventListener('load', loaded);
-						}, false);
+					authorImage.width = "50";
+					authorImage.height = "50";
+					authorImage.className = "hide";					
+					authorImage.src = authorImageLink.getAttribute('data-src');						
+					authorImageLink.appendChild(authorImage);
+					authorImageLink.removeAttribute('data-src');
 
-					}
-
-					e.target.classList.add('left');
-					e.target.parentNode.addEventListener('touchend', hideDetails, false);
+					authorImage.addEventListener('load', function loaded() {
+						authorImage.classList.remove('hide');
+						authorImage.removeEventListener('load', loaded);
+					}, false);
 
 				}
 
@@ -572,7 +589,7 @@
 
 			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX < -50 && ! document.body.classList.contains('landscape') ) {
 
-				if ( ( e.target.classList.contains('shot') && ! e.target.classList.contains('left') ) || e.target.classList.contains('text') ) {
+				if ( ( e.target.classList.contains('shot') && ! e.target.classList.contains('left') ) || ( e.target.parentNode.classList.contains('shot') && ! e.target.parentNode.classList.contains('left') ) || e.target.classList.contains('text') ) {
 
 					right();
 				

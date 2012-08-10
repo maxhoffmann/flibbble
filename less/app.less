@@ -157,12 +157,26 @@ a:active {
 
 .page .shot {
 	position: absolute;
-	top: -5px;
+	top: 0;
 	left: 0;
+	height: 100%;
 	width: 100%;
+  background: -webkit-radial-gradient(center, @background, darken(@background, 10%));	
   box-shadow: 2px 0 10px @bigshadow;
 	-webkit-transition: -webkit-transform ease .3s;
 	z-index: 2;
+	font-size: 2em;
+	padding-top: 99px;
+	text-align: center;
+	text-shadow: 0 1px 0 white;	
+}
+
+.shot img {
+	position: absolute;
+	top: -5px;
+	left: 0;
+	width: 100%;
+	-webkit-transition: opacity ease .4s;	
 }
 
 .shot.left {
@@ -216,13 +230,8 @@ a:active {
 }
 
 .author-image img {
-	border-radius: 5px;
-	opacity: 0;
-	z-index: 1;
-}
-
-.author-image img.loaded {
-	opacity: 1;
+	z-index: 1;	
+	border-radius: 5px;	
 	-webkit-transition: opacity ease 1s;
 }
 
@@ -377,6 +386,11 @@ a:active {
 	}
 
 	.page .shot {
+		background: none;
+		box-shadow: none;
+	}
+
+	.shot img {
 		top: 10px;
 		left: 63px;
 		width: 360px;
