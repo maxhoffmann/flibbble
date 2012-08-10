@@ -24,7 +24,7 @@
 				debug = true;
 				livereload.src = 'http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1';
 
-    if ( ( navigator.standalone && navigator.platform === 'iPhone' ) || debug ) {
+    if ( ( navigator.standalone && ( navigator.platform === 'iPhone' || navigator.platform === 'iPod' ) ) || debug ) {
 
     	styles.href = "css/app.css";
     	app.src = "js/app.js";
