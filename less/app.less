@@ -70,7 +70,7 @@ a:active {
   -webkit-transform: translateX(240px);	
 }
 
-.loading {
+.dragging {
 	position: absolute;
 	bottom: 9px;
 	width: 100%;
@@ -95,6 +95,7 @@ a:active {
    ========================================================================== */
 
 .page {
+
 	position: absolute;
 	top: 50%;
 	width: 100%;
@@ -103,25 +104,38 @@ a:active {
   -webkit-transform-origin: center top;
   -webkit-transform: rotateX(0) translateZ(0);
   -webkit-transition: -webkit-transform ease-out .5s;
+
+	&.up {
+		-webkit-transform: rotateX(180deg) translateZ(0);
+	}
+
+	&.hidden {
+	  -webkit-transition: -webkit-transform ease-out .5s, visibility ease-out .4s; // fixes flicker on flip down
+	}
+
+	&.first {
+		top: 0;
+	  box-shadow: 0 -5px 10px @shadow;
+	  -webkit-transform-origin: center bottom;
+		-webkit-transform: rotateX(0deg) translateZ(0);  
+	}
+
+	&.last {
+  	box-shadow: 0 5px 10px @shadow;	
+	}
+
 }
 
-.page.up {
-	-webkit-transform: rotateX(180deg) translateZ(0);
-}
-
-.page.hidden {
-  -webkit-transition: -webkit-transform ease-out .5s, visibility ease-out .4s; // fixes flicker on flip down
-}
-
-.page .front,
-.page .back {
+.front,
+.back {
 	position: absolute;
 	top: 0;
 	width: 100%;
 	height: 100%;
 	padding: 20px 30px 20px 50px;
 	overflow: hidden;
-
+	z-index: 2;
+	
 	font: bold 16px/24px 'Helvetica Neue', Helvetica, sans-serif;	
   background: -webkit-radial-gradient(center, @background, darken(@background, 10%));
   -webkit-backface-visibility: hidden;
@@ -132,22 +146,12 @@ a:active {
   //background-size: 24px;
 }
 
-.page .back {
+.back {
+	z-index: 1;
 	-webkit-transform: rotateX(-180deg);
 }
 
-.page.first {
-	top: 0;
-  box-shadow: 0 -5px 10px @shadow;
-  -webkit-transform-origin: center bottom;
-	-webkit-transform: rotateX(0deg) translateZ(0);  
-}
-
-.page.last {
-  box-shadow: 0 5px 10px @shadow;	
-}
-
-.last .text {
+.text {
 	font-size: 2em;
 	padding-top: 99px;
 	padding-left: 30px;
@@ -155,32 +159,54 @@ a:active {
 	text-shadow: 0 1px 0 white;
 }
 
-.page .shot {
+.shot {
 	position: absolute;
 	top: 0;
 	left: 0;
 	height: 100%;
 	width: 100%;
+	z-index: 2;	
+	overflow: hidden;
   background: -webkit-radial-gradient(center, @background, darken(@background, 10%));	
   box-shadow: 2px 0 10px @bigshadow;
 	-webkit-transition: -webkit-transform ease .3s;
-	z-index: 2;
-	font-size: 2em;
-	padding-top: 99px;
-	text-align: center;
-	text-shadow: 0 1px 0 white;	
+
+  // Baseline Grid
+  //background: -webkit-linear-gradient(top, transparent 16px, black 25px);
+  //background-size: 24px;	
+
+	&.left {
+		-webkit-transform: translateX(-300px);
+	}
+
+	& img {
+		position: absolute;
+		top: -5px;
+		left: 0;
+		width: 100%;
+		-webkit-transition: opacity ease .4s;	
+	}
+
 }
 
-.shot img {
-	position: absolute;
-	top: -5px;
-	left: 0;
+.loading {
 	width: 100%;
-	-webkit-transition: opacity ease .4s;	
+	padding: 28% 20px 0 20px;	
 }
 
-.shot.left {
-	-webkit-transform: translate(-300px);
+.loading-title,
+.loading-author {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	text-align: center;	
+}
+
+.loading-author {
+	font-size: .9em;
+	font-style: italic;
+	color: @logo-color;
+	text-shadow: 0 1px 0 @light;
 }
 
 .hide {
@@ -222,17 +248,17 @@ a:active {
 	border-radius: 8px;
 	line-height: 0;
 	box-shadow: 0 1px 2px @shadow;
-}
 
-.author-image:hover,
-.autor-image:active {
-	border-color: @color;
-}
+	&:hover,
+	&:active {
+		border-color: @color;
+	}
+	& img {
+		z-index: 1;	
+		border-radius: 5px;	
+		-webkit-transition: opacity ease 1s;
+	}
 
-.author-image img {
-	z-index: 1;	
-	border-radius: 5px;	
-	-webkit-transition: opacity ease 1s;
 }
 
 .author-name {
@@ -272,38 +298,33 @@ a:active {
 	margin: 20px 0 0 0;
 	padding: 0;
 	list-style: none;
-}
 
-#navigation li {
-	position: relative;
-	margin: 0;
-	padding: 10px 0 16px 20px;	
-	color: darken(@color, 5%);
-	font: bold 42px/1em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
-	text-shadow:
-		0 1px 0 @light;
-}
+	& li {
+		position: relative;
+		margin: 0;
+		padding: 10px 0 16px 20px;	
+		color: darken(@color, 5%);
+		font: bold 42px/1em 'HelveticaNeue-CondensedBold', 'Helvetica Neue', Helvetica, sans-serif;
+		text-shadow:
+			0 1px 0 @light;
+	}
 
-// #navigation .active {
-// 	color: hsl(220, 10%, 100%);
-// 	text-shadow: 0 1px 0 hsl(220, 10%, 63%);
-// 	background: -webkit-linear-gradient(top, hsl(220, 14%, 70%), hsl(220, 18%, 80%) );
-// }
+	& .logo {
+		font-size: 32px;
+		color: @logo-color;
+		text-align: center;
+		text-shadow:
+			0 1px 0 @logo-light,
+			0 -1px 0 @logo-shadow;
+	}
 
-#navigation .active {
-	color: @logo-color;
-	text-shadow:
-		0 1px 0 @logo-light,
-		0 -1px 0 @logo-shadow;
-}
+	& .active {
+		color: @logo-color;
+		text-shadow:
+			0 1px 0 @logo-light,
+			0 -1px 0 @logo-shadow;
+	}
 
-#navigation .logo {
-	font-size: 32px;
-	color: @logo-color;
-	text-align: center;
-	text-shadow:
-		0 1px 0 @logo-light,
-		0 -1px 0 @logo-shadow;
 }
 
 /* Sprites
@@ -354,7 +375,7 @@ a:active {
 		width: 480px;
 	}
 
-	.loading {
+	.dragging {
 		display: none;
 	}
 
@@ -364,16 +385,20 @@ a:active {
 		width: 100%;
 	}
 
-	.landscape.right .page {
-		top: 0;
+	.landscape.right {
+
+		.page {
+			top: 0;
+		}
+
+		.text {
+			top: 300px;
+		}
+
 	}
 
-	.landscape.right .page .text {
-		top: 300px;
-	}
-
-	.page .front,
-	.page .back {
+	.front,
+	.back {
 		padding: 55px 0 0 150px;
 	}
 	
@@ -385,7 +410,7 @@ a:active {
 		width: 197px;
 	}
 
-	.page .shot {
+	.shot {
 		background: none;
 		box-shadow: none;
 	}
@@ -397,6 +422,10 @@ a:active {
 		height: 280px;
 		border: 3px solid white;
   	box-shadow: 0 0 10px @bigshadow;		
+	}
+
+	.loading {
+		display: none 	
 	}
 
 }

@@ -234,7 +234,7 @@
 			flip.reset();
 			flipscreen.innerHTML = "";
 			if ( data.pages > 1 ) {
-				flipscreen.appendChild( loading() );
+				flipscreen.appendChild( dragging() );
 			}			
 			flipscreen.appendChild(container);
 			pages = document.getElementsByClassName('page');
@@ -259,15 +259,25 @@
 			details         = document.createElement('div'),
 			author          = document.createElement('div'),
 			authorImageLink = document.createElement('a'),
-			authorImage     = document.createElement('img');
+			authorImage     = document.createElement('img'),
+			loading         = document.createElement('div'),
+			removeLoading   = function() {
+				shotWrapper.removeChild(loading);
+			};
 
+			loading.className = "loading";
+			loading.innerHTML = '<div class="loading-title">'+data.shots[i].title+'</div><div class="loading-author">by '+data.shots[i].player.name+'</div>';
+
+			shotWrapper.appendChild(loading);
 			shotWrapper.className = "shot";
-			shotWrapper.innerHTML = "Loading";
 			shot.className        = "hide";
+			shot.height           = 240;
+			shot.width            = 320;
 			shot.src              = data.shots[i].image_url;
 
 			shot.addEventListener('load', function loaded() {
 				shot.classList.remove('hide');
+				setTimeout(removeLoading, 400);
 				shot.removeEventListener('load', loaded);
 			}, false);
 
@@ -293,13 +303,13 @@
 
 		},
 
-		loading = function() {
+		dragging = function() {
 
-			var loading = document.createElement('div');
-			loading.className = "loading";
-			loading.innerHTML = '<span class="arrow">&#8634;</span>drag up for more shots';
+			var dragging = document.createElement('div');
+			dragging.className = "dragging";
+			dragging.innerHTML = '<span class="arrow">&#8634;</span>drag up for more shots';
 
-			return loading;
+			return dragging;
 
 		};
 
@@ -546,8 +556,6 @@
 		},
 
 		end = function( e ) {
-
-			console.log(e.target.className);
 
 			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX > 50 ) {
 
