@@ -14,14 +14,14 @@
 			e.preventDefault();
 		};
 
-		document.body.innerHTML = '<div id="menu" class="screen"><ul id="navigation"><li class="logo">flibbble</li><li data-open="#/popular">Popular</li><li data-open="#/following">Following</li><li data-open="#/likes">Likes</a></li><li data-open="#/debuts">Debuts</li><li data-open="#/everyone">Everyone</li></ul></div><div id="flipper" class="screen"></div>';
+		document.body.innerHTML = '<div id="notifications"><span id="notification"></span></div><div id="menu" class="screen"><ul id="navigation"><li class="logo">flibbble</li><li data-open="#/popular">Popular</li><li data-open="#/following">Following</li><li data-open="#/likes">Likes</a></li><li data-open="#/debuts">Debuts</li><li data-open="#/everyone">Everyone</li></ul></div><div id="flipper" class="screen"></div>';
 
 		flipscreen = document.getElementById( 'flipper' );
 
-
 		var handler = function() {
 			navigate.to();
-		};
+		},
+		destination = JSON.parse(localStorage.getItem('destination'));
 
 		window.addEventListener( 'hashchange', handler, false );
 		window.addEventListener( 'orientationchange', orientation, false );
@@ -31,6 +31,12 @@
 
 		flip.enable();
 		slide.enable();
+
+		notification.enable();
+
+		if ( destination.length && destination[1] === undefined ) {
+			notification.show( destination[0], destination[1] );
+		}
 
 	},
 
@@ -55,15 +61,20 @@
 				case "player":
 
 					this.url = 'http://api.dribbble.com/players/'+destination[1]+'/shots/';
+					destination[0] = 'shots by ';
 
 				break;
 				case "following":
 				case "likes":
 
-					player = prompt("dribbble username:", player);
+					player = ( destination[1] === undefined ) ? prompt("dribbble username:", player) : destination[1];
 
 					this.url = 'http://api.dribbble.com/players/'+player+'/shots/'+destination[0];
 					localStorage.setItem('player', player);
+
+					if ( destination[1] !== undefined ) {
+						destination[0] += ' of ';
+					}
 
 				break;
 				case "popular":
@@ -83,6 +94,9 @@
 
 			JSONP.get( this.url, {per_page:'20', page:'1'}, function( data ) {
 					render(data);
+					if ( destination[1] !== undefined ) {
+						notification.show( destination[0], destination[1] );
+					}
 					that.page = 1;
 					that.maxpage = data.pages;
 					slide.center();
@@ -292,7 +306,7 @@
 			authorImageLink.setAttribute('data-src', data.shots[i].player.avatar_url);
 
 			author.appendChild(authorImageLink);
-			author.innerHTML += '<a href="#/player/'+data.shots[i].player.username+'" class="author-name">'+data.shots[i].player.name+'</a>';
+			author.innerHTML += '<a href="#/player/'+data.shots[i].player.username+'" class="author-name">'+data.shots[i].player.name+'</a><br><span class="author-links"><a href="#/following/'+data.shots[i].player.username+'">Following</a> &mdash; <a href="#/likes/'+data.shots[i].player.username+'">Likes</a></span>';
 
 			details.appendChild(author);
 			shotWrapper.appendChild(shot);
@@ -698,6 +712,59 @@
 		}
 
 	},
+
+	// notifications
+	// -------------------------------------------------------------	
+
+	notification = (function() {
+
+		var notification,
+		nextmessage = false,
+		active = false;
+
+		return {	
+
+			enable: function() {
+				notification = document.getElementById('notifications');
+			},
+
+			show: function( text, type ) {
+
+				var message = text;
+				if ( type !== undefined ) {
+					message += " <b>"+type+"</b>";
+				}
+
+				if ( ! active ) {	
+					active = true;
+					nextmessage = false;					
+					notification.firstChild.innerHTML = message;
+					notification.classList.add('show');
+					setTimeout(this.hide(this), 2000);
+				} else {				
+					nextmessage = message;
+				}
+
+			},
+
+			hide: function( obj ) {
+
+				return function() {
+					active = false;					
+					notification.classList.remove('show');
+					if ( nextmessage ) {
+						setTimeout(function() {
+							obj.show( nextmessage );							
+						}, 500);
+					}
+				};
+				
+			}
+
+		};
+
+	})(),
+
 
 	// Lightweight JSONP fetcher by Erik Karlsson.
 	// -------------------------------------------------------------

@@ -264,11 +264,23 @@ a:active {
 .author-name {
 	float: left;
 	width: 167px;
-	margin-top: 17px;
+	margin-top: 4px;
+	margin-bottom: 2px;
 	display: block;	
 	overflow: hidden;
 	white-space: nowrap;
-	text-overflow: ellipsis;	
+	text-overflow: ellipsis;
+}
+
+.author-links,
+.author-links a {
+	color: darken(@logo-color, 5%);
+	text-shadow: 0 1px 0 @logo-light;
+}
+
+.author-links a:hover,
+.author-links a:active {
+	color: darken(@logo-color, 15%);
 }
 
 .title {
@@ -323,6 +335,68 @@ a:active {
 		text-shadow:
 			0 1px 0 @logo-light,
 			0 -1px 0 @logo-shadow;
+	}
+
+}
+
+/* Notifications
+   ========================================================================== */
+
+#notifications {
+	position: absolute;
+	top: -40px;
+	width: 320px;
+	z-index: 3;
+	text-align: center;
+  pointer-events: none;
+  -webkit-animation: hide ease 500ms forwards;
+
+	&.show {
+		-webkit-animation:  show ease 1s forwards;
+	}
+
+}
+
+#notification {
+	display: inline-block;
+	padding: 4px 8px;
+	max-width: 280px;
+	color: white;
+	background: rgba(0, 0, 0, .7);
+	font-size: .9em;
+	border-radius: 4px;
+  pointer-events: none;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .4);
+  box-shadow: 0 1px 2px rgba(0,0,0,.5);
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+@-webkit-keyframes show {
+
+	40% {
+		-webkit-transform: translateY(58px);
+	}
+
+	100% {
+		-webkit-transform: translateY(55px);
+	}
+
+}
+
+@-webkit-keyframes hide {
+
+	0% {
+		-webkit-transform: translateY(55px);
+	}
+
+	70% {
+		-webkit-transform: translateY(80px);
+	}
+
+	100% {
+		-webkit-transform: translateY(0);
 	}
 
 }
@@ -383,6 +457,10 @@ a:active {
 		top: 300px;
 		height: 100%;
 		width: 100%;
+	}
+
+	.notification-bar {
+		width: 480px;
 	}
 
 	.landscape.right {
