@@ -300,7 +300,9 @@ a:active {
     top: 0;
   }
   .landscape.right .text {
-    top: 300px;
+    top: 0;
+    padding: 27% 0 0 0;
+    text-align: center;
   }
   .front,
   .back {
