@@ -354,8 +354,11 @@ a:active {
     height: 100%;
     width: 100%;
   }
-  .notification-bar {
+  #notifications {
     width: 480px;
+  }
+  #notification {
+    max-width: 400px;
   }
   .landscape.right .page {
     top: 0;
