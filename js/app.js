@@ -57,9 +57,9 @@
 
 			switch ( destination[0] ) {
 
-				case "player":
+				case "shots":
 
-					this.url = 'http://api.dribbble.com/players/'+destination[1]+'/shots/';
+					this.url = 'http://api.dribbble.com/players/'+destination[1]+'/'+destination[0]+'/';
 
 				break;
 				case "following":
@@ -86,7 +86,7 @@
 
 			}
 
-			JSONP.get( this.url, {per_page:'20', page:'1'}, function( data ) {
+			JSONP.get( this.url, {per_page: 20, page: page }, function( data ) {
 					render(data);
 					if ( destination[1] !== undefined ) {
 						notification.show( destination[0], destination[1] );
@@ -298,11 +298,11 @@
 			author.className = "author";
 
 			authorImageLink.className = "author-image";
-			authorImageLink.href = '#/player/'+data.shots[i].player.username;
+			authorImageLink.href = '#/shots/'+data.shots[i].player.username;
 			authorImageLink.setAttribute('data-src', data.shots[i].player.avatar_url);
 
 			author.appendChild(authorImageLink);
-			author.innerHTML += '<a href="#/player/'+data.shots[i].player.username+'" class="author-name">'+data.shots[i].player.name+'</a><br><span class="author-links"><a href="#/following/'+data.shots[i].player.username+'">Following</a> &bull; <a href="#/likes/'+data.shots[i].player.username+'">Likes</a></span>';
+			author.innerHTML += '<a href="#/shots/'+data.shots[i].player.username+'" class="author-name">'+data.shots[i].player.name+'</a><br><span class="author-links"><a href="#/following/'+data.shots[i].player.username+'">Following</a> &bull; <a href="#/likes/'+data.shots[i].player.username+'">Likes</a></span>';
 
 			details.appendChild(author);
 			shotWrapper.appendChild(shot);
