@@ -26,17 +26,16 @@
 		window.addEventListener( 'hashchange', handler, false );
 		window.addEventListener( 'orientationchange', orientation, false );
 
+		notification.enable();
+		if ( destination.length && destination[1] === undefined ) {
+			notification.show( destination[0], destination[1] );
+		}
+
 		navigate.enable();
 		navigate.to();
 
 		flip.enable();
 		slide.enable();
-
-		notification.enable();
-
-		if ( destination.length && destination[1] === undefined ) {
-			notification.show( destination[0], destination[1] );
-		}
 
 	},
 
@@ -61,7 +60,6 @@
 				case "player":
 
 					this.url = 'http://api.dribbble.com/players/'+destination[1]+'/shots/';
-					destination[0] = 'shots by ';
 
 				break;
 				case "following":
@@ -71,10 +69,6 @@
 
 					this.url = 'http://api.dribbble.com/players/'+player+'/shots/'+destination[0];
 					localStorage.setItem('player', player);
-
-					if ( destination[1] !== undefined ) {
-						destination[0] += ' of ';
-					}
 
 				break;
 				case "popular":
@@ -306,7 +300,7 @@
 			authorImageLink.setAttribute('data-src', data.shots[i].player.avatar_url);
 
 			author.appendChild(authorImageLink);
-			author.innerHTML += '<a href="#/player/'+data.shots[i].player.username+'" class="author-name">'+data.shots[i].player.name+'</a><br><span class="author-links"><a href="#/following/'+data.shots[i].player.username+'">Following</a> &mdash; <a href="#/likes/'+data.shots[i].player.username+'">Likes</a></span>';
+			author.innerHTML += '<a href="#/player/'+data.shots[i].player.username+'" class="author-name">'+data.shots[i].player.name+'</a><br><span class="author-links"><a href="#/following/'+data.shots[i].player.username+'">Following</a> &bull; <a href="#/likes/'+data.shots[i].player.username+'">Likes</a></span>';
 
 			details.appendChild(author);
 			shotWrapper.appendChild(shot);
