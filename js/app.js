@@ -218,15 +218,13 @@
 
 					} else {
 
-						console.log(length);
-
-						if ( length !== 1 ) {
+						if ( length > 1 ) {
 							container.appendChild( page );
 						}
 
 						page = document.createElement('div');
 						page.className = "page last";
-						if ( i !== 1 ) {
+						if ( i !== 0 ) {
 							page.classList.add('hidden');
 						}
 						page.innerHTML += '<div class="front text">END</div>';
