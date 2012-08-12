@@ -442,7 +442,7 @@
 			}
 
 			// flip back up			
-			if ( deg >= 90 && ms > 500 && distY < 0 && current !== 1 ) {
+			if ( deg >= 90 && ( ms > 500 || Math.abs(distX) > Math.abs(distY) ) && distY < 0 && current !== 1 ) {
 
 				pages[current-1].style.webkitTransition = "";
 				pages[current-1].style.webkitTransform = "";
@@ -454,7 +454,7 @@
 			}
 
 			// flip back down
-			if ( deg < 90 && ( ms > 500 || current === pages.length-1 ) && distY > 0 ) {
+			if ( deg < 90 && ( ms > 500 || current === pages.length-1 || Math.abs(distX) > Math.abs(distY) ) && distY > 0 ) {
 
 				pages[current].style.webkitTransition = "";
 				pages[current].style.webkitTransform = "";
@@ -476,7 +476,7 @@
 			}
 
 			// flip up			
-			if ( ( deg >= 90 || ms <= 500 ) && distY > 0 && current < pages.length-1 ) {
+			if ( ( deg >= 90 || ms <= 500 ) && distY > 0 && current < pages.length-1 && Math.abs(distX) < Math.abs(distY) ) {
 
 				pages[current].style.webkitTransition = "";
 				pages[current].style.webkitTransform = "";
@@ -491,7 +491,7 @@
 			}
 
 			// flip down			
-			if ( ( deg < 90 || ms < 500 ) && distY < 0 && current !== 1 ) {
+			if ( ( deg < 90 || ms < 500 ) && distY < 0 && current !== 1 && Math.abs(distX) < Math.abs(distY) ) {
 
 				pages[current-1].style.webkitTransition = "";
 				pages[current-1].style.webkitTransform = "";
