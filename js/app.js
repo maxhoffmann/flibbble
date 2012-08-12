@@ -728,7 +728,7 @@
 
 				var message = text;
 				if ( type !== undefined ) {
-					message += " <b>"+type+"</b>";
+					message = " <b>"+type+"</b>&#8217;s "+message;
 				}
 
 				if ( ! active ) {	
