@@ -695,6 +695,10 @@
 
 			flip.disable();
 
+			if ( slide.position !== "center" ) {
+				slide.center();
+			}
+
 			document.body.classList.add('landscape');
 
 			if ( window.orientation > 0 ) {

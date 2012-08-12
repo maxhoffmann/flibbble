@@ -143,6 +143,7 @@ a:active {
 .loading {
   width: 100%;
   padding: 28% 20px 0 20px;
+  text-shadow: 0 1px 0 white;
 }
 .loading-title,
 .loading-author {
@@ -155,7 +156,6 @@ a:active {
   font-size: .9em;
   font-style: italic;
   color: #d0d4dc;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 .hide {
   opacity: 0;
@@ -194,6 +194,7 @@ a:active {
 .author-image:hover,
 .author-image:active {
   border-color: #737b8c;
+  box-shadow: 0 0 4px #737b8c inset;
 }
 .author-image img {
   z-index: 1;

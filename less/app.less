@@ -191,7 +191,8 @@ a:active {
 
 .loading {
 	width: 100%;
-	padding: 28% 20px 0 20px;	
+	padding: 28% 20px 0 20px;
+	text-shadow: 0 1px 0 white;
 }
 
 .loading-title,
@@ -206,7 +207,6 @@ a:active {
 	font-size: .9em;
 	font-style: italic;
 	color: @logo-color;
-	text-shadow: 0 1px 0 @light;
 }
 
 .hide {
@@ -252,6 +252,7 @@ a:active {
 	&:hover,
 	&:active {
 		border-color: @color;
+		box-shadow: 0 0 4px @color inset;
 	}
 	& img {
 		z-index: 1;	
