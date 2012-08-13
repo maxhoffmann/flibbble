@@ -103,24 +103,20 @@ a:active {
   -webkit-transform-style: preserve-3d;
   -webkit-transform-origin: center top;
   -webkit-transform: rotateX(0) translateZ(0);
-  -webkit-transition: -webkit-transform ease-out .5s;
+	-webkit-transition: -webkit-transform ease-out .5s, visibility ease-out .4s; // fixes flicker on flip down
+  visibility: hidden;
+
+	&.visible {
+		visibility: visible;
+  	-webkit-transition: -webkit-transform ease-out .5s;		
+	}
 
 	&.up {
 		-webkit-transform: rotateX(180deg) translateZ(0);
 	}
 
-	&.hidden {
-	  -webkit-transition: -webkit-transform ease-out .5s, visibility ease-out .4s; // fixes flicker on flip down
-	}
-
-	&.first {
-		top: 0;
-	  box-shadow: 0 -5px 10px @shadow;
-	  -webkit-transform-origin: center bottom;
-		-webkit-transform: rotateX(0deg) translateZ(0);  
-	}
-
-	&.last {
+	&:first-child,
+	&:last-child {
   	box-shadow: 0 5px 10px @shadow;	
 	}
 
@@ -209,12 +205,8 @@ a:active {
 	color: @logo-color;
 }
 
-.hide {
-	opacity: 0;
-}
-
 .hidden {
-	visibility: hidden;
+	opacity: 0;
 }
 
 /* Details

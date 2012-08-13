@@ -20,19 +20,15 @@
 
 		var handler = function() {
 			navigate.to();
-		},
-		destination = JSON.parse(localStorage.getItem('destination'));
+		};
 
 		window.addEventListener( 'hashchange', handler, false );
 		window.addEventListener( 'orientationchange', orientation, false );
 
 		notification.enable();
-		if ( destination.length && destination[1] === undefined ) {
-			notification.show( destination[0], destination[1] );
-		}
 
 		navigate.enable();
-		navigate.to();
+		navigate.to(+localStorage.getItem('page'), +localStorage.getItem('position') );
 
 		flip.enable();
 		slide.enable();
@@ -46,28 +42,29 @@
 
 		var url,
 				loading = false,
-				page = 1,
-				maxpage = 1,
-				player,
+				player = localStorage.getItem('player'),
+				destination = localStorage.getItem('destination'),
 
-		to = function() {
+		to = function( page, position ) {
 
-			var that = this,
-					destination = ( location.hash.length ) ? location.hash.slice(2).split("/") : JSON.parse(localStorage.getItem('destination'));
+			var that    = this;
+			destination = location.hash.slice(2).split("/")[0] || destination;
+			player      = location.hash.slice(2).split("/")[1] || player;
+			this.page   = page || 1;
 
-			switch ( destination[0] ) {
+			switch ( destination ) {
 
 				case "shots":
 
-					this.url = 'http://api.dribbble.com/players/'+destination[1]+'/'+destination[0]+'/';
+					url = 'http://api.dribbble.com/players/'+player+'/'+destination+'/';
+					localStorage.setItem('player', player);
 
 				break;
 				case "following":
 				case "likes":
 
-					player = ( destination[1] === undefined ) ? prompt("dribbble username:", player) : destination[1];
-
-					this.url = 'http://api.dribbble.com/players/'+player+'/shots/'+destination[0];
+					player = ( ! player ) ? prompt("dribbble username:") : player;
+					url = 'http://api.dribbble.com/players/'+player+'/shots/'+destination;
 					localStorage.setItem('player', player);
 
 				break;
@@ -75,47 +72,48 @@
 				case "debuts":
 				case "everyone":
 
-					this.url = 'http://api.dribbble.com/shots/'+destination[0];
+					url = 'http://api.dribbble.com/shots/'+destination;
+					player = null;
 
 				break;
 				default:
 
-					this.url = 'http://api.dribbble.com/shots/popular';
+					url = 'http://api.dribbble.com/shots/popular';
+					destination = 'popular';
+					player = null;
 
 				break;
 
 			}
 
-			JSONP.get( this.url, {per_page: 20, page: page }, function( data ) {
-					render(data);
-					if ( destination[1] !== undefined ) {
-						notification.show( destination[0], destination[1] );
+			JSONP.get( url, {per_page: 20, page: this.page }, function( data ) {
+				if ( data.shots.length > 0 ) {
+					flip.position( position || 1 );
+					render(data, 'insert');
+					if ( player ) {
+						notification.show( destination, player );
 					}
-					that.page = 1;
+					that.page = data.page;
 					that.maxpage = data.pages;
 					slide.center();
-					localStorage.setItem( 'destination', JSON.stringify(destination) );
+					localStorage.setItem( 'destination', destination );
+					localStorage.setItem( 'page', data.page );
+				}
 			});
-
-			this.page = that.page;
-			this.maxpage = that.maxpage;
 
 		},
 
 		enable = function() {
 
 			var navigation = document.getElementById( 'navigation' ),
-			destination = ( localStorage.getItem('destination') !== null ) ? JSON.parse(localStorage.getItem('destination')) : ["popular"],
 			i = 1;
 
 			for ( ; i < navigation.children.length; i++ ) {
 				navigation.children[i].addEventListener('touchstart', navigate.activate, false);
-				if ( navigation.children[i].getAttribute('data-open').slice(2) === destination[0] ) {
+				if ( navigation.children[i].getAttribute('data-open').slice(2) === localStorage.getItem('destination') ) {
 					navigation.children[i].classList.add('active');
 				}
 			}
-
-			localStorage.setItem('destination', JSON.stringify(destination));
 
 		},
 
@@ -129,23 +127,42 @@
 
 		},
 
-		more = function( current ) {
+		more = function( type ) {
 
-			if ( ! loading && this.page < this.maxpage ) {
-				loading = true;
-				JSONP.get( this.url, {per_page:'20', page: ++this.page}, function(data) {
-					render(data);
-					pages[current+1].classList.add('hidden');
-					loading = false;
-				});
+			if ( ! loading ) {
+
+				if ( type === 'append' && this.page < this.maxpage ) {
+
+					loading = true;
+
+					JSONP.get( url, {per_page: 20, page: this.page+1}, function(data) {
+						render(data, type );
+						loading = false;
+					});
+
+				}
+
+				if ( type === 'prepend' && this.page > 1 ) {
+
+					loading = true;
+
+					JSONP.get( url, {per_page: 20, page: this.page-1}, function(data) {
+						flip.position(11);
+						render(data, type );
+						loading = false;
+					});
+
+				}
+
 			}
 
 		};
 
 		return {
+			page: 1,
+			maxpage: 1,
 			to: to,
 			more: more,
-			url: url,
 			enable: enable,
 			activate: activate
 		};
@@ -155,47 +172,53 @@
 	// rendering
 	// -------------------------------------------------------------
 
-	render = function( data ) {
+	render = function( data, type ) {
 		
 		var length = data.shots.length,
 		container  = document.createDocumentFragment(),
 		i          = 0,
-		
+
 		build = function() {
 
 			for ( ; i < length; i++ ) {
 
 				var page = document.createElement('div');
-				page.className = "page";
+				page.classList.add('page');
+
+				if ( type === 'prepend' ) {
+					page.classList.add('up');
+				}
 
 				// first page
-				if ( i === 0 && data.page === 1 ) {
-
-					page.appendChild( side() );
-					page.classList.add('first');						
-					page.firstChild.classList.add('front');
-
+				if ( i === 0 && type !== "append" ) {
+					page.appendChild( side(i) );
+					page.classList.add('up');
+					if ( type === 'insert' && Math.floor((i+1)/2) === flip.position()-1 ) {
+						page.classList.add('visible');
+					}
+					page.firstChild.classList.add('back');
 					container.appendChild( page );
-
 				}
 
 				// back of last page
-				if ( i === 0 && data.page > 1 ) {
-					pages[pages.length-1].appendChild( side() );
-					pages[pages.length-1].classList.remove('last');
+				if ( i === 0 && type === "append" ) {
+					pages[pages.length-1].appendChild( side(0) );
 					pages[pages.length-1].lastChild.classList.add('back');					
-				}				
+				}
 
 				// page with front and back
-				if ( i !== 0 && i !== length-1 ) {
+				if ( i > 0 && i < length-1 ) {
 
-					if ( i !== 1 ) {
-						page.classList.add('hidden');
+					if ( ( Math.floor((i+1)/2) === flip.position()-1 || Math.floor((i+1)/2) === flip.position() ) && type === 'insert' ) {
+						page.classList.add('visible');
+					}
+					if ( Math.floor((i+1)/2) < flip.position() && type === "insert" ) {
+						page.classList.add('up');
 					}
 
-					page.appendChild( side() );
+					page.appendChild( side(i) );
 					i++;
-					page.appendChild( side() );
+					page.appendChild( side(i) );
 
 					page.firstChild.classList.add('front');
 					page.lastChild.classList.add('back');
@@ -207,61 +230,48 @@
 				// last page
 				if ( i === length-1 ) {
 
-					if ( length%2 === 0) {
+					if ( type === 'prepend' ) {
 
-						page.classList.add('last');
-						if ( i !== 1 ) {
-							page.classList.add('hidden');
-						}
-						page.appendChild( side() );
-						page.firstChild.classList.add('front');
+						pages[0].insertBefore( side(i), pages[0].firstChild );
+						pages[0].firstChild.classList.add('front');
 
 					} else {
 
-						if ( length > 1 ) {
-							container.appendChild( page );
+						if ( length%2 === 0 ) {
+
+							if ( type === 'insert' && Math.floor((i+1)/2) === flip.position() ) {
+								page.classList.add('visible');
+							}
+
+							page.appendChild( side(i) );
+							page.firstChild.classList.add('front');
+
+						} else {
+
+							if ( length > 1 ) {
+								container.appendChild( page );
+							}
+
+							page = document.createElement('div');
+							page.classList.add('page');
+							if ( type === 'insert' && Math.floor((i+1)/2) === flip.position()-1 ) {
+								page.classList.add('visible');
+							}
+							page.innerHTML += '<div class="front text">END</div>';
+
 						}
 
-						page = document.createElement('div');
-						page.className = "page last";
-						if ( i !== 0 ) {
-							page.classList.add('hidden');
-						}
-						page.innerHTML += '<div class="front text">END</div>';
+						container.appendChild( page );
 
 					}
-
-					container.appendChild( page );
 
 				}
 
 			}
 
-		},
+		},	
 
-		insert = function() {
-
-			flip.reset();
-			flipscreen.innerHTML = "";
-			if ( data.pages > 1 ) {
-				flipscreen.appendChild( dragging() );
-			}			
-			flipscreen.appendChild(container);
-			pages = document.getElementsByClassName('page');
-
-		},
-
-		append = function() {
-
-			if ( data.page === data.pages ) {
-				flipscreen.removeChild( flipscreen.firstChild );
-			}
-			flipscreen.appendChild(container);
-			pages = document.getElementsByClassName('page');
-
-		},
-
-		side = function() {
+		side = function( index ) {
 
 			var side        = document.createElement('div'),
 			shotWrapper     = document.createElement('div'),
@@ -276,33 +286,33 @@
 			};
 
 			loading.className = "loading";
-			loading.innerHTML = '<div class="loading-title">'+data.shots[i].title+'</div><div class="loading-author">by '+data.shots[i].player.name+'</div>';
+			loading.innerHTML = '<div class="loading-title">'+data.shots[index].title+'</div><div class="loading-author">by '+data.shots[index].player.name+'</div>';
 
 			shotWrapper.appendChild(loading);
 			shotWrapper.className = "shot";
-			shot.className        = "hide";
+			shot.className        = "hidden";
 			shot.height           = 240;
 			shot.width            = 320;
-			shot.src              = data.shots[i].image_url;
+			shot.src              = data.shots[index].image_url;
 
 			shot.addEventListener('load', function loaded() {
-				shot.classList.remove('hide');
+				shot.classList.remove('hidden');
 				setTimeout(removeLoading, 400);
 				shot.removeEventListener('load', loaded);
 			}, false);
 
 			details.className = "details";
-			details.innerHTML = '<h2 class="title"><a href="'+data.shots[i].url+'">'+data.shots[i].title+'</a></h2>';
-			details.innerHTML += '<div class="meta"><span class="likes"></span>'+data.shots[i].likes_count+' <span class="views"></span>'+data.shots[i].views_count+' <span class="comments"></span>'+data.shots[i].comments_count+'</div>';
+			details.innerHTML = '<h2 class="title"><a href="'+data.shots[index].url+'">'+data.shots[index].title+'</a></h2>';
+			details.innerHTML += '<div class="meta"><span class="likes"></span>'+data.shots[index].likes_count+' <span class="views"></span>'+data.shots[index].views_count+' <span class="comments"></span>'+data.shots[index].comments_count+'</div>';
 
 			author.className = "author";
 
 			authorImageLink.className = "author-image";
-			authorImageLink.href = '#/shots/'+data.shots[i].player.username;
-			authorImageLink.setAttribute('data-src', data.shots[i].player.avatar_url);
+			authorImageLink.href = '#/shots/'+data.shots[index].player.username;
+			authorImageLink.setAttribute('data-src', data.shots[index].player.avatar_url);
 
 			author.appendChild(authorImageLink);
-			author.innerHTML += '<a href="#/shots/'+data.shots[i].player.username+'" class="author-name">'+data.shots[i].player.name+'</a><br><span class="author-links"><a href="#/following/'+data.shots[i].player.username+'">Following</a> &bull; <a href="#/likes/'+data.shots[i].player.username+'">Likes</a></span>';
+			author.innerHTML += '<a href="#/shots/'+data.shots[index].player.username+'" class="author-name">'+data.shots[index].player.name+'</a><br><span class="author-links"><a href="#/following/'+data.shots[index].player.username+'">Following</a> &bull; <a href="#/likes/'+data.shots[index].player.username+'">Likes</a></span>';
 
 			details.appendChild(author);
 			shotWrapper.appendChild(shot);
@@ -325,11 +335,17 @@
 
 		build();
 
-		if ( data.page === 1 ) {
-			insert();
-		} else {
-			append();
+		if ( type === 'insert' ) {
+			flipscreen.innerHTML = "";
 		}
+
+		if ( type === 'prepend' ) {
+			flipscreen.insertBefore( container, flipscreen.firstChild );			
+		} else {
+			flipscreen.appendChild( container );			
+		}
+
+		pages = document.getElementsByClassName('page');
 
 	},
 
@@ -338,7 +354,8 @@
 
 	flip = (function() {
 
-		var current = 1,
+		var position = 1,
+		lastposition,
 
 		startY, startX, distY, distX, deg, time,
 
@@ -362,35 +379,29 @@
 			
 				slide.disable();
 
-				if ( current === pages.length-1 ) { // LAST
-
-					deg = Math.min(-Math.log(distY)*25+75,-1);
-
-					pages[current].style.webkitTransform = "rotateX(" + -deg + "deg)";
-					pages[current].style.webkitTransition = "none";					
-
-					if ( deg < -60 ) {
-						flipscreen.firstChild.firstChild.classList.add('spin');
-					} else {
-						flipscreen.firstChild.firstChild.classList.remove('spin');							
-					}
-
+				// LAST
+				if ( position === pages.length-1 ) {
+					//deg = Math.min(-Math.log(distY)*25+75,-1);
+					deg = Math.min( Math.max( (distY-20)*0.485, 1 ), 80 );
 				} else {
-
 					deg = Math.min( Math.max( (distY-20)*0.485, 1 ), 180 );
+					pages[position+1].classList.add('visible');					
+				}				
 
-					pages[current].style.webkitTransform = "rotateX(" + deg + "deg)";
-					pages[current].style.webkitTransition = "none";					
+				//if ( deg < -60 ) {
+				//	flipscreen.firstChild.firstChild.classList.add('spin');
+				//} else {
+				//	flipscreen.firstChild.firstChild.classList.remove('spin');
+				//}
 
-					pages[current+1].classList.remove('hidden');
+				pages[position].style.webkitTransform = "rotateX(" + deg + "deg)";
+				pages[position].style.webkitTransition = "none";
 
-					pages[current-1].style.webkitTransition = "";
-					pages[current-1].style.webkitTransform = "";
+				pages[position-1].style.webkitTransition = "";
+				pages[position-1].style.webkitTransform = "";
 
-				}
-
-				if ( current > 1 ) {
-					pages[current-2].classList.add('hidden');
+				if ( position > 1 ) {
+					pages[position-2].classList.remove('visible');
 				}
 
 			}
@@ -400,29 +411,23 @@
 
 				slide.disable();
 
-				if ( current === 1 ) { // FIRST
-
-					deg = Math.min(-Math.log(-distY)*25+75, -1 );
-
-					pages[0].style.webkitTransform = "rotateX(" + deg + "deg)";
-					pages[0].style.webkitTransition = "none";
-
+				// FIRST
+				if ( position === 1 ) {
+					//deg = Math.min(-Math.log(-distY)*25+75, -1 );
+					deg = Math.max( Math.min( (380 + distY) * 0.485, 180), 100 );
 				} else {
-
 					deg = Math.max( Math.min( (380 + distY) * 0.485, 180), 1 );
-
-					pages[current-1].style.webkitTransform = "rotateX(" + deg +"deg)";
-					pages[current-1].style.webkitTransition = "none";
-
-					pages[current-2].classList.remove('hidden');
-
+					pages[position-2].classList.add('visible');
 				}
 
-				pages[current].style.webkitTransition = "";
-				pages[current].style.webkitTransform = "";
+				pages[position-1].style.webkitTransform = "rotateX(" + deg +"deg)";
+				pages[position-1].style.webkitTransition = "none";
 
-				if ( current < pages.length-1 ) {
-					pages[current+1].classList.add('hidden');					
+				pages[position].style.webkitTransition = "";
+				pages[position].style.webkitTransform = "";
+
+				if ( position < pages.length-1 ) {
+					pages[position+1].classList.remove('visible');					
 				}
 
 			}
@@ -432,43 +437,40 @@
 		end = function( e ) {
 
 			var ms = new Date().getTime()-time;
-
-			// flip first back up
-			if ( current === 1 && deg < 0 && distY < 0 ) {
-
-				pages[(current-1)].style.webkitTransition = "";
-				pages[(current-1)].style.webkitTransform = "";				
-
-			}
+			lastposition = position;
 
 			// flip back up			
-			if ( deg >= 90 && ( ms > 500 || Math.abs(distX) > Math.abs(distY) ) && distY < 0 && current !== 1 ) {
+			if ( deg >= 90 && ( ms > 500 || Math.abs(distX) > Math.abs(distY) || position === 1 ) && distY < 0 ) {
 
-				pages[current-1].style.webkitTransition = "";
-				pages[current-1].style.webkitTransform = "";
-				pages[current-1].classList.add('up');
-				if ( current-2 >= 0 ) {				
-					pages[current-2].classList.add('hidden');
+				pages[position-1].style.webkitTransition = "";
+				pages[position-1].style.webkitTransform = "";
+				pages[position-1].classList.add('up');
+				if ( position-2 >= 0 ) {				
+					pages[position-2].classList.remove('visible');
+				}
+
+				if ( deg < 120 ) {
+					navigate.more( 'prepend' );
 				}
 
 			}
 
 			// flip back down
-			if ( deg < 90 && ( ms > 500 || current === pages.length-1 || Math.abs(distX) > Math.abs(distY) ) && distY > 0 ) {
+			if ( deg < 90 && ( ms > 500 || position === pages.length-1 || Math.abs(distX) > Math.abs(distY) ) && distY > 0 ) {
 
-				pages[current].style.webkitTransition = "";
-				pages[current].style.webkitTransform = "";
-				if ( current < pages.length-1 ) {
-					pages[current+1].classList.add('hidden');
+				pages[position].style.webkitTransition = "";
+				pages[position].style.webkitTransform = "";
+				if ( position < pages.length-1 ) {
+					pages[position+1].classList.remove('visible');
 				}
 
-				if ( current === pages.length-1) {
+				if ( position === pages.length-1) {
 
-					pages[current-1].style.webkitTransition = "";
-					pages[current-1].style.webkitTransform = "";
+					pages[position-1].style.webkitTransition = "";
+					pages[position-1].style.webkitTransform = "";
 
-					if ( deg < -60 ) {
-						navigate.more(current);
+					if ( deg > 60 ) {
+						navigate.more( 'append' );
 					}
 
 				}
@@ -476,38 +478,49 @@
 			}
 
 			// flip up			
-			if ( ( deg >= 90 || ms <= 500 ) && distY > 0 && current < pages.length-1 && Math.abs(distX) < Math.abs(distY) ) {
+			if ( ( deg >= 90 || ms <= 500 ) && distY > 0 && position < pages.length-1 && Math.abs(distX) < Math.abs(distY) ) {
 
-				pages[current].style.webkitTransition = "";
-				pages[current].style.webkitTransform = "";
-				pages[current].classList.add('up');
+				pages[position].style.webkitTransition = "";
+				pages[position].style.webkitTransform = "";
+				pages[position].classList.add('up');
 
-				if ( current-1 >= 0 ) {
-					pages[current-1].classList.add('hidden');
+				if ( position-1 >= 0 ) {
+					pages[position-1].classList.remove('visible');
 				}
 
-				current++;
+				position++;
 
 			}
 
 			// flip down			
-			if ( ( deg < 90 || ms < 500 ) && distY < 0 && current !== 1 && Math.abs(distX) < Math.abs(distY) ) {
+			if ( ( deg < 90 || ms < 500 ) && distY < 0 && position !== 1 && Math.abs(distX) < Math.abs(distY) ) {
 
-				pages[current-1].style.webkitTransition = "";
-				pages[current-1].style.webkitTransform = "";
-				pages[current-1].classList.remove('up');
+				pages[position-1].style.webkitTransition = "";
+				pages[position-1].style.webkitTransform = "";
+				pages[position-1].classList.remove('up');
 
-				if ( current < pages.length-1 ) {
-					pages[current+1].classList.add('hidden');
+				if ( position < pages.length-1 ) {
+					pages[position+1].classList.remove('visible');
 				}
 
-				pages[current].classList.add('hidden');
+				pages[position].classList.remove('visible');
 
-				current--;
+				position--;
 
 			}
 
 			time = 0;
+
+			// Save position in flipper
+
+			if ( position%10 === 0 && lastposition === position+1 ) {
+				localStorage.setItem('page', --navigate.page);
+			}
+			if ( (position-1)%10 === 0 && lastposition === position-1 ) {
+				localStorage.setItem('page', ++navigate.page);
+			}
+
+			localStorage.setItem('position', position%10 || 10);
 
 			slide.enable();
 
@@ -529,15 +542,19 @@
 
 		},
 
-		reset = function() {
-			current = 1;
+		_position = function( index ) {
+			if ( index !== undefined ) {
+				position = index;
+			} else {
+				return position;
+			}
 		};
 
 		return {
 
 			enable: enable,
 			disable: disable,
-			reset: reset
+			position: _position
 
 		};
 
@@ -591,13 +608,13 @@
 
 					authorImage.width = "50";
 					authorImage.height = "50";
-					authorImage.className = "hide";					
+					authorImage.className = "hidden";					
 					authorImage.src = authorImageLink.getAttribute('data-src');						
 					authorImageLink.appendChild(authorImage);
 					authorImageLink.removeAttribute('data-src');
 
 					authorImage.addEventListener('load', function loaded() {
-						authorImage.classList.remove('hide');
+						authorImage.classList.remove('hidden');
 						authorImage.removeEventListener('load', loaded);
 					}, false);
 
