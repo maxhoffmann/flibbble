@@ -63,7 +63,7 @@
 				case "following":
 				case "likes":
 
-					player = ( ! player ) ? prompt("dribbble username:") : player;
+					player = ( ! position ) ? prompt("dribbble username:", player) : player;
 					url = 'http://api.dribbble.com/players/'+player+'/shots/'+destination;
 					localStorage.setItem('player', player);
 
@@ -90,7 +90,7 @@
 				if ( data.shots.length > 0 ) {
 					flip.position( position || 1 );
 					render(data, 'insert');
-					if ( player ) {
+					if ( player || position ) {
 						notification.show( destination, player );
 					}
 					that.page = data.page;
@@ -748,7 +748,7 @@
 			show: function( text, type ) {
 
 				var message = text;
-				if ( type !== undefined ) {
+				if ( type ) {
 					message = " <b>"+type+"</b>&#8217;s "+message;
 				}
 
