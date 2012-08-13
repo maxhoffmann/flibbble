@@ -37,7 +37,7 @@ a:active {
   overflow: hidden;
 }
 #flipper {
-  background: #f9fafb;
+  background: -webkit-radial-gradient(center, #f9fafb, #dcdfe5);
   box-shadow: -2px 0 10px rgba(1, 17, 50, 0.30000000000000004);
   z-index: 2;
   -webkit-perspective: 800px;
