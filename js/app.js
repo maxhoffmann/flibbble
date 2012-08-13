@@ -733,31 +733,31 @@
 
 	notification = (function() {
 
-		var notification,
-		nextmessage = false,
+		var element,
+		next = false,
 		active = false;
 
 		return {	
 
 			enable: function() {
-				notification = document.getElementById('notifications');
+				element = document.getElementById('notifications');
 			},
 
-			show: function( text, type ) {
+			show: function( section, player ) {
 
-				var message = text;
-				if ( type ) {
-					message = " <b>"+type+"</b>&#8217;s "+message;
+				var _notification = section;
+				if ( player ) {
+					_notification = " <b>"+player+"</b>&#8217;s "+_notification;
 				}
 
-				if ( ! active ) {	
+				if ( ! active ) {
 					active = true;
-					nextmessage = false;					
-					notification.firstChild.innerHTML = message;
-					notification.classList.add('show');
+					next = false;
+					element.firstChild.innerHTML = _notification;
+					element.classList.add('show');
 					setTimeout(this.hide(this), 2000);
-				} else {				
-					nextmessage = message;
+				} else {
+					next = _notification;
 				}
 
 			},
@@ -765,11 +765,11 @@
 			hide: function( obj ) {
 
 				return function() {
-					active = false;					
-					notification.classList.remove('show');
-					if ( nextmessage ) {
+					active = false;
+					element.classList.remove('show');
+					if ( next ) {
 						setTimeout(function() {
-							obj.show( nextmessage );							
+							obj.show( next );
 						}, 500);
 					}
 				};
