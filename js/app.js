@@ -45,6 +45,7 @@
 				maxpage = 1,
 				section,
 				player,
+				position = 0,
 
 		to = function() {
 
@@ -92,7 +93,8 @@
 		request = function( data ) {
 
 			if ( data.shots.length > 0 ) {
-				flip.position( 1 );
+				flip.position( position || +localStorage.getItem('position') );
+				position = 1;
 				render(data, 'insert');
 				navigate.page = data.page;
 				maxpage = data.pages;
@@ -184,6 +186,8 @@
 
 		build = function() {
 
+			var position = flip.position();
+
 			for ( ; i < length; i++ ) {
 
 				var page = document.createElement('div');
@@ -197,7 +201,7 @@
 				if ( i === 0 && type !== "append" ) {
 					page.appendChild( side(i) );
 					page.classList.add('up');
-					if ( type === 'insert' && Math.floor((i+1)/2) === flip.position()-1 ) {
+					if ( type === 'insert' && Math.floor((i+1)/2) === position-1 ) {
 						page.classList.add('visible');
 					}
 					page.firstChild.classList.add('back');
@@ -213,10 +217,10 @@
 				// page with front and back
 				if ( i > 0 && i < length-1 ) {
 
-					if ( ( Math.floor((i+1)/2) === flip.position()-1 || Math.floor((i+1)/2) === flip.position() ) && type === 'insert' ) {
+					if ( ( Math.floor((i+1)/2) === position-1 || Math.floor((i+1)/2) === position ) && type === 'insert' ) {
 						page.classList.add('visible');
 					}
-					if ( Math.floor((i+1)/2) < flip.position() && type === "insert" ) {
+					if ( Math.floor((i+1)/2) < position && type === "insert" ) {
 						page.classList.add('up');
 					}
 
@@ -243,7 +247,7 @@
 
 						if ( length%2 === 0 ) {
 
-							if ( type === 'insert' && Math.floor((i+1)/2) === flip.position() ) {
+							if ( type === 'insert' && Math.floor((i+1)/2) === position ) {
 								page.classList.add('visible');
 							}
 
@@ -258,7 +262,7 @@
 
 							page = document.createElement('div');
 							page.classList.add('page');
-							if ( type === 'insert' && Math.floor((i+1)/2) === flip.position()-1 ) {
+							if ( type === 'insert' && Math.floor((i+1)/2) === position-1 ) {
 								page.classList.add('visible');
 							}
 							page.innerHTML += '<div class="front text">END</div>';
