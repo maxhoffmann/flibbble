@@ -14,7 +14,7 @@
 			e.preventDefault();
 		};
 
-		document.body.innerHTML = '<div id="notifications"><span id="notification"></span></div><div id="menu" class="screen"><ul id="navigation"><li class="logo">flibbble</li><li data-open="#/popular">Popular</li><li data-open="#/following">Following</li><li data-open="#/likes">Likes</a></li><li data-open="#/debuts">Debuts</li><li data-open="#/everyone">Everyone</li></ul></div><div id="flipper" class="screen"></div>';
+		document.body.innerHTML = '<div id="notifications"><span id="notification">Loading...</span></div><div id="menu" class="screen"><ul id="navigation"><li class="logo">flibbble</li><li data-open="#/popular">Popular</li><li data-open="#/following">Following</li><li data-open="#/likes">Likes</a></li><li data-open="#/debuts">Debuts</li><li data-open="#/everyone">Everyone</li></ul></div><div id="flipper" class="screen"></div>';
 
 		flipscreen = document.getElementById( 'flipper' );
 
@@ -53,6 +53,7 @@
 			section   = location.hash.slice(2).split("/")[0] || section;
 			player    = location.hash.slice(2).split("/")[1] || player;
 			this.page = ( this.page ) ? 1 : +localStorage.getItem('page');
+			position = ( position ) ? 1 : ( +localStorage.getItem('position') || 1 );
 
 			switch ( section ) {
 
@@ -93,8 +94,7 @@
 		request = function( data ) {
 
 			if ( data.shots.length > 0 ) {
-				flip.position( position || +localStorage.getItem('position') );
-				position = 1;
+				flip.position( position );
 				render(data, 'insert');
 				navigate.page = data.page;
 				maxpage = data.pages;
@@ -103,6 +103,7 @@
 				localStorage.setItem( 'section', section );
 				localStorage.setItem( 'page', navigate.page );
 				localStorage.setItem( 'player', player );
+				localStorage.setItem( 'position', position );
 			}
 
 		},
@@ -350,7 +351,7 @@
 		if ( type === 'prepend' ) {
 			flipscreen.insertBefore( container, flipscreen.firstChild );			
 		} else {
-			flipscreen.appendChild( container );			
+			flipscreen.appendChild( container );
 		}
 
 		pages = document.getElementsByClassName('page');
