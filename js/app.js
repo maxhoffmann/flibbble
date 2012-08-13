@@ -25,13 +25,13 @@
 		window.addEventListener( 'hashchange', handler, false );
 		window.addEventListener( 'orientationchange', orientation, false );
 
-		notification.enable();
-
 		navigate.enable();
-		navigate.to(+localStorage.getItem('page'), +localStorage.getItem('position') );
+		navigate.to();
 
 		flip.enable();
 		slide.enable();
+
+		notification.enable();		
 
 	},
 
@@ -42,75 +42,79 @@
 
 		var url,
 				loading = false,
-				player = localStorage.getItem('player'),
-				destination = localStorage.getItem('destination'),
+				maxpage = 1,
+				section,
+				player,
 
-		to = function( page, position ) {
+		to = function() {
 
-			var that    = this;
-			destination = location.hash.slice(2).split("/")[0] || destination;
-			player      = location.hash.slice(2).split("/")[1] || player;
-			this.page   = page || 1;
+			var that  = this;
+			section   = location.hash.slice(2).split("/")[0] || section;
+			player    = location.hash.slice(2).split("/")[1] || player;
+			this.page = ( this.page ) ? 1 : +localStorage.getItem('page');
 
-			switch ( destination ) {
+			switch ( section ) {
 
 				case "shots":
 
-					url = 'http://api.dribbble.com/players/'+player+'/'+destination+'/';
-					localStorage.setItem('player', player);
+					url = 'http://api.dribbble.com/players/'+player+'/'+section+'/';
 
 				break;
 				case "following":
 				case "likes":
 
-					player = ( ! position ) ? prompt("dribbble username:", player) : player;
-					url = 'http://api.dribbble.com/players/'+player+'/shots/'+destination;
-					localStorage.setItem('player', player);
+					player = player || prompt("dribbble username:", player);
+					url = 'http://api.dribbble.com/players/'+player+'/shots/'+section;
 
 				break;
 				case "popular":
 				case "debuts":
 				case "everyone":
 
-					url = 'http://api.dribbble.com/shots/'+destination;
+					url = 'http://api.dribbble.com/shots/'+section;
 					player = null;
 
 				break;
 				default:
 
 					url = 'http://api.dribbble.com/shots/popular';
-					destination = 'popular';
+					section = 'popular';
 					player = null;
 
 				break;
 
 			}
 
-			JSONP.get( url, {per_page: 20, page: this.page }, function( data ) {
-				if ( data.shots.length > 0 ) {
-					flip.position( position || 1 );
-					render(data, 'insert');
-					if ( player || position ) {
-						notification.show( destination, player );
-					}
-					that.page = data.page;
-					that.maxpage = data.pages;
-					slide.center();
-					localStorage.setItem( 'destination', destination );
-					localStorage.setItem( 'page', data.page );
-				}
-			});
+			JSONP.get( url, {per_page: 20, page: this.page }, request );
+
+		},
+
+		request = function( data ) {
+
+			if ( data.shots.length > 0 ) {
+				flip.position( 1 );
+				render(data, 'insert');
+				navigate.page = data.page;
+				maxpage = data.pages;
+				slide.center();
+				notification.show( section, player );
+				localStorage.setItem( 'section', section );
+				localStorage.setItem( 'page', navigate.page );
+				localStorage.setItem( 'player', player );
+			}
 
 		},
 
 		enable = function() {
 
-			var navigation = document.getElementById( 'navigation' ),
-			i = 1;
+			var navigation = document.getElementById( 'navigation' );
 
-			for ( ; i < navigation.children.length; i++ ) {
+			section = localStorage.getItem('section') || 'popular';
+			player = localStorage.getItem('player');
+
+			for ( var i = 1; i < navigation.children.length; i++ ) {
 				navigation.children[i].addEventListener('touchstart', navigate.activate, false);
-				if ( navigation.children[i].getAttribute('data-open').slice(2) === localStorage.getItem('destination') ) {
+				if ( navigation.children[i].getAttribute('data-open').slice(2) === section ) {
 					navigation.children[i].classList.add('active');
 				}
 			}
@@ -122,7 +126,8 @@
 			if ( document.getElementsByClassName('active')[0] ) {
 				document.getElementsByClassName('active')[0].classList.remove('active');
 			}
-			this.classList.add('active');			
+			this.classList.add('active');
+			player = null;
 			location.hash = this.getAttribute('data-open');
 
 		},
@@ -131,7 +136,7 @@
 
 			if ( ! loading ) {
 
-				if ( type === 'append' && this.page < this.maxpage ) {
+				if ( type === 'append' && this.page < maxpage ) {
 
 					loading = true;
 
@@ -159,8 +164,7 @@
 		};
 
 		return {
-			page: 1,
-			maxpage: 1,
+			page: 0,
 			to: to,
 			more: more,
 			enable: enable,
@@ -512,10 +516,12 @@
 			// Save position in flipper
 
 			if ( position%10 === 0 && lastposition === position+1 ) {
-				localStorage.setItem('page', --navigate.page);
+				navigate.page--;
+				localStorage.setItem('page', navigate.page);
 			}
 			if ( (position-1)%10 === 0 && lastposition === position-1 ) {
-				localStorage.setItem('page', ++navigate.page);
+				navigate.page++;
+				localStorage.setItem('page', navigate.page);
 			}
 
 			localStorage.setItem('position', position%10 || 10);
