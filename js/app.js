@@ -381,8 +381,7 @@
 
 				// LAST
 				if ( position === pages.length-1 ) {
-					//deg = Math.min(-Math.log(distY)*25+75,-1);
-					deg = Math.min( Math.max( (distY-20)*0.485, 1 ), 80 );
+					deg = Math.max(-(-Math.log(distY)*25+75), 1);
 				} else {
 					deg = Math.min( Math.max( (distY-20)*0.485, 1 ), 180 );
 					pages[position+1].classList.add('visible');					
@@ -413,8 +412,7 @@
 
 				// FIRST
 				if ( position === 1 ) {
-					//deg = Math.min(-Math.log(-distY)*25+75, -1 );
-					deg = Math.max( Math.min( (380 + distY) * 0.485, 180), 100 );
+					deg = Math.min(180+(-Math.log(-distY)*25+75), 179);
 				} else {
 					deg = Math.max( Math.min( (380 + distY) * 0.485, 180), 1 );
 					pages[position-2].classList.add('visible');
