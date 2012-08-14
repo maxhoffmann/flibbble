@@ -504,7 +504,7 @@
 					pages[flip.position-2].classList.remove('visible');
 				}
 
-				if ( deg < 120 ) {
+				if ( deg < 120 && flip.position === 1 ) {
 					navigate.more( 'prepend' );
 				}
 
@@ -524,7 +524,7 @@
 					pages[flip.position-1].style.webkitTransition = "";
 					pages[flip.position-1].style.webkitTransform = "";
 
-					if ( deg > 60 ) {
+					if ( deg > 60 && flip.position === pages.length-1 ) {
 						navigate.more( 'append' );
 					}
 
