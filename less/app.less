@@ -74,7 +74,8 @@ a:active {
 	position: absolute;
 	width: 100%;
 	text-align: center;
-	text-shadow: 0 1px 0 white;	
+	color: darken(@logo-color, 15%);	
+	text-shadow: 0 1px 0 white;
 }
 
 .drag.down {
@@ -87,15 +88,19 @@ a:active {
 
 .arrow {
 	display: inline-block;
-	margin-right: 5px;
 	font-size: 1.8em;
-	font-weight: bold;	
+	font-weight: bold;
 	vertical-align: bottom;
-	-webkit-transition: -webkit-transform ease-out .4s; 
+	-webkit-transition: -webkit-transform ease .3s;
 }
 
-.spin {
-	-webkit-transform: rotate(-360deg);
+.load {
+	-webkit-transform: translateY(-140px);
+	-webkit-transition: -webkit-transform ease .8s;	
+}
+
+.down .load {
+	-webkit-transform: translateY(140px);	
 }
 
 /* Pages

@@ -52,6 +52,7 @@ a:active {
   position: absolute;
   width: 100%;
   text-align: center;
+  color: #a4acbc;
   text-shadow: 0 1px 0 white;
 }
 .drag.down {
@@ -62,14 +63,17 @@ a:active {
 }
 .arrow {
   display: inline-block;
-  margin-right: 5px;
   font-size: 1.8em;
   font-weight: bold;
   vertical-align: bottom;
-  -webkit-transition: -webkit-transform ease-out 0.4s;
+  -webkit-transition: -webkit-transform ease 0.3s;
 }
-.spin {
-  -webkit-transform: rotate(-360deg);
+.load {
+  -webkit-transform: translatey(-140px);
+  -webkit-transition: -webkit-transform ease 0.8s;
+}
+.down .load {
+  -webkit-transform: translatey(140px);
 }
 /* Pages
    ========================================================================== */

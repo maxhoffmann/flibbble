@@ -184,9 +184,9 @@
 		var dragup         = document.createElement('div'),
 		dragdown           = document.createElement('div');
 		dragup.className   = "drag up";
-		dragup.innerHTML   = '<span class="arrow">&#8634;</span>drag up for more shots';
+		dragup.innerHTML   = '<span class="arrow">&#8593;</span>drag up for more shots';
 		dragdown.className = "drag down";
-		dragdown.innerHTML = '<span class="arrow">&#8634;</span>drag down for more shots';
+		dragdown.innerHTML = '<span class="arrow">&#8595;</span>drag down for more shots';
 
 		return function( data, type ) {
 			
@@ -430,9 +430,9 @@
 
 					if ( navigate.page < navigate.pages ) {
 						if ( deg > 60 )	{
-							flipscreen.querySelector('.up').firstChild.classList.add('spin');
+							flipscreen.querySelector('.up').firstChild.classList.add('load');
 						} else {
-							flipscreen.querySelector('.up').firstChild.classList.remove('spin');
+							flipscreen.querySelector('.up').firstChild.classList.remove('load');
 						}
 					}
 
@@ -464,9 +464,9 @@
 
 					if ( navigate.page > 1 ) {
 						if ( deg < 120 ) {
-							flipscreen.querySelector('.down').firstChild.classList.add('spin');
+							flipscreen.querySelector('.down').firstChild.classList.add('load');
 						} else {
-							flipscreen.querySelector('.down').firstChild.classList.remove('spin');
+							flipscreen.querySelector('.down').firstChild.classList.remove('load');
 						}
 					}
 
