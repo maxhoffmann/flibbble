@@ -94,7 +94,7 @@
 		request = function( data ) {
 
 			if ( data.shots.length > 0 ) {
-				flip.position( position );
+				flip.position = position;
 				render(data, 'insert');
 				navigate.page = data.page;
 				maxpage = data.pages;
@@ -155,8 +155,8 @@
 					loading = true;
 
 					JSONP.get( url, {per_page: 20, page: this.page-1}, function(data) {
-						flip.position(11);
 						render(data, type );
+						flip.position += 10;						
 						loading = false;
 					});
 
@@ -187,7 +187,7 @@
 
 		build = function() {
 
-			var position = flip.position();
+			var position = flip.position;
 
 			for ( ; i < length; i++ ) {
 
@@ -349,7 +349,7 @@
 		}
 
 		if ( type === 'prepend' ) {
-			flipscreen.insertBefore( container, flipscreen.firstChild );			
+			flipscreen.insertBefore( container, flipscreen.firstChild );
 		} else {
 			flipscreen.appendChild( container );
 		}
@@ -363,8 +363,7 @@
 
 	flip = (function() {
 
-		var position = 1,
-		lastposition,
+		var lastposition,
 
 		startY, startX, distY, distX, deg, time,
 
@@ -389,11 +388,11 @@
 				slide.disable();
 
 				// LAST
-				if ( position === pages.length-1 ) {
+				if ( flip.position === pages.length-1 ) {
 					deg = Math.max(-(-Math.log(distY)*25+75), 1);
 				} else {
 					deg = Math.min( Math.max( (distY-20)*0.485, 1 ), 180 );
-					pages[position+1].classList.add('visible');					
+					pages[flip.position+1].classList.add('visible');					
 				}				
 
 				//if ( deg < -60 ) {
@@ -402,14 +401,14 @@
 				//	flipscreen.firstChild.firstChild.classList.remove('spin');
 				//}
 
-				pages[position].style.webkitTransform = "rotateX(" + deg + "deg)";
-				pages[position].style.webkitTransition = "none";
+				pages[flip.position].style.webkitTransform = "rotateX(" + deg + "deg)";
+				pages[flip.position].style.webkitTransition = "none";
 
-				pages[position-1].style.webkitTransition = "";
-				pages[position-1].style.webkitTransform = "";
+				pages[flip.position-1].style.webkitTransition = "";
+				pages[flip.position-1].style.webkitTransform = "";
 
-				if ( position > 1 ) {
-					pages[position-2].classList.remove('visible');
+				if ( flip.position > 1 ) {
+					pages[flip.position-2].classList.remove('visible');
 				}
 
 			}
@@ -420,21 +419,21 @@
 				slide.disable();
 
 				// FIRST
-				if ( position === 1 ) {
+				if ( flip.position === 1 ) {
 					deg = Math.min(180+(-Math.log(-distY)*25+75), 179);
 				} else {
 					deg = Math.max( Math.min( (380 + distY) * 0.485, 180), 1 );
-					pages[position-2].classList.add('visible');
+					pages[flip.position-2].classList.add('visible');
 				}
 
-				pages[position-1].style.webkitTransform = "rotateX(" + deg +"deg)";
-				pages[position-1].style.webkitTransition = "none";
+				pages[flip.position-1].style.webkitTransform = "rotateX(" + deg +"deg)";
+				pages[flip.position-1].style.webkitTransition = "none";
 
-				pages[position].style.webkitTransition = "";
-				pages[position].style.webkitTransform = "";
+				pages[flip.position].style.webkitTransition = "";
+				pages[flip.position].style.webkitTransform = "";
 
-				if ( position < pages.length-1 ) {
-					pages[position+1].classList.remove('visible');					
+				if ( flip.position < pages.length-1 ) {
+					pages[flip.position+1].classList.remove('visible');					
 				}
 
 			}
@@ -444,16 +443,16 @@
 		end = function( e ) {
 
 			var ms = new Date().getTime()-time;
-			lastposition = position;
+			lastposition = flip.position;
 
 			// flip back up			
-			if ( deg >= 90 && ( ms > 500 || Math.abs(distX) > Math.abs(distY) || position === 1 ) && distY < 0 ) {
+			if ( deg >= 90 && ( ms > 500 || Math.abs(distX) > Math.abs(distY) || flip.position === 1 ) && distY < 0 ) {
 
-				pages[position-1].style.webkitTransition = "";
-				pages[position-1].style.webkitTransform = "";
-				pages[position-1].classList.add('up');
-				if ( position-2 >= 0 ) {				
-					pages[position-2].classList.remove('visible');
+				pages[flip.position-1].style.webkitTransition = "";
+				pages[flip.position-1].style.webkitTransform = "";
+				pages[flip.position-1].classList.add('up');
+				if ( flip.position-2 >= 0 ) {				
+					pages[flip.position-2].classList.remove('visible');
 				}
 
 				if ( deg < 120 ) {
@@ -463,18 +462,18 @@
 			}
 
 			// flip back down
-			if ( deg < 90 && ( ms > 500 || position === pages.length-1 || Math.abs(distX) > Math.abs(distY) ) && distY > 0 ) {
+			if ( deg < 90 && ( ms > 500 || flip.position === pages.length-1 || Math.abs(distX) > Math.abs(distY) ) && distY > 0 ) {
 
-				pages[position].style.webkitTransition = "";
-				pages[position].style.webkitTransform = "";
-				if ( position < pages.length-1 ) {
-					pages[position+1].classList.remove('visible');
+				pages[flip.position].style.webkitTransition = "";
+				pages[flip.position].style.webkitTransform = "";
+				if ( flip.position < pages.length-1 ) {
+					pages[flip.position+1].classList.remove('visible');
 				}
 
-				if ( position === pages.length-1) {
+				if ( flip.position === pages.length-1) {
 
-					pages[position-1].style.webkitTransition = "";
-					pages[position-1].style.webkitTransform = "";
+					pages[flip.position-1].style.webkitTransition = "";
+					pages[flip.position-1].style.webkitTransform = "";
 
 					if ( deg > 60 ) {
 						navigate.more( 'append' );
@@ -485,51 +484,51 @@
 			}
 
 			// flip up			
-			if ( ( deg >= 90 || ms <= 500 ) && distY > 0 && position < pages.length-1 && Math.abs(distX) < Math.abs(distY) ) {
+			if ( ( deg >= 90 || ms <= 500 ) && distY > 0 && flip.position < pages.length-1 && Math.abs(distX) < Math.abs(distY) ) {
 
-				pages[position].style.webkitTransition = "";
-				pages[position].style.webkitTransform = "";
-				pages[position].classList.add('up');
+				pages[flip.position].style.webkitTransition = "";
+				pages[flip.position].style.webkitTransform = "";
+				pages[flip.position].classList.add('up');
 
-				if ( position-1 >= 0 ) {
-					pages[position-1].classList.remove('visible');
+				if ( flip.position-1 >= 0 ) {
+					pages[flip.position-1].classList.remove('visible');
 				}
 
-				position++;
+				flip.position++;
 
 			}
 
 			// flip down			
-			if ( ( deg < 90 || ms < 500 ) && distY < 0 && position !== 1 && Math.abs(distX) < Math.abs(distY) ) {
+			if ( ( deg < 90 || ms < 500 ) && distY < 0 && flip.position !== 1 && Math.abs(distX) < Math.abs(distY) ) {
 
-				pages[position-1].style.webkitTransition = "";
-				pages[position-1].style.webkitTransform = "";
-				pages[position-1].classList.remove('up');
+				pages[flip.position-1].style.webkitTransition = "";
+				pages[flip.position-1].style.webkitTransform = "";
+				pages[flip.position-1].classList.remove('up');
 
-				if ( position < pages.length-1 ) {
-					pages[position+1].classList.remove('visible');
+				if ( flip.position < pages.length-1 ) {
+					pages[flip.position+1].classList.remove('visible');
 				}
 
-				pages[position].classList.remove('visible');
+				pages[flip.position].classList.remove('visible');
 
-				position--;
+				flip.position--;
 
 			}
 
 			time = 0;
 
-			// Save position in flipper
+			// Save flip.position in flipper
 
-			if ( position%10 === 0 && lastposition === position+1 ) {
+			if ( flip.position%10 === 0 && lastposition === flip.position+1 ) {
 				navigate.page--;
 				localStorage.setItem('page', navigate.page);
 			}
-			if ( (position-1)%10 === 0 && lastposition === position-1 ) {
+			if ( (flip.position-1)%10 === 0 && lastposition === flip.position-1 ) {
 				navigate.page++;
 				localStorage.setItem('page', navigate.page);
 			}
 
-			localStorage.setItem('position', position%10 || 10);
+			localStorage.setItem('flip.position', flip.position%10 || 10);
 
 			slide.enable();
 
@@ -549,21 +548,13 @@
 			flipscreen.removeEventListener('touchmove', move);
 			flipscreen.removeEventListener('touchend', end);
 
-		},
-
-		_position = function( index ) {
-			if ( index !== undefined ) {
-				position = index;
-			} else {
-				return position;
-			}
 		};
 
 		return {
 
 			enable: enable,
 			disable: disable,
-			position: _position
+			position: 1
 
 		};
 
