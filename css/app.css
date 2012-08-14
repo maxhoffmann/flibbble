@@ -48,12 +48,17 @@ a:active {
 #flipper.right {
   -webkit-transform: translatex(240px);
 }
-.dragging {
+.drag {
   position: absolute;
-  bottom: 9px;
   width: 100%;
   text-align: center;
   text-shadow: 0 1px 0 white;
+}
+.drag.down {
+  top: 9px;
+}
+.drag.up {
+  bottom: 9px;
 }
 .arrow {
   display: inline-block;
@@ -88,6 +93,9 @@ a:active {
 }
 .page:first-child,
 .page:last-child {
+  box-shadow: 0 5px 10px rgba(22, 24, 29, 0.2);
+}
+.drag + .page {
   box-shadow: 0 5px 10px rgba(22, 24, 29, 0.2);
 }
 .front,
@@ -341,7 +349,7 @@ a:active {
     height: 300px;
     width: 480px;
   }
-  .dragging {
+  .drag {
     display: none;
   }
   .page {

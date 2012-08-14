@@ -42,7 +42,6 @@
 
 		var url,
 				loading = false,
-				maxpage = 1,
 				section,
 				player,
 				position = 0,
@@ -95,9 +94,9 @@
 
 			if ( data.shots.length > 0 ) {
 				flip.position = position;
-				render(data, 'insert');
 				navigate.page = data.page;
-				maxpage = data.pages;
+				navigate.pages = data.pages;				
+				render(data, 'insert');
 				slide.center();
 				notification.show( section, player );
 				localStorage.setItem( 'section', section );
@@ -139,7 +138,7 @@
 
 			if ( ! loading ) {
 
-				if ( type === 'append' && this.page < maxpage ) {
+				if ( type === 'append' && this.page < this.pages ) {
 
 					loading = true;
 
@@ -168,6 +167,7 @@
 
 		return {
 			page: 0,
+			pages: 1,
 			to: to,
 			more: more,
 			enable: enable,
@@ -179,184 +179,199 @@
 	// rendering
 	// -------------------------------------------------------------
 
-	render = function( data, type ) {
-		
-		var length = data.shots.length,
-		container  = document.createDocumentFragment(),
-		i          = 0,
+	render = (function() {
 
-		build = function() {
+		var dragup         = document.createElement('div'),
+		dragdown           = document.createElement('div');
+		dragup.className   = "drag up";
+		dragup.innerHTML   = '<span class="arrow">&#8634;</span>drag up for more shots';
+		dragdown.className = "drag down";
+		dragdown.innerHTML = '<span class="arrow">&#8634;</span>drag down for more shots';
 
-			var position = flip.position;
+		return function( data, type ) {
+			
+			var length         = data.shots.length,
+			container          = document.createDocumentFragment(),
+			i                  = 0,		
 
-			for ( ; i < length; i++ ) {
+			build = function() {
 
-				var page = document.createElement('div');
-				page.classList.add('page');
+				var position = flip.position;
 
-				if ( type === 'prepend' ) {
-					page.classList.add('up');
-				}
+				for ( ; i < length; i++ ) {
 
-				// first page
-				if ( i === 0 && type !== "append" ) {
-					page.appendChild( side(i) );
-					page.classList.add('up');
-					if ( type === 'insert' && Math.floor((i+1)/2) === position-1 ) {
-						page.classList.add('visible');
-					}
-					page.firstChild.classList.add('back');
-					container.appendChild( page );
-				}
+					var page = document.createElement('div');
+					page.classList.add('page');
 
-				// back of last page
-				if ( i === 0 && type === "append" ) {
-					pages[pages.length-1].appendChild( side(0) );
-					pages[pages.length-1].lastChild.classList.add('back');					
-				}
-
-				// page with front and back
-				if ( i > 0 && i < length-1 ) {
-
-					if ( ( Math.floor((i+1)/2) === position-1 || Math.floor((i+1)/2) === position ) && type === 'insert' ) {
-						page.classList.add('visible');
-					}
-					if ( Math.floor((i+1)/2) < position && type === "insert" ) {
+					if ( type === 'prepend' ) {
 						page.classList.add('up');
 					}
 
-					page.appendChild( side(i) );
-					i++;
-					page.appendChild( side(i) );
-
-					page.firstChild.classList.add('front');
-					page.lastChild.classList.add('back');
-
-					container.appendChild( page );
-
-				}
-
-				// last page
-				if ( i === length-1 ) {
-
-					if ( type === 'prepend' ) {
-
-						pages[0].insertBefore( side(i), pages[0].firstChild );
-						pages[0].firstChild.classList.add('front');
-
-					} else {
-
-						if ( length%2 === 0 ) {
-
-							if ( type === 'insert' && Math.floor((i+1)/2) === position ) {
-								page.classList.add('visible');
-							}
-
-							page.appendChild( side(i) );
-							page.firstChild.classList.add('front');
-
-						} else {
-
-							if ( length > 1 ) {
-								container.appendChild( page );
-							}
-
-							page = document.createElement('div');
-							page.classList.add('page');
-							if ( type === 'insert' && Math.floor((i+1)/2) === position-1 ) {
-								page.classList.add('visible');
-							}
-							page.innerHTML += '<div class="front text">END</div>';
-
+					// first page
+					if ( i === 0 && type !== "append" ) {
+						page.appendChild( side(i) );
+						page.classList.add('up');
+						if ( type === 'insert' && Math.floor((i+1)/2) === position-1 ) {
+							page.classList.add('visible');
 						}
+						page.firstChild.classList.add('back');
+						container.appendChild( page );
+					}
+
+					// back of last page
+					if ( i === 0 && type === "append" ) {
+						pages[pages.length-1].appendChild( side(0) );
+						pages[pages.length-1].lastChild.classList.add('back');					
+					}
+
+					// page with front and back
+					if ( i > 0 && i < length-1 ) {
+
+						if ( ( Math.floor((i+1)/2) === position-1 || Math.floor((i+1)/2) === position ) && type === 'insert' ) {
+							page.classList.add('visible');
+						}
+						if ( Math.floor((i+1)/2) < position && type === "insert" ) {
+							page.classList.add('up');
+						}
+
+						page.appendChild( side(i) );
+						i++;
+						page.appendChild( side(i) );
+
+						page.firstChild.classList.add('front');
+						page.lastChild.classList.add('back');
 
 						container.appendChild( page );
 
 					}
 
+					// last page
+					if ( i === length-1 ) {
+
+						if ( type === 'prepend' ) {
+
+							pages[0].insertBefore( side(i), pages[0].firstChild );
+							pages[0].firstChild.classList.add('front');
+
+						} else {
+
+							if ( length%2 === 0 ) {
+
+								if ( type === 'insert' && Math.floor((i+1)/2) === position ) {
+									page.classList.add('visible');
+								}
+
+								page.appendChild( side(i) );
+								page.firstChild.classList.add('front');
+
+							} else {
+
+								if ( length > 1 ) {
+									container.appendChild( page );
+								}
+
+								page = document.createElement('div');
+								page.classList.add('page');
+								if ( type === 'insert' && Math.floor((i+1)/2) === position-1 ) {
+									page.classList.add('visible');
+								}
+								page.innerHTML += '<div class="front text">END</div>';
+
+							}
+
+							container.appendChild( page );
+
+						}
+
+					}
+
 				}
 
-			}
+			},	
 
-		},	
+			side = function( index ) {
 
-		side = function( index ) {
+				var side        = document.createElement('div'),
+				shotWrapper     = document.createElement('div'),
+				shot            = document.createElement('img'),
+				details         = document.createElement('div'),
+				author          = document.createElement('div'),
+				authorImageLink = document.createElement('a'),
+				authorImage     = document.createElement('img'),
+				loading         = document.createElement('div'),
+				removeLoading   = function() {
+					shotWrapper.removeChild(loading);
+				};
 
-			var side        = document.createElement('div'),
-			shotWrapper     = document.createElement('div'),
-			shot            = document.createElement('img'),
-			details         = document.createElement('div'),
-			author          = document.createElement('div'),
-			authorImageLink = document.createElement('a'),
-			authorImage     = document.createElement('img'),
-			loading         = document.createElement('div'),
-			removeLoading   = function() {
-				shotWrapper.removeChild(loading);
+				loading.className = "loading";
+				loading.innerHTML = '<div class="loading-title">'+data.shots[index].title+'</div><div class="loading-author">by '+data.shots[index].player.name+'</div>';
+
+				shotWrapper.appendChild(loading);
+				shotWrapper.className = "shot";
+				shot.className        = "hidden";
+				shot.height           = 240;
+				shot.width            = 320;
+				shot.src              = data.shots[index].image_url;
+
+				shot.addEventListener('load', function loaded() {
+					shot.classList.remove('hidden');
+					setTimeout(removeLoading, 400);
+					shot.removeEventListener('load', loaded);
+				}, false);
+
+				details.className = "details";
+				details.innerHTML = '<h2 class="title"><a href="'+data.shots[index].url+'">'+data.shots[index].title+'</a></h2>';
+				details.innerHTML += '<div class="meta"><span class="likes"></span>'+data.shots[index].likes_count+' <span class="views"></span>'+data.shots[index].views_count+' <span class="comments"></span>'+data.shots[index].comments_count+'</div>';
+
+				author.className = "author";
+
+				authorImageLink.className = "author-image";
+				authorImageLink.href = '#/shots/'+data.shots[index].player.username;
+				authorImageLink.setAttribute('data-src', data.shots[index].player.avatar_url);
+
+				author.appendChild(authorImageLink);
+				author.innerHTML += '<a href="#/shots/'+data.shots[index].player.username+'" class="author-name">'+data.shots[index].player.name+'</a><br><span class="author-links"><a href="#/following/'+data.shots[index].player.username+'">Following</a> &bull; <a href="#/likes/'+data.shots[index].player.username+'">Likes</a></span>';
+
+				details.appendChild(author);
+				shotWrapper.appendChild(shot);
+				side.appendChild(shotWrapper);
+				side.appendChild(details);			
+
+				return side;
+
 			};
 
-			loading.className = "loading";
-			loading.innerHTML = '<div class="loading-title">'+data.shots[index].title+'</div><div class="loading-author">by '+data.shots[index].player.name+'</div>';
+			build();
 
-			shotWrapper.appendChild(loading);
-			shotWrapper.className = "shot";
-			shot.className        = "hidden";
-			shot.height           = 240;
-			shot.width            = 320;
-			shot.src              = data.shots[index].image_url;
+			if ( type === 'insert' ) {
+				flipscreen.innerHTML = "";
+			}
 
-			shot.addEventListener('load', function loaded() {
-				shot.classList.remove('hidden');
-				setTimeout(removeLoading, 400);
-				shot.removeEventListener('load', loaded);
-			}, false);
+			if ( type === 'prepend' ) {
+				flipscreen.insertBefore( container, flipscreen.firstChild );
+			} else {
+				flipscreen.appendChild( container );
+			}
 
-			details.className = "details";
-			details.innerHTML = '<h2 class="title"><a href="'+data.shots[index].url+'">'+data.shots[index].title+'</a></h2>';
-			details.innerHTML += '<div class="meta"><span class="likes"></span>'+data.shots[index].likes_count+' <span class="views"></span>'+data.shots[index].views_count+' <span class="comments"></span>'+data.shots[index].comments_count+'</div>';
+			if ( data.page === 1 && dragdown.parentNode ) {
+					flipscreen.removeChild(dragdown);
+			}
+			if ( data.page > 1 && ( type === 'insert' || dragdown.parentNode ) ) {
+				flipscreen.insertBefore(dragdown, flipscreen.firstChild);
+			}
 
-			author.className = "author";
+			if ( data.page === data.pages && dragup.parentNode ) {
+				flipscreen.removeChild(dragup);
+			}
+			if ( data.page < data.pages && ( type === 'insert' || dragup.parentNode ) ) {
+				flipscreen.insertBefore(dragup, flipscreen.firstChild);
+			}
 
-			authorImageLink.className = "author-image";
-			authorImageLink.href = '#/shots/'+data.shots[index].player.username;
-			authorImageLink.setAttribute('data-src', data.shots[index].player.avatar_url);
-
-			author.appendChild(authorImageLink);
-			author.innerHTML += '<a href="#/shots/'+data.shots[index].player.username+'" class="author-name">'+data.shots[index].player.name+'</a><br><span class="author-links"><a href="#/following/'+data.shots[index].player.username+'">Following</a> &bull; <a href="#/likes/'+data.shots[index].player.username+'">Likes</a></span>';
-
-			details.appendChild(author);
-			shotWrapper.appendChild(shot);
-			side.appendChild(shotWrapper);
-			side.appendChild(details);			
-
-			return side;
-
-		},
-
-		dragging = function() {
-
-			var dragging = document.createElement('div');
-			dragging.className = "dragging";
-			dragging.innerHTML = '<span class="arrow">&#8634;</span>drag up for more shots';
-
-			return dragging;
+			pages = document.getElementsByClassName('page');
 
 		};
 
-		build();
-
-		if ( type === 'insert' ) {
-			flipscreen.innerHTML = "";
-		}
-
-		if ( type === 'prepend' ) {
-			flipscreen.insertBefore( container, flipscreen.firstChild );
-		} else {
-			flipscreen.appendChild( container );
-		}
-
-		pages = document.getElementsByClassName('page');
-
-	},
+	})(),
 
 	// flip functions
 	// -------------------------------------------------------------
@@ -387,19 +402,22 @@
 			
 				slide.disable();
 
-				// LAST
-				if ( flip.position === pages.length-1 ) {
+				if ( flip.position === pages.length-1 ) { // LAST
+
 					deg = Math.max(-(-Math.log(distY)*25+75), 1);
+
+					if ( navigate.page < navigate.pages ) {
+						if ( deg > 60 )	{
+							flipscreen.querySelector('.up').firstChild.classList.add('spin');
+						} else {
+							flipscreen.querySelector('.up').firstChild.classList.remove('spin');
+						}
+					}
+
 				} else {
 					deg = Math.min( Math.max( (distY-20)*0.485, 1 ), 180 );
 					pages[flip.position+1].classList.add('visible');					
-				}				
-
-				//if ( deg < -60 ) {
-				//	flipscreen.firstChild.firstChild.classList.add('spin');
-				//} else {
-				//	flipscreen.firstChild.firstChild.classList.remove('spin');
-				//}
+				}
 
 				pages[flip.position].style.webkitTransform = "rotateX(" + deg + "deg)";
 				pages[flip.position].style.webkitTransition = "none";
@@ -421,6 +439,15 @@
 				// FIRST
 				if ( flip.position === 1 ) {
 					deg = Math.min(180+(-Math.log(-distY)*25+75), 179);
+
+					if ( navigate.page > 1 ) {
+						if ( deg < 120 ) {
+							flipscreen.querySelector('.down').firstChild.classList.add('spin');
+						} else {
+							flipscreen.querySelector('.down').firstChild.classList.remove('spin');
+						}
+					}
+
 				} else {
 					deg = Math.max( Math.min( (380 + distY) * 0.485, 180), 1 );
 					pages[flip.position-2].classList.add('visible');
@@ -528,7 +555,7 @@
 				localStorage.setItem('page', navigate.page);
 			}
 
-			localStorage.setItem('flip.position', flip.position%10 || 10);
+			localStorage.setItem('position', flip.position%10 || 10);
 
 			slide.enable();
 
