@@ -369,6 +369,28 @@
 
 			pages = document.getElementsByClassName('page');
 
+			if ( type === 'append' && pages.length > 51 ) {
+				var j = 0;
+				while ( j++ < 10 ) {
+					flipscreen.removeChild(pages[0]);
+				}
+				pages[0].removeChild(pages[0].firstChild);
+				flip.position -= 10;
+				flipscreen.insertBefore(dragdown, flipscreen.firstChild);
+			}
+
+			if ( type === 'prepend' && pages.length > 51 ) {
+				var k = 0,
+				max = (pages.length+9)%10 || 10;
+
+				while ( k++ < max ) {
+					flipscreen.removeChild(pages[pages.length-1]);
+				}
+
+				pages[pages.length-1].removeChild(pages[pages.length-1].lastChild);
+				flipscreen.insertBefore(dragup, flipscreen.firstChild);
+			}
+
 		};
 
 	})(),
