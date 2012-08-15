@@ -315,7 +315,7 @@
 
 				shot.addEventListener('load', function loaded() {
 					shot.classList.remove('hidden');
-					setTimeout(removeLoading, 400);
+					setTimeout(removeLoading, 600);
 					shot.removeEventListener('load', loaded);
 				}, false);
 
