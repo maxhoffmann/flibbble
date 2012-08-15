@@ -14,7 +14,7 @@
 			e.preventDefault();
 		};
 
-		document.body.innerHTML = '<div id="notifications"><span id="notification">Loading...</span></div><div id="menu" class="screen"><ul id="navigation"><li class="logo">flibbble</li><li data-open="#/popular">Popular</li><li data-open="#/following">Following</li><li data-open="#/likes">Likes</a></li><li data-open="#/debuts">Debuts</li><li data-open="#/everyone">Everyone</li></ul></div><div id="flipper" class="screen"></div>';
+		document.body.innerHTML = '<div id="notifications"><span id="notification"></span></div><div id="menu" class="screen"><ul id="navigation"><li class="logo">flibbble</li><li data-open="#/popular">Popular</li><li data-open="#/following">Following</li><li data-open="#/likes">Likes</a></li><li data-open="#/debuts">Debuts</li><li data-open="#/everyone">Everyone</li></ul></div><div id="flipper" class="screen"></div>';
 
 		flipscreen = document.getElementById( 'flipper' );
 
@@ -805,6 +805,7 @@
 					active = true;
 					next = false;
 					element.firstChild.innerHTML = _notification;
+					element.classList.remove('hide');					
 					element.classList.add('show');
 					setTimeout(this.hide(this), 2000);
 				} else {
@@ -818,6 +819,8 @@
 				return function() {
 					active = false;
 					element.classList.remove('show');
+					element.classList.add('hide');
+
 					if ( next ) {
 						setTimeout(function() {
 							obj.show( next );

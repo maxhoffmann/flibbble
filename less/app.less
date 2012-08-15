@@ -366,7 +366,10 @@ a:active {
 	z-index: 3;
 	text-align: center;
   pointer-events: none;
-  -webkit-animation: hide ease 500ms forwards;
+
+  &.hide {
+  	-webkit-animation: hide ease 500ms forwards;  	
+  }
 
 	&.show {
 		-webkit-animation:  show ease 1s forwards;
