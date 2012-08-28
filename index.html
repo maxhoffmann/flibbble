@@ -15,7 +15,7 @@
 </head>
 <body>
 
-  <script>
+	<script>
 
 		var	app    = document.createElement('script'),
 				styles = document.createElement('link'),
@@ -24,22 +24,22 @@
 				debug = true;
 				livereload.src = 'http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1';
 
-    if ( ( navigator.standalone && ( navigator.platform === 'iPhone' || navigator.platform === 'iPod' ) ) || debug ) {
+		if ( ( navigator.standalone && ( navigator.platform === 'iPhone' || navigator.platform === 'iPod' ) ) || debug ) {
 
-    	styles.href = "css/app.css";
-    	app.src = "js/app.js";
-      document.head.appendChild(styles);    	
-      document.head.appendChild(app);
+			styles.href = "css/app.css";
+			app.src = "js/app.js";
+			document.head.appendChild(styles);    	
+			document.head.appendChild(app);
 
-      if ( debug ) {
-      	document.head.appendChild(livereload);
-      }
+			if ( debug ) {
+				document.head.appendChild(livereload);
+			}
 
-    } else {
-      document.write('Add to homescreen.');
-    }
+		} else {
+			document.write('Add to homescreen.');
+		}
 
-  </script>
+	</script>
 
 </body>
 </html>

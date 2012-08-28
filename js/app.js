@@ -14,7 +14,7 @@
 			e.preventDefault();
 		};
 
-		document.body.innerHTML = '<div id="notifications"><span id="notification"></span></div><div id="menu" class="screen"><ul id="navigation"><li class="logo">flibbble</li><li data-open="#/popular">Popular</li><li data-open="#/following">Following</li><li data-open="#/likes">Likes</a></li><li data-open="#/debuts">Debuts</li><li data-open="#/everyone">Everyone</li></ul></div><div id="flipper" class="screen"></div>';
+		document.body.innerHTML = '<div id="notifications"><span id="notification"></span></div><div id="menu" class="screen"><div class="user"><div class="user-image"><div>tap here</div></div><span class="user-name">flibbble</span><span class="user-links">Welcome!</span></div><ul id="navigation"><li data-open="#/popular">Popular</li><li data-open="#/debuts">Debuts</li><li data-open="#/everyone">Everyone</li></ul><div id="history-label">history</div><ul id="history"><li>hidden</li><li>Popular</li><li>Debuts</li><li>Maxhoffmann&rsquo;s following</li><li>Maxhoffmann&rsquo;s likes</li></ul></div><div id="flipper" class="screen"></div>';
 
 		flipscreen = document.getElementById( 'flipper' );
 
@@ -25,13 +25,13 @@
 		window.addEventListener( 'hashchange', handler, false );
 		window.addEventListener( 'orientationchange', orientation, false );
 
+		notification.enable();		
+
 		navigate.enable();
 		navigate.to();
 
 		flip.enable();
 		slide.enable();
-
-		notification.enable();		
 
 	},
 
@@ -109,15 +109,15 @@
 
 		enable = function() {
 
-			var navigation = document.getElementById( 'navigation' );
+			var navigation = document.querySelectorAll('[data-open]');
 
 			section = localStorage.getItem('section') || 'popular';
 			player = localStorage.getItem('player');
 
-			for ( var i = 1; i < navigation.children.length; i++ ) {
-				navigation.children[i].addEventListener('touchstart', navigate.activate, false);
-				if ( navigation.children[i].getAttribute('data-open').slice(2) === section ) {
-					navigation.children[i].classList.add('active');
+			for ( var i = 0; i < navigation.length; i++ ) {
+				navigation[i].addEventListener('touchstart', navigate.activate, false);
+				if ( navigation[i].getAttribute('data-open').slice(2) === section ) {
+					navigation[i].classList.add('active');
 				}
 			}
 
@@ -298,24 +298,24 @@
 				author          = document.createElement('div'),
 				authorImageLink = document.createElement('a'),
 				authorImage     = document.createElement('img'),
-				loading         = document.createElement('div'),
-				removeLoading   = function() {
-					shotWrapper.removeChild(loading);
+				preview         = document.createElement('div'),
+				removePreview   = function() {
+					shotWrapper.removeChild(preview);
 				};
 
-				loading.className = "loading";
-				loading.innerHTML = '<div class="loading-title">'+data.shots[index].title+'</div><div class="loading-author">by '+data.shots[index].player.name+'</div>';
+				preview.className = "preview";
+				preview.innerHTML = '<div class="preview-title">'+data.shots[index].title+'</div><div class="preview-author">by '+data.shots[index].player.name+'</div>';
 
-				shotWrapper.appendChild(loading);
+				shotWrapper.appendChild(preview);
 				shotWrapper.className = "shot";
-				shot.className        = "hidden";
+				shot.className        = "loading";
 				shot.height           = 240;
 				shot.width            = 320;
 				shot.src              = data.shots[index].image_url;
 
 				shot.addEventListener('load', function loaded() {
-					shot.classList.remove('hidden');
-					setTimeout(removeLoading, 600);
+					shot.classList.remove('loading');
+					setTimeout(removePreview, 600);
 					shot.removeEventListener('load', loaded);
 				}, false);
 
@@ -657,13 +657,13 @@
 
 					authorImage.width = "50";
 					authorImage.height = "50";
-					authorImage.className = "hidden";					
+					authorImage.className = "loading";					
 					authorImage.src = authorImageLink.getAttribute('data-src');						
 					authorImageLink.appendChild(authorImage);
 					authorImageLink.removeAttribute('data-src');
 
 					authorImage.addEventListener('load', function loaded() {
-						authorImage.classList.remove('hidden');
+						authorImage.classList.remove('loading');
 						authorImage.removeEventListener('load', loaded);
 					}, false);
 
