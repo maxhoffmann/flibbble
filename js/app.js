@@ -49,8 +49,8 @@
 		to = function() {
 
 			var that  = this;
-			section   = location.hash.slice(2).split("/")[0] || section;
-			player    = location.hash.slice(2).split("/")[1] || player;
+			section   = location.hash.split("/")[1] || section;
+			player    = location.hash.split("/")[2] || player;
 			this.page = ( this.page ) ? 1 : +localStorage.getItem('page');
 			position = ( position ) ? 1 : ( +localStorage.getItem('position') || 1 );
 
