@@ -1,7 +1,7 @@
 /*!
  * flibbble styles
  *
- * 2012 by Maximilian Hoffmann & Stefan Schwartze 
+ * 2012 by Maximilian Hoffmann & Stefan Schwartze
  */
 /* Variables
    ========================================================================== */
@@ -38,7 +38,7 @@ a:active {
 }
 #flipper {
   background: #303541;
-  box-shadow: -3px 0 10px #171e2b;
+  box-shadow: -3px 0 10px #1c1f26;
   z-index: 2;
   -webkit-perspective: 800px;
   -webkit-transition: -webkit-transform ease 0.3s;
@@ -51,7 +51,7 @@ a:active {
   width: 100%;
   text-align: center;
   color: #545d6d;
-  text-shadow: 0 1px 0 #14181f;
+  text-shadow: 0 1px 0 #0a0c0f;
 }
 .drag.down {
   top: 9px;
@@ -66,11 +66,11 @@ a:active {
   -webkit-transition: -webkit-transform ease 0.3s;
 }
 .load {
-  -webkit-transform: translatey(-140px);
+  -webkit-transform: translatey(-160px);
   -webkit-transition: -webkit-transform ease 0.8s;
 }
 .down .load {
-  -webkit-transform: translatey(140px);
+  -webkit-transform: translatey(160px);
 }
 /* Pages
    ========================================================================== */
@@ -92,10 +92,10 @@ a:active {
   -webkit-transform: rotatex(180deg) translatez(0);
 }
 .page:last-child {
-  box-shadow: 0 5px 10px #171e2b;
+  box-shadow: 0 5px 10px #1c1f26;
 }
 .drag + .page {
-  box-shadow: 0 5px 10px #171e2b;
+  box-shadow: 0 5px 10px #1c1f26;
 }
 .front,
 .back {
@@ -238,6 +238,14 @@ a:active {
   padding-right: 80px;
   background: -webkit-radial-gradient(center, #3b414f, #2b303b);
 }
+#menu a {
+  color: #545d6d;
+  text-shadow: 0 1px 0 #0a0c0f;
+}
+#menu .active {
+  color: white;
+  text-shadow: 0 1px 0 black;
+}
 .user {
   margin-top: 15px;
 }
@@ -279,11 +287,11 @@ a:active {
   font-weight: normal;
   line-height: 1.2em;
   color: #14181f;
-  text-shadow: 0 1px 0 #3d475c;
+  text-shadow: 0 1px 0 #414958;
 }
 .user-links {
   color: #545d6d;
-  text-shadow: 0 1px 0 #14181f;
+  text-shadow: 0 1px 0 #0a0c0f;
 }
 .user-links span.active {
   border-bottom: 2px solid #545d6d;
@@ -299,35 +307,42 @@ a:active {
 }
 #navigation li {
   position: relative;
-  margin: 0;
-  padding: 0 0 4px 20px;
   font-size: 24px;
   line-height: 44px;
-  color: #545d6d;
-  text-shadow: 0 1px 0 #14181f;
 }
-#navigation .active {
-  color: white;
-  text-shadow: 0 1px 0 black;
+#navigation a {
+  display: inline-block;
+  width: 100%;
+  padding: 0 0 4px 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 #history-label {
   margin: 10px 0 0 20px;
   color: #14181f;
-  text-shadow: 0 1px 0 #3d475c;
+  text-shadow: 0 1px 0 #414958;
   font-variant: small-caps;
   line-height: 1.8em;
 }
 #history {
   margin: 2px 0 0 0;
-  padding-left: 20px;
+  padding: 0;
   list-style: none;
 }
+#history a:hover,
+#history a:active {
+  color: white;
+  text-shadow: 0 1px 0 black;
+}
 #history li {
-  width: 200px;
   line-height: 2em;
-  color: #545d6d;
-  text-shadow: 0 1px 0 #14181f;
   -webkit-transition: opacity linear .4s, margin ease .4s;
+}
+#history li a {
+  display: inline-block;
+  width: 100%;
+  padding-left: 20px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -351,7 +366,7 @@ a:active {
   pointer-events: none;
 }
 #notifications.hide {
-  -webkit-animation: hide ease 500ms forwards;
+  -webkit-animation: hide ease .5s forwards;
 }
 #notifications.show {
   -webkit-animation: show ease 1s forwards;

@@ -1,7 +1,7 @@
 /*!
  * flibbble styles
  *
- * 2012 by Maximilian Hoffmann & Stefan Schwartze 
+ * 2012 by Maximilian Hoffmann & Stefan Schwartze
  */
 
 /* Variables
@@ -15,10 +15,10 @@
 	box-sizing: border-box;
 }
 
-body {	
+body {
 	margin: 0;
 	padding: 0;
-	color: hsl(220, 10%, 50%);	
+	color: hsl(220, 10%, 50%);
 	background: hsl(220, 15%, 22%);
 	font: bold 16px/24px "Helvetica Neue", Helvetica, sans-serif;
 	-webkit-user-select: none;
@@ -47,14 +47,14 @@ a:active {
 
 #flipper {
 	background: hsl(220, 15%, 22%);
-  box-shadow: -3px 0 10px hsl(220, 30%, 13%);
+  box-shadow: -3px 0 10px hsl(220, 15%, 13%);
   z-index: 2;
 	-webkit-perspective: 800px;
   -webkit-transition: -webkit-transform ease .3s;
 }
 
 #flipper.right {
-  -webkit-transform: translateX(240px);	
+  -webkit-transform: translateX(240px);
 }
 
 .drag {
@@ -62,17 +62,17 @@ a:active {
 	width: 100%;
 	text-align: center;
 	color: hsl(220, 13%, 38%);
-	text-shadow: 0 1px 0 hsl(220, 20%, 10%);
+	text-shadow: 0 1px 0 hsl(220, 20%, 5%);
 
 	&.down {
-		top: 9px;		
+		top: 9px;
 	}
 	&.up {
 		bottom: 9px;
 	}
 }
 
-.arrow {	
+.arrow {
 	display: inline-block;
 	font-size: 1.8em;
 	vertical-align: bottom;
@@ -80,12 +80,12 @@ a:active {
 }
 
 .load {
-	-webkit-transform: translateY(-140px);
-	-webkit-transition: -webkit-transform ease .8s;	
+	-webkit-transform: translateY(-160px);
+	-webkit-transition: -webkit-transform ease .8s;
 }
 
 .down .load {
-	-webkit-transform: translateY(140px);	
+	-webkit-transform: translateY(160px);
 }
 
 /* Pages
@@ -104,7 +104,7 @@ a:active {
 
 	&.visible {
 		visibility: visible;
-  	-webkit-transition: -webkit-transform ease-out .5s;		
+  	-webkit-transition: -webkit-transform ease-out .5s;
 	}
 
 	&.up {
@@ -112,13 +112,13 @@ a:active {
 	}
 
 	&:last-child {
-  	box-shadow: 0 5px 10px hsl(220, 30%, 13%);
+  	box-shadow: 0 5px 10px hsl(220, 15%, 13%);
 	}
 
 }
 
 .drag + .page {
-  box-shadow: 0 5px 10px hsl(220, 30%, 13%);
+  box-shadow: 0 5px 10px hsl(220, 15%, 13%);
 }
 
 .front,
@@ -130,7 +130,7 @@ a:active {
 	padding: 20px 30px 20px 50px;
 	overflow: hidden;
 
-	font: bold 16px/24px 'Helvetica Neue', Helvetica, sans-serif;	
+	font: bold 16px/24px 'Helvetica Neue', Helvetica, sans-serif;
   background: -webkit-radial-gradient(center, hsl(220, 15%, 98%), hsl(220, 15%, 86%));
   -webkit-backface-visibility: hidden;
   -webkit-transform-style: preserve-3d;
@@ -170,7 +170,7 @@ a:active {
 		left: 0;
 		width: 100%;
 		-webkit-transition: opacity ease .6s;
-		//-webkit-animation: debug 1s infinite alternate;		
+		//-webkit-animation: debug 1s infinite alternate;
 	}
 
 }
@@ -199,7 +199,7 @@ a:active {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	text-align: center;	
+	text-align: center;
 }
 
 .preview-author {
@@ -257,8 +257,8 @@ a:active {
 	}
 
 	& img {
-		z-index: 1;	
-		border-radius: 5px;	
+		z-index: 1;
+		border-radius: 5px;
 		-webkit-transition: opacity ease 1s;
 	}
 
@@ -269,7 +269,7 @@ a:active {
 	width: 167px;
 	margin-top: 5px;
 	margin-bottom: 2px;
-	display: block;	
+	display: block;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -304,6 +304,16 @@ a:active {
   // Baseline Grid
   // background: -webkit-linear-gradient(top, transparent 23px, black 25px);
   // background-size: 24px 24px;
+
+  a {
+		color: hsl(220, 13%, 38%);
+		text-shadow: 0 1px 0 hsl(220, 20%, 5%);
+  }
+
+  .active {
+		color: white;
+		text-shadow: 0 1px 0 black;
+  }
 }
 
 .user {
@@ -313,7 +323,7 @@ a:active {
 		content: "";
 		display: table;
 		clear: both;
-	}	
+	}
 }
 
 .user-name {
@@ -332,13 +342,13 @@ a:active {
   margin: 0 14px 0 16px;
   width: 60px;
   height: 61px;
-  border: 5px solid hsl(220, 80%, 55%); 
+  border: 5px solid hsl(220, 80%, 55%);
   border-radius: 8px;
   box-shadow: 0 1px 2px rgba(22, 24, 29, 0.5);
 
   div,
 	img {
-		border-radius: 5px;	
+		border-radius: 5px;
 		box-shadow:
 			0 1px 0 0 hsl(220, 80%, 45%),
 			0 1px 0 1px hsl(220, 90%, 67%),
@@ -354,18 +364,18 @@ a:active {
 		font-weight: normal;
 		line-height: 1.2em;
 		color: hsl(220, 20%, 10%);
-		text-shadow: 0 1px 0 hsl(220,20%,30%);
+		text-shadow: 0 1px 0 hsl(220,15%,30%);
 	}
 }
 
 .user-links {
 	color: hsl(220, 13%, 38%);
-	text-shadow: 0 1px 0 hsl(220, 20%, 10%);
+	text-shadow: 0 1px 0 hsl(220, 20%, 5%);
 }
 
 .user-links span.active {
 	border-bottom: 2px solid hsl(220, 13%, 38%);
-	box-shadow: 0 1px 0 hsl(220, 10%, 15%);	
+	box-shadow: 0 1px 0 hsl(220, 10%, 15%);
 }
 
 #navigation {
@@ -378,44 +388,53 @@ a:active {
 
 	& li {
 		position: relative;
-		margin: 0;
-		padding: 0 0 4px 20px;
 		font-size: 24px;
 		line-height: 44px;
-		color: hsl(220, 13%, 38%);
-		text-shadow: 0 1px 0 hsl(220, 20%, 10%);
 	}
 
-	& .active {
-		color: white;
-		text-shadow: 0 1px 0 black;
+	a {
+		display: inline-block;
+		width: 100%;
+		padding: 0 0 4px 20px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
 
 }
 
 #history-label {
-	margin: 10px 0 0 20px;	
+	margin: 10px 0 0 20px;
 	color: hsl(220, 20%, 10%);
-	text-shadow: 0 1px 0 hsl(220,20%,30%);
+	text-shadow: 0 1px 0 hsl(220,15%,30%);
 	font-variant: small-caps;
-	line-height: 1.8em;	
+	line-height: 1.8em;
 }
 
 #history {
-	margin: 2px 0 0 0;	
-	padding-left: 20px;
-	list-style: none;	
+	margin: 2px 0 0 0;
+	padding: 0;
+	list-style: none;
+
+	a:hover,
+	a:active {
+		color: white;
+		text-shadow: 0 1px 0 black;
+	}
 }
 
 #history li {
-	width: 200px;
-	line-height: 2em;	
-	color: hsl(220, 13%, 38%);
-	text-shadow: 0 1px 0 hsl(220, 20%, 10%);
+	line-height: 2em;
 	-webkit-transition: opacity linear .4s, margin ease .4s;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+
+	a {
+		display: inline-block;
+		width: 100%;
+		padding-left: 20px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
 
 	&:first-child {
 		opacity: 0;
@@ -440,7 +459,7 @@ a:active {
   pointer-events: none;
 
   &.hide {
-  	-webkit-animation: hide ease 500ms forwards;  	
+  	-webkit-animation: hide ease .5s forwards;
   }
 
 	&.show {
@@ -527,7 +546,7 @@ a:active {
 .comments {
   width: 14px;
   height: 12px;
-  background-position: -16px -13px;  
+  background-position: -16px -13px;
 }
 
 
@@ -557,7 +576,7 @@ a:active {
 
 	#notification {
 		max-width: 400px;
-	}	
+	}
 
 	.landscape.right {
 
@@ -577,7 +596,7 @@ a:active {
 	.back {
 		padding: 55px 0 0 150px;
 	}
-	
+
 	.title {
 		width: 270px;
 	}
@@ -601,7 +620,7 @@ a:active {
 	}
 
 	.preview {
-		display: none 	
+		display: none
 	}
 
 }

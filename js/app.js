@@ -14,7 +14,7 @@
 			e.preventDefault();
 		};
 
-		document.body.innerHTML = '<div id="notifications"><span id="notification"></span></div><div id="menu" class="screen"><div class="user"><div class="user-image"><div>tap here</div></div><span class="user-name">flibbble</span><span class="user-links">Welcome!</span></div><ul id="navigation"><li data-open="#/popular">Popular</li><li data-open="#/debuts">Debuts</li><li data-open="#/everyone">Everyone</li></ul><div id="history-label">history</div><ul id="history"><li>hidden</li><li>Popular</li><li>Debuts</li><li>Maxhoffmann&rsquo;s following</li><li>Maxhoffmann&rsquo;s likes</li></ul></div><div id="flipper" class="screen"></div>';
+		document.body.innerHTML = '<div id="notifications"><span id="notification"></span></div><div id="menu" class="screen"><div class="user"><div class="user-image"><div>tap here</div></div><span class="user-name">flibbble</span><span class="user-links">Welcome!</span></div><ul id="navigation"><li><a href="#!/popular">Popular</a></li><li><a href="#!/debuts">Debuts</a></li><li><a href="#!/everyone">Everyone</a></li></ul><div id="history-label">history</div><ul id="history"><li>hidden</li><li><a href="#/popular">Popular</a></li><li><a href="#/debuts">Debuts</a></li><li><a href="#">Maxhoffmann&rsquo;s following</a></li><li><a href="#">Maxhoffmann&rsquo;s likes</a></li></ul></div><div id="flipper" class="screen"></div>';
 
 		flipscreen = document.getElementById( 'flipper' );
 
@@ -25,7 +25,7 @@
 		window.addEventListener( 'hashchange', handler, false );
 		window.addEventListener( 'orientationchange', orientation, false );
 
-		notification.enable();		
+		notification.enable();
 
 		navigate.enable();
 		navigate.to();
@@ -45,6 +45,7 @@
 				section,
 				player,
 				position = 0,
+				navigation,
 
 		to = function() {
 
@@ -86,6 +87,14 @@
 
 			}
 
+			for ( var i = 0; i < navigation.length; i++ ) {
+				if ( navigation[i].getAttribute('href').slice(3) === section && location.hash[1] === "!" ) {
+					navigation[i].classList.add('active');
+				} else {
+					navigation[i].classList.remove('active');
+				}
+			}
+
 			JSONP.get( url, {per_page: 20, page: this.page }, request );
 
 		},
@@ -95,10 +104,12 @@
 			if ( data.shots.length > 0 ) {
 				flip.position = position;
 				navigate.page = data.page;
-				navigate.pages = data.pages;				
+				navigate.pages = data.pages;
 				render(data, 'insert');
 				slide.center();
-				notification.show( section, player );
+				if ( location.hash[1] !== "!" ) {
+					notification.show( section, player );
+				}
 				localStorage.setItem( 'section', section );
 				localStorage.setItem( 'page', navigate.page );
 				localStorage.setItem( 'player', player );
@@ -109,28 +120,16 @@
 
 		enable = function() {
 
-			var navigation = document.querySelectorAll('[data-open]');
+			navigation = document.querySelectorAll('[href^="#!"]');
 
 			section = localStorage.getItem('section') || 'popular';
 			player = localStorage.getItem('player');
 
 			for ( var i = 0; i < navigation.length; i++ ) {
-				navigation[i].addEventListener('touchstart', navigate.activate, false);
-				if ( navigation[i].getAttribute('data-open').slice(2) === section ) {
+				if ( navigation[i].getAttribute('href').slice(3) === section ) {
 					navigation[i].classList.add('active');
 				}
 			}
-
-		},
-
-		activate = function() {
-
-			if ( document.getElementsByClassName('active')[0] ) {
-				document.getElementsByClassName('active')[0].classList.remove('active');
-			}
-			this.classList.add('active');
-			player = null;
-			location.hash = this.getAttribute('data-open');
 
 		},
 
@@ -155,7 +154,7 @@
 
 					JSONP.get( url, {per_page: 20, page: this.page-1}, function(data) {
 						render(data, type );
-						flip.position += 10;						
+						flip.position += 10;
 						loading = false;
 					});
 
@@ -170,8 +169,7 @@
 			pages: 1,
 			to: to,
 			more: more,
-			enable: enable,
-			activate: activate
+			enable: enable
 		};
 
 	})(),
@@ -189,10 +187,10 @@
 		dragdown.innerHTML = '<span class="arrow">&#8595;</span>drag down for more shots';
 
 		return function( data, type ) {
-			
+
 			var length         = data.shots.length,
 			container          = document.createDocumentFragment(),
-			i                  = 0,		
+			i                  = 0,
 
 			build = function() {
 
@@ -221,7 +219,7 @@
 					// back of last page
 					if ( i === 0 && type === "append" ) {
 						pages[pages.length-1].appendChild( side(0) );
-						pages[pages.length-1].lastChild.classList.add('back');					
+						pages[pages.length-1].lastChild.classList.add('back');
 					}
 
 					// page with front and back
@@ -287,7 +285,7 @@
 
 				}
 
-			},	
+			},
 
 			side = function( index ) {
 
@@ -335,7 +333,7 @@
 				details.appendChild(author);
 				shotWrapper.appendChild(shot);
 				side.appendChild(shotWrapper);
-				side.appendChild(details);			
+				side.appendChild(details);
 
 				return side;
 
@@ -421,7 +419,7 @@
 
 			// FLIP UP
 			if ( distY > 0 && Math.abs(distX) < Math.abs(distY) ) {
-			
+
 				slide.disable();
 
 				if ( flip.position === pages.length-1 ) { // LAST
@@ -438,7 +436,7 @@
 
 				} else {
 					deg = Math.min( Math.max( (distY-20)*0.485, 1 ), 180 );
-					pages[flip.position+1].classList.add('visible');					
+					pages[flip.position+1].classList.add('visible');
 				}
 
 				pages[flip.position].style.webkitTransform = "rotateX(" + deg + "deg)";
@@ -482,7 +480,7 @@
 				pages[flip.position].style.webkitTransform = "";
 
 				if ( flip.position < pages.length-1 ) {
-					pages[flip.position+1].classList.remove('visible');					
+					pages[flip.position+1].classList.remove('visible');
 				}
 
 			}
@@ -494,13 +492,13 @@
 			var ms = new Date().getTime()-time;
 			lastposition = flip.position;
 
-			// flip back up			
+			// flip back up
 			if ( deg >= 90 && ( ms > 500 || Math.abs(distX) > Math.abs(distY) || flip.position === 1 ) && distY < 0 ) {
 
 				pages[flip.position-1].style.webkitTransition = "";
 				pages[flip.position-1].style.webkitTransform = "";
 				pages[flip.position-1].classList.add('up');
-				if ( flip.position-2 >= 0 ) {				
+				if ( flip.position-2 >= 0 ) {
 					pages[flip.position-2].classList.remove('visible');
 				}
 
@@ -532,7 +530,7 @@
 
 			}
 
-			// flip up			
+			// flip up
 			if ( ( deg >= 90 || ms <= 500 ) && distY > 0 && flip.position < pages.length-1 && Math.abs(distX) < Math.abs(distY) ) {
 
 				pages[flip.position].style.webkitTransition = "";
@@ -547,7 +545,7 @@
 
 			}
 
-			// flip down			
+			// flip down
 			if ( ( deg < 90 || ms < 500 ) && distY < 0 && flip.position !== 1 && Math.abs(distX) < Math.abs(distY) ) {
 
 				pages[flip.position-1].style.webkitTransition = "";
@@ -584,7 +582,7 @@
 		},
 
 		enable = function() {
-		
+
 			flipscreen.addEventListener('touchstart', start, false);
 			flipscreen.addEventListener('touchmove', move, false);
 			flipscreen.addEventListener('touchend', end, false);
@@ -621,14 +619,14 @@
 			startX = e.targetTouches[0].pageX;
 			distY = 0;
 			distX = 0;
-		
+
 		},
 
 		move = function( e ) {
 			e.preventDefault();
 			distY = startY-e.targetTouches[0].pageY;
 			distX = startX-e.targetTouches[0].pageX;
-		
+
 		},
 
 		end = function( e ) {
@@ -657,8 +655,8 @@
 
 					authorImage.width = "50";
 					authorImage.height = "50";
-					authorImage.className = "loading";					
-					authorImage.src = authorImageLink.getAttribute('data-src');						
+					authorImage.className = "loading";
+					authorImage.src = authorImageLink.getAttribute('data-src');
 					authorImageLink.appendChild(authorImage);
 					authorImageLink.removeAttribute('data-src');
 
@@ -676,9 +674,9 @@
 				if ( ( e.target.classList.contains('shot') && ! e.target.classList.contains('left') ) || ( e.target.parentNode.classList.contains('shot') && ! e.target.parentNode.classList.contains('left') ) || e.target.classList.contains('text') ) {
 
 					right();
-				
+
 				}
-			
+
 			}
 
 			if ( position === "right" && Math.abs(distX) > Math.abs(distY) && distX > 0 ) {
@@ -692,7 +690,7 @@
 		hideDetails = function( e ) {
 
 			if ( position === "center" && Math.abs(distX) > Math.abs(distY) && distX < -50 ) {
-				
+
 				this.children[0].classList.remove('left');
 				e.stopPropagation();
 				this.removeEventListener('touchend', hideDetails);
@@ -718,7 +716,7 @@
 		},
 
 		enable = function() {
-		
+
 			flipscreen.addEventListener('touchstart', start, false);
 			flipscreen.addEventListener('touchmove', move, false);
 			flipscreen.addEventListener('touchend', end, false);
@@ -768,10 +766,10 @@
 			document.body.classList.add('landscape');
 
 			if ( window.orientation > 0 ) {
-				document.body.classList.remove('right');				
+				document.body.classList.remove('right');
 				document.body.classList.add('left');
 			} else {
-				document.body.classList.remove('left');				
+				document.body.classList.remove('left');
 				document.body.classList.add('right');
 			}
 
@@ -780,7 +778,7 @@
 	},
 
 	// notifications
-	// -------------------------------------------------------------	
+	// -------------------------------------------------------------
 
 	notification = (function() {
 
@@ -788,7 +786,7 @@
 		next = false,
 		active = false;
 
-		return {	
+		return {
 
 			enable: function() {
 				element = document.getElementById('notifications');
@@ -805,7 +803,7 @@
 					active = true;
 					next = false;
 					element.firstChild.innerHTML = _notification;
-					element.classList.remove('hide');					
+					element.classList.remove('hide');
 					element.classList.add('show');
 					setTimeout(this.hide(this), 2000);
 				} else {
@@ -827,7 +825,7 @@
 						}, 500);
 					}
 				};
-				
+
 			}
 
 		};
