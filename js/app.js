@@ -88,7 +88,7 @@
 			}
 
 			for ( var i = 0; i < navigation.length; i++ ) {
-				if ( navigation[i].getAttribute('href').slice(3) === section && location.hash[1] === "!" ) {
+				if ( navigation[i].getAttribute('href').slice(3) === section && ( location.hash[1] === "!" || location.hash.length === 0 ) ) {
 					navigation[i].classList.add('active');
 				} else {
 					navigation[i].classList.remove('active');
@@ -124,12 +124,6 @@
 
 			section = localStorage.getItem('section') || 'popular';
 			player = localStorage.getItem('player');
-
-			for ( var i = 0; i < navigation.length; i++ ) {
-				if ( navigation[i].getAttribute('href').slice(3) === section ) {
-					navigation[i].classList.add('active');
-				}
-			}
 
 		},
 
