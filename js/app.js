@@ -14,7 +14,7 @@
 			e.preventDefault();
 		};
 
-		document.body.innerHTML = '<div id="notifications"><span id="notification"></span></div><div id="menu" class="screen"><div class="user"><div class="user-image"><div>tap here</div></div><span class="user-name">flibbble</span><span class="user-links">Welcome!</span></div><ul id="navigation"><li><a href="#!/popular">Popular</a></li><li><a href="#!/debuts">Debuts</a></li><li><a href="#!/everyone">Everyone</a></li></ul><div id="history-label">history</div><ul id="history"><li>hidden</li><li><a href="#/popular">Popular</a></li><li><a href="#/debuts">Debuts</a></li><li><a href="#">Maxhoffmann&rsquo;s following</a></li><li><a href="#">Maxhoffmann&rsquo;s likes</a></li></ul></div><div id="flipper" class="screen"></div>';
+		document.body.innerHTML = '<div id="notifications"><span id="notification"></span></div><div id="menu" class="screen"><div class="user"><div class="user-image"><div>tap here</div></div><input type="text" placeholder="username"></div><ul id="navigation"><li data-open="#!/popular">Popular</li><li data-open="#!/debuts">Debuts</li><li data-open="#!/everyone">Everyone</li></ul><div id="history-label">history</div><ul id="history"></ul></div><div id="flipper" class="screen"></div>';
 
 		flipscreen = document.getElementById( 'flipper' );
 
@@ -26,12 +26,65 @@
 		window.addEventListener( 'orientationchange', orientation, false );
 
 		notification.enable();
+		history.enable();
 
 		navigate.enable();
 		navigate.to();
 
 		flip.enable();
 		slide.enable();
+
+		document.getElementsByTagName('input')[0].addEventListener('focus', function() {
+
+			var pressedReturn = function( e ) {
+				if ( e.keyCode === 13 ) {
+					this.blur();
+				}
+			},
+			typed = function() {
+
+				var username = this.value,
+				_this = this;
+
+				this.classList.add('hide');
+
+				setTimeout(function() {
+
+					var userLinks = document.createElement('div'),
+					userLink = document.createElement('div'),
+					userFollowing = document.createElement('span'),
+					userLikes = document.createElement('span'),
+					point = document.createTextNode(' \u2022 ');
+
+					userLink.setAttribute('data-open', "#!/shots/"+username);
+					userLink.classList.add('user-name');
+					userLink.innerHTML = username;
+					userLinks.classList.add('user-links');
+					userFollowing.setAttribute('data-open', "#!/following/"+username);
+					userFollowing.innerHTML = "Following";
+					userLikes.setAttribute('data-open', "#!/likes/"+username);
+					userLikes.innerHTML = "Likes";
+
+					userLinks.appendChild(userLink);
+					userLinks.appendChild(userFollowing);
+					userLinks.appendChild(point);
+					userLinks.appendChild(userLikes);
+
+					_this.parentNode.appendChild(userLinks);
+					_this.parentNode.removeChild(_this);
+
+					navigate.enable();
+
+				}, 300);
+
+				this.removeEventListener('keydown', pressedReturn);
+				this.removeEventListener('blur', typed);
+			};
+
+			this.addEventListener('keydown', pressedReturn, false);
+			this.addEventListener('blur', typed, false);
+
+		}, false);
 
 	},
 
@@ -88,7 +141,7 @@
 			}
 
 			for ( var i = 0; i < navigation.length; i++ ) {
-				if ( navigation[i].getAttribute('href').slice(3) === section && ( location.hash[1] === "!" || location.hash.length === 0 ) ) {
+				if ( navigation[i].getAttribute('data-open').slice(3) === section && ( location.hash[1] === "!" || location.hash.length === 0 ) ) {
 					navigation[i].classList.add('active');
 				} else {
 					navigation[i].classList.remove('active');
@@ -110,21 +163,41 @@
 				if ( location.hash[1] !== "!" ) {
 					notification.show( section, player );
 				}
+				if ( player !== null ) {
+					history.push(section+"/"+player);
+				}
 				localStorage.setItem( 'section', section );
 				localStorage.setItem( 'page', navigate.page );
 				localStorage.setItem( 'player', player );
 				localStorage.setItem( 'position', position );
+			} else {
+				notification.show( "Sorry, no shots found." );
+				slide.right();
 			}
 
 		},
 
 		enable = function() {
 
-			navigation = document.querySelectorAll('[href^="#!"]');
+			navigation = document.querySelectorAll('[data-open]');
 
 			section = localStorage.getItem('section') || 'popular';
 			player = localStorage.getItem('player');
 
+			for ( var i = 0; i < navigation.length; i++ ) {
+				navigation[i].addEventListener('touchstart', navigate.open, false);
+				if ( navigation[i].getAttribute('data-open').slice(2) === section ) {
+					navigation[i].classList.add('active');
+				}
+			}
+
+		},
+
+		open = function() {
+			if ( this.getAttribute('data-open')[1] === "!" ) {
+				this.classList.add('active');
+			}
+			location.hash = this.getAttribute('data-open');
 		},
 
 		more = function( type ) {
@@ -163,7 +236,8 @@
 			pages: 1,
 			to: to,
 			more: more,
-			enable: enable
+			enable: enable,
+			open: open
 		};
 
 	})(),
@@ -300,13 +374,13 @@
 
 				shotWrapper.appendChild(preview);
 				shotWrapper.className = "shot";
-				shot.className        = "loading";
+				shot.className        = "hide";
 				shot.height           = 240;
 				shot.width            = 320;
 				shot.src              = data.shots[index].image_url;
 
 				shot.addEventListener('load', function loaded() {
-					shot.classList.remove('loading');
+					shot.classList.remove('hide');
 					setTimeout(removePreview, 600);
 					shot.removeEventListener('load', loaded);
 				}, false);
@@ -649,13 +723,13 @@
 
 					authorImage.width = "50";
 					authorImage.height = "50";
-					authorImage.className = "loading";
+					authorImage.className = "hide";
 					authorImage.src = authorImageLink.getAttribute('data-src');
 					authorImageLink.appendChild(authorImage);
 					authorImageLink.removeAttribute('data-src');
 
 					authorImage.addEventListener('load', function loaded() {
-						authorImage.classList.remove('loading');
+						authorImage.classList.remove('hide');
 						authorImage.removeEventListener('load', loaded);
 					}, false);
 
@@ -826,8 +900,63 @@
 
 	})(),
 
+	// history
+	// -------------------------------------------------------------
 
-	// Lightweight JSONP fetcher by Erik Karlsson.
+	history = (function() {
+
+		var list,
+
+		enable = function() {
+
+			list = document.getElementById('history');
+
+			for ( var i = 3; i >= 0; i-- ) {
+
+				var memory = localStorage.getItem("h"+i);
+
+				if ( memory !== null ) {
+					var el = document.createElement('li');
+					el.setAttribute('data-open', "#/"+memory);
+					el.innerHTML = memory.split("/")[1]+"&#8217;s "+memory.split("/")[0];
+					list.appendChild(el);
+					el.addEventListener('touchstart', navigate.open, false);
+				}
+
+			}
+
+		},
+
+		push = function(state) {
+
+			var el = document.createElement('li');
+			el.setAttribute('data-open', "#/"+state);
+			el.innerHTML = state.split("/")[1]+"&#8217;s "+state.split("/")[0];
+			el.addEventListener('touchstart', navigate.open, false);
+			list.insertBefore(el, list.firstChild);
+			if ( list.length > 5 ) {
+				setTimeout(function(){
+					list.lastChild.removeEventListener(navigate.open);
+					list.removeChild(list.lastChild);
+				}, 500);
+			}
+
+			for ( var i = 3; i > 0; i-- ) {
+				localStorage.setItem("h"+i, localStorage.getItem("h"+(i-1)) );
+			}
+
+			localStorage.setItem("h0", state );
+
+		};
+
+		return {
+			enable: enable,
+			push: push
+		};
+
+	})(),
+
+	// Lightweight JSONP fetcher by Erik Karlsson
 	// -------------------------------------------------------------
 
 	JSONP = (function() {
