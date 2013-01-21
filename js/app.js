@@ -70,10 +70,12 @@
 					userLinks.appendChild(point);
 					userLinks.appendChild(userLikes);
 
+					userLink.addEventListener('touchstart', navigate.open, false);
+					userFollowing.addEventListener('touchstart', navigate.open, false);
+					userLikes.addEventListener('touchstart', navigate.open, false);
+
 					_this.parentNode.appendChild(userLinks);
 					_this.parentNode.removeChild(_this);
-
-					navigate.enable();
 
 				}, 300);
 
