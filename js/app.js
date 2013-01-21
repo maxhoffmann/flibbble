@@ -435,7 +435,7 @@
 
 			pages = document.getElementsByClassName('page');
 
-			if ( type === 'append' && pages.length > 51 ) {
+			if ( type === 'append' && pages.length > 31 ) {
 				var j = 0;
 				while ( j++ < 10 ) {
 					flipscreen.removeChild(pages[0]);
@@ -445,7 +445,7 @@
 				flipscreen.insertBefore(dragdown, flipscreen.firstChild);
 			}
 
-			if ( type === 'prepend' && pages.length > 51 ) {
+			if ( type === 'prepend' && pages.length > 31 ) {
 				var k = 0,
 				max = (pages.length+9)%10 || 10;
 
