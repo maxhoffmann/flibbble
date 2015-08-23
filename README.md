@@ -6,6 +6,9 @@ dribbble feed viewer web application for iOS
 - __optimized for iPhone 4/S__
 - can be __added to the homescreen__
 
+![icon](/screenshots/icon.png)
+
+
 
 ## Features
 
@@ -25,3 +28,20 @@ dribbble feed viewer web application for iOS
 - show browsing history
 - entering your someones username to view his/her following/likes
 
+## Screenshots
+
+### Main view: two full size shots
+
+![main view](/screenshots/main_view.png)
+
+### Sidebar: swipe to the right to reveal it
+
+![side bar](/screenshots/sidebar.png)
+
+### Shot Details: swipe left on a shot to reveal its details
+
+![shot details](/screenshots/shot_details.png)
+
+### Enter username to view your following/like streams
+
+![logged in](/screenshots/logged_in.png)
